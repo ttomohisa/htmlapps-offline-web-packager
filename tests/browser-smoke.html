@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offline Web Packager Browser Smoke Lab</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#17211d;background:#f6f8f7}body{max-width:880px;margin:0 auto;padding:24px}h1{font-size:1.5rem}.card{background:#fff;border:1px solid #dce6e1;border-radius:14px;padding:18px;margin:14px 0}.row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #edf2ef}.row:last-child{border-bottom:0}.mark{font-weight:800;min-width:4.5em}.pass{color:#16624f}.fail{color:#9d2b2b}.info{color:#5f6e67}code{word-break:break-word}.note{color:#5f6e67}button{font:inherit;padding:10px 14px;border-radius:10px;border:1px solid #16624f;background:#16624f;color:white}</style>
+</head>
+<body>
+<h1>Offline Web Packager Browser Smoke Lab</h1>
+<p class="note">Open this file directly with <code>file://</code> on each target browser. No input data is uploaded.</p>
+<div class="card" id="results"></div>
+<div class="card"><strong>Generated HTML smoke check</strong><p id="packageResult" class="note">Running…</p></div>
+<script src="../src/offline-web-packager-core.js"></script>
+<script>
+(async()=>{
+'use strict';
+const results=document.getElementById('results');
+function add(name,status,detail=''){const row=document.createElement('div');row.className='row';const mark=document.createElement('span');mark.className='mark '+(status===true?'pass':status===false?'fail':'info');mark.textContent=status===true?'PASS':status===false?'FAIL':'INFO';const copy=document.createElement('div');const strong=document.createElement('strong');strong.textContent=name;copy.append(strong);if(detail){const p=document.createElement('div');p.className='note';p.textContent=detail;copy.append(p)}row.append(mark,copy);results.append(row)}
+const Core=window.OfflineWebPackagerCore;
+add('Core script loaded',Boolean(Core));
+add('Opened from file://',location.protocol==='file:',location.href);
+const folder=document.createElement('input');folder.type='file';folder.setAttribute('webkitdirectory','');
+const folderSupport=('webkitdirectory' in folder) && (typeof File==='undefined' || 'webkitRelativePath' in File.prototype);
+add('Folder picker capability',folderSupport,folderSupport?'Folder hierarchy can be preserved by the browser.':'Use ZIP input on this browser.');
+const dropSupport=typeof DataTransferItem!=='undefined' && (typeof DataTransferItem.prototype.getAsEntry==='function' || typeof DataTransferItem.prototype.webkitGetAsEntry==='function');
+add('Folder drag & drop capability',dropSupport,dropSupport?'Directory entries API is available.':'File drag & drop can still work; use the Folder button or ZIP for folders.');
+add('Compressed ZIP capability',Boolean(Core&&Core.supportsDeflateRaw&&Core.supportsDeflateRaw()),'Checks DecompressionStream(deflate-raw), Blob.stream(), and Response.');
+const a=document.createElement('a');
+add('Download attribute','download' in a,('download' in a)?'Direct filename download path is available.':'The app uses a new-tab fallback.');
+add('Blob URL save capability',typeof URL.createObjectURL==='function'&&typeof URL.revokeObjectURL==='function');
+add('AbortController',typeof AbortController==='function');
+add('TextEncoder / TextDecoder',typeof TextEncoder==='function'&&typeof TextDecoder==='function');
+
+try{
+  const enc=new TextEncoder();
+  const records=[
+    {path:'index.html',bytes:enc.encode('<!doctype html><html><head><link rel="stylesheet" href="style.css"></head><body><h1 id="ok">Hello</h1><script src="app.js"><\/script></body></html>')},
+    {path:'style.css',bytes:enc.encode('body{font-family:sans-serif}#ok{font-weight:700}')},
+    {path:'app.js',bytes:enc.encode('document.documentElement.dataset.owpSmoke="ok";')}
+  ].map(r=>({...r,size:r.bytes.byteLength}));
+  const analysis=await Core.analyzeProject(records,'index.html');
+  if(analysis.status!=='convertible') throw new Error('analysis status: '+analysis.status);
+  const output=await Core.packageProject(records,'index.html',{analysis});
+  if(!output.html.includes('data:text/css')||!output.html.includes('data:text/javascript')) throw new Error('expected embedded data URLs were not generated');
+  document.getElementById('packageResult').textContent='PASS — in-memory analyze → package → verify completed.';
+  document.getElementById('packageResult').className='pass';
+}catch(error){document.getElementById('packageResult').textContent='FAIL — '+(error&&error.message||error);document.getElementById('packageResult').className='fail'}
+})();
+</script>
+</body>
+</html>

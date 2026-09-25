@@ -1,0 +1,1 @@
+WebAssembly.instantiateStreaming(fetch('./module.wasm')).then(()=>{});

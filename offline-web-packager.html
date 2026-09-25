@@ -1,0 +1,2431 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f5f5f2">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; media-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Offline Web Packager</title>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjQgNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMy4zMyIgeT0iMy4zMyIgd2lkdGg9IjU3LjMiIGhlaWdodD0iNTcuMyIgcng9IjE0LjMiIGZpbGw9IiMwMzZhNTMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4yIC0xLjUpIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZGZkZmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGcgc3Ryb2tlPSJub25lIj48cmVjdCB4PSI5LjUiIHk9IjE0LjEiIHdpZHRoPSIyNy44IiBoZWlnaHQ9IjE3LjUiIHJ4PSIyLjMiIGZpbGw9IiNmZGZkZmQiLz48cmVjdCB4PSIxMC42IiB5PSIxOC41IiB3aWR0aD0iMjUuNiIgaGVpZ2h0PSIxMS45IiByeD0iMS4xIiBmaWxsPSIjMDM2YTUzIi8+PHJlY3QgeD0iMTEuNyIgeT0iMTkuNiIgd2lkdGg9IjIzLjQiIGhlaWdodD0iOS43IiByeD0iLjMiIGZpbGw9IiNmZGZkZmQiLz48ZyBmaWxsPSIjMDM2YTUzIj48Y2lyY2xlIGN4PSIxMi42IiBjeT0iMTYuNSIgcj0iMSIvPjxjaXJjbGUgY3g9IjE2LjEiIGN5PSIxNi41IiByPSIxIi8+PGNpcmNsZSBjeD0iMTkuNiIgY3k9IjE2LjUiIHI9IjEiLz48Y2lyY2xlIGN4PSIyMC44IiBjeT0iMjIuNyIgcj0iMS43NSIvPjxwYXRoIGQ9Ik0xMS43IDI4LjZsNC4zLTQuOSAzLjggNC4zIDEuOS0yLjIgMi43IDIuOHYuN0gxMS43eiIvPjwvZz48L2c+PHBhdGggZD0ibTI1LjggMjIuMmg3LjNtLTcuMyAyLjloNy4zbS03LjMgMi45aDUuMiIgc3Ryb2tlPSIjMDM2YTUzIiBzdHJva2Utd2lkdGg9IjEuNDUiLz48cGF0aCBkPSJtMzAuOCAzMS41YzEuNSAzLjYgMy45IDUuMyA3LjMgNS40aDIuMm0tMS45LTIuNCAyLjggMi43LTIuOCAyLjgiIHN0cm9rZS13aWR0aD0iMS41NSIvPjxwYXRoIGQ9Im0zNy44IDM4LjFjLTIuOS4zLTQuNyAxLjgtNS44IDQiIHN0cm9rZS13aWR0aD0iMS4zNSIvPjxnIHRyYW5zZm9ybT0icm90YXRlKC0xNSAxNC43IDM5LjUpIiBzdHJva2Utd2lkdGg9IjEuMiI+PHJlY3QgeD0iOS44IiB5PSIzNS44IiB3aWR0aD0iOC43IiBoZWlnaHQ9IjcuNiIgcng9Ii43IiBmaWxsPSIjZmRmZGZkIi8+PGNpcmNsZSBjeD0iMTYuMSIgY3k9IjM4LjciIHI9IjEuMDUiIGZpbGw9IiMwMzZhNTMiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Im0xMC43IDQyLjUgMi4yLTIuNSAyLjIgMiAxLjItMS4xIDEuNSAxLjYiIHN0cm9rZT0iIzAzNmE1MyIvPjwvZz48ZyBzdHJva2U9IiMwMzZhNTMiPjxnIHRyYW5zZm9ybT0icm90YXRlKDggMjQuNiA0MC4yKSI+PHBhdGggZD0ibTIwLjYgMzUuOGg2LjFsMi4yIDIuMnY2LjVhMSAxIDAgMDEtMSAxaC03LjNhMSAxIDAgMDEtMS0xdi03LjdhMSAxIDAgMDExLTF6IiBmaWxsPSIjZmRmZGZkIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjYuNyAzNS44VjM4aDIuMiIvPjxwYXRoIGQ9Im0yMiAzOS4yLTEuNCAxLjEgMS40IDEuMW00LjMtMi4yIDEuNCAxLjEtMS40IDEuMSIgc3Ryb2tlLXdpZHRoPSIxLjEiLz48L2c+PHBhdGggZD0iTTEwLjMgNDQuNWg5LjlsLjkuOWg4LjRjMS4yIDAgMS45IDEuMSAxLjYgMi4ybC0xLjcgNi41YTIgMiAwIDAgMS0xLjkgMS41SDEzYTIgMiAwIDAgMS0yLTEuNmwtMS4zLTcuNWMtLjItMSAuNS0yIDEuNi0yeiIgZmlsbD0iI2ZkZmRmZCIgc3Ryb2tlLXdpZHRoPSIxLjE1Ii8+PHBhdGggZD0iTTQyLjIgMjMuNmgxMS4xbDUuNiA1Ljd2MjAuMmMwIDEuMS0uOCAxLjgtMS44IDEuOEg0Mi4yYy0xLjEgMC0xLjgtLjctMS44LTEuOFYyNS40YzAtMS4xLjctMS44IDEuOC0xLjh6IiBmaWxsPSIjZmRmZGZkIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJtNTMuMyAyMy42djUuN2g1LjYiIHN0cm9rZS13aWR0aD0iMS4xNSIvPjxyZWN0IHg9IjQyLjQiIHk9IjMxLjUiIHdpZHRoPSIxNC41IiBoZWlnaHQ9IjkuMyIgcng9Ii44IiBmaWxsPSIjMDM2YTUzIiBzdHJva2U9Im5vbmUiLz48cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtLjYpIiBkPSJtNDQuMSAzNC4ydjMuOW0wLTJoMS43bTAtMS45djMuOW0xLjctMy45aDIuNW0tMS4yNSAwdjMuOW0yLjI1IDB2LTMuOWwxLjM1IDIuNyAxLjM1LTIuN3YzLjltMS4zLTMuOXYzLjloMS43IiBzdHJva2U9IiNmZGZkZmQiIHN0cm9rZS13aWR0aD0iMS4wNSIvPjxwYXRoIGQ9Im00My41IDQzLjdoMTIuOG0tMTIuOCAzLjFoOC45IiBzdHJva2Utd2lkdGg9IjEuNTUiLz48L2c+PC9nPjwvc3ZnPgo=">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f5f2;
+      --surface: #fff;
+      --surface-muted: #f0f1ed;
+      --surface-hover: #e9ebe6;
+      --text: #20211f;
+      --muted: #666963;
+      --line: #dadbd6;
+      --line-strong: #bfc1ba;
+      --accent: #16624f;
+      --accent-hover: #0e503f;
+      --accent-soft: #e1f0ea;
+      --warn: #8a5a00;
+      --warn-soft: #fff4d8;
+      --danger: #b3261e;
+      --danger-soft: #fdecea;
+      --focus: #4d8bc7;
+      --shadow-sm: 0 1px 2px rgba(25,28,24,.08),0 6px 24px rgba(25,28,24,.05);
+      --shadow-md: 0 20px 44px rgba(25,28,24,.16);
+      --radius: 14px;
+      --header-height: 66px;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+      font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    button,input,select { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible {
+      outline: 3px solid color-mix(in srgb,var(--focus) 55%,transparent); outline-offset: 2px;
+    }
+    .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+    .app-header { position: sticky; z-index: 30; top: 0; min-height: var(--header-height); border-bottom: 1px solid color-mix(in srgb,var(--line) 82%,transparent); background: color-mix(in srgb,#fbfcfa 90%,transparent); backdrop-filter: blur(16px) saturate(1.2); }
+    .header-inner { width:min(1120px,100%); min-height:var(--header-height); margin:0 auto; padding:10px clamp(14px,2.8vw,30px); display:flex; align-items:center; gap:14px; }
+    .brand { display:flex; align-items:center; gap:10px; min-width:0; }
+    .brand-mark { width:38px; height:38px; flex:0 0 auto; border-radius:11px; overflow:hidden; box-shadow:var(--shadow-sm); }
+    .brand-mark img { width:100%; height:100%; display:block; }
+    .brand-copy { min-width:0; }
+    .brand-name { margin:0; font-size:17px; line-height:1.2; letter-spacing:.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .version-badge { display:inline-flex; align-items:center; margin-left:7px; padding:1px 6px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:var(--surface-muted); font-size:10px; font-weight:700; vertical-align:2px; }
+    .brand-meta { margin:2px 0 0; color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .header-actions { margin-left:auto; display:flex; align-items:center; gap:12px; }
+    .language-button,.header-icon-button { min-width:44px; min-height:44px; border:0; background:transparent; color:var(--muted); cursor:pointer; font-weight:750; }
+    .language-button { padding:5px 1px; font-size:12px; letter-spacing:.02em; }
+    .language-button:hover,.header-icon-button:hover { color:var(--text); }
+    .header-icon-button { display:grid; place-items:center; padding:5px 1px; }
+    .header-icon-button svg { width:20px; height:20px; }
+    .main { width:min(1120px,100%); margin:0 auto; padding:22px clamp(14px,2.8vw,30px) 58px; }
+    .page-intro { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding:0 2px 20px; }
+    .page-intro h1 { margin:0; font-size:clamp(25px,4vw,34px); line-height:1.25; letter-spacing:-.035em; }
+    .page-intro p { margin:7px 0 0; max-width:760px; color:var(--muted); font-size:14px; }
+    .local-badge { display:inline-flex; align-items:center; gap:7px; flex:0 0 auto; margin-top:3px; padding:7px 10px; border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line)); border-radius:999px; color:var(--accent); background:var(--accent-soft); font-size:12px; font-weight:700; white-space:nowrap; }
+    .local-badge svg { width:15px; height:15px; }
+
+    .workflow { margin:0 0 18px; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow-sm); overflow:hidden; }
+    .workflow-list { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin:0; padding:0; list-style:none; }
+    .workflow-step { position:relative; display:flex; align-items:center; gap:9px; min-width:0; padding:11px 13px; color:var(--muted); font-size:11px; font-weight:720; }
+    .workflow-step + .workflow-step::before { content:""; position:absolute; left:0; top:24%; bottom:24%; width:1px; background:var(--line); }
+    .workflow-number { display:grid; place-items:center; width:24px; height:24px; flex:0 0 auto; border:1px solid var(--line); border-radius:50%; background:var(--surface-muted); color:var(--muted); font-size:10px; font-weight:850; }
+    .workflow-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .workflow-step[data-state="current"] { color:var(--text); background:color-mix(in srgb,var(--accent-soft) 48%,#fff); }
+    .workflow-step[data-state="current"] .workflow-number { border-color:var(--accent); background:var(--accent); color:#fff; }
+    .workflow-step[data-state="done"] { color:var(--accent); }
+    .workflow-step[data-state="done"] .workflow-number { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+    .panel { margin:0 0 18px; border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:18px; background:var(--surface); box-shadow:var(--shadow-sm); overflow:hidden; }
+    .panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:20px 20px 4px; }
+    .panel-head h2 { margin:0; font-size:19px; letter-spacing:-.02em; }
+    .panel-head p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+    .input-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding:16px 20px; }
+    .input-button { min-height:98px; display:flex; align-items:center; gap:13px; width:100%; padding:15px; border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:15px; background:var(--surface); box-shadow:0 1px 0 rgba(255,255,255,.9) inset; text-align:left; cursor:pointer; transition:border-color .15s ease,background .15s ease,transform .15s ease,box-shadow .15s ease; }
+    .input-button:hover { border-color:color-mix(in srgb,var(--accent) 48%,var(--line)); background:var(--accent-soft); box-shadow:0 6px 16px rgba(22,98,79,.08); }
+    .input-button:active { transform:translateY(1px); }
+    .input-icon { display:grid; place-items:center; width:48px; height:48px; flex:0 0 auto; border:1px solid color-mix(in srgb,var(--accent) 13%,var(--line)); border-radius:13px; background:color-mix(in srgb,var(--accent-soft) 72%,#fff); color:var(--accent); }
+    .input-icon svg { width:32px; height:32px; }
+    .input-button[data-kind="html"] .input-icon { background:var(--accent-soft); }
+    .input-button[data-kind="zip"] .input-icon { background:var(--accent-soft); }
+    .input-button[data-kind="folder"] .input-icon { background:#edf2ef; }
+    .input-label { display:block; font-weight:780; }
+    .input-note { display:block; margin-top:3px; color:var(--muted); font-size:11px; font-weight:500; }
+    .dropzone { margin:2px 20px 14px; min-height:132px; display:grid; place-items:center; padding:22px; border:1.5px dashed var(--line-strong); border-radius:16px; background:#fafaf8; text-align:center; cursor:pointer; transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,transform .15s ease; }
+    .dropzone:hover,.dropzone:focus-visible,.dropzone[data-active="true"] { border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent), 0 8px 22px rgba(22,98,79,.07); }
+    .dropzone:active { transform:translateY(1px); }
+    .dropzone[aria-disabled="true"] { cursor:not-allowed; opacity:.58; transform:none; }
+    .dropzone svg { width:26px; height:26px; color:var(--accent); }
+    .dropzone strong { display:block; margin-top:7px; font-size:15px; letter-spacing:-.01em; }
+    .dropzone span { display:block; margin-top:4px; color:var(--muted); font-size:12px; }
+    .quick-guide { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:0 20px 18px; }
+    .quick-guide-item { min-width:0; padding:12px 13px; border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:13px; background:#fcfcfb; }
+    .quick-guide-item strong { display:block; font-size:12px; }
+    .quick-guide-item p { margin:4px 0 0; color:var(--muted); font-size:11px; line-height:1.55; }
+    .busy-row { display:none; align-items:center; gap:10px; margin:0 20px 20px; padding:12px 14px; border-radius:12px; background:var(--surface-muted); color:var(--muted); font-size:13px; }
+    .busy-row[data-visible="true"] { display:flex; }
+    .busy-copy { min-width:0; flex:1 1 auto; }
+    .busy-copy strong { display:block; color:var(--text); font-size:12px; }
+    .busy-progress-line { display:flex; align-items:center; gap:8px; margin-top:5px; }
+    .busy-progress { width:min(300px,40vw); height:7px; accent-color:var(--accent); }
+    .busy-progress-text { min-width:42px; color:var(--muted); font-size:10px; font-variant-numeric:tabular-nums; }
+    .busy-cancel { min-height:36px; flex:0 0 auto; padding:6px 10px; }
+    .spinner { width:17px; height:17px; flex:0 0 auto; border:2px solid var(--line-strong); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .result-panel[hidden] { display:none; }
+    .result-status { display:flex; align-items:flex-start; gap:12px; padding:20px 20px 18px; border-bottom:1px solid var(--line); background:#f8fcfa; }
+    .result-status-icon { display:grid; place-items:center; width:38px; height:38px; flex:0 0 auto; border-radius:50%; background:var(--accent-soft); color:var(--accent); }
+    .result-status-icon svg { width:21px; height:21px; }
+    .result-status h2 { margin:0; font-size:18px; }
+    .result-status p { margin:3px 0 0; color:var(--muted); font-size:12px; }
+    .result-status[data-status="review"] { background:var(--warn-soft); }
+    .result-status[data-status="review"] .result-status-icon { background:var(--warn-soft); color:var(--warn); }
+    .result-status[data-status="blocked"] { background:var(--danger-soft); }
+    .result-status[data-status="blocked"] .result-status-icon { background:var(--danger-soft); color:var(--danger); }
+    .result-status[data-status="analyzing"] .result-status-icon { background:var(--surface-muted); color:var(--muted); }
+    .analysis-section { border-top:1px solid var(--line); padding:16px 20px; }
+    .analysis-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:11px; }
+    .analysis-head h3 { margin:0; font-size:14px; }
+    .analysis-head p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+    .analysis-counts { display:flex; flex-wrap:wrap; gap:6px; }
+    .analysis-count { display:inline-flex; align-items:center; gap:5px; min-height:26px; padding:3px 8px; border:1px solid var(--line); border-radius:999px; background:var(--surface-muted); color:var(--muted); font-size:10px; font-weight:750; white-space:nowrap; }
+    .analysis-count[data-kind="block"] { border-color:color-mix(in srgb,var(--danger) 22%,var(--line)); background:var(--danger-soft); color:var(--danger); }
+    .analysis-count[data-kind="warning"] { border-color:color-mix(in srgb,var(--warn) 24%,var(--line)); background:var(--warn-soft); color:var(--warn); }
+    .finding-list { display:grid; gap:8px; margin:0; padding:0; list-style:none; }
+    .finding-item { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:flex-start; padding:11px 12px; border:1px solid var(--line); border-radius:11px; background:#fcfcfb; }
+    .finding-item[data-severity="block"] { border-color:color-mix(in srgb,var(--danger) 22%,var(--line)); background:color-mix(in srgb,var(--danger-soft) 55%,#fff); }
+    .finding-item[data-severity="warning"] { border-color:color-mix(in srgb,var(--warn) 20%,var(--line)); background:color-mix(in srgb,var(--warn-soft) 52%,#fff); }
+    .finding-icon { width:22px; height:22px; display:grid; place-items:center; margin-top:1px; border-radius:50%; background:var(--surface-muted); color:var(--accent); }
+    .finding-item[data-severity="block"] .finding-icon { background:var(--danger-soft); color:var(--danger); }
+    .finding-item[data-severity="warning"] .finding-icon { background:var(--warn-soft); color:var(--warn); }
+    .finding-icon svg { width:14px; height:14px; }
+    .finding-copy { min-width:0; }
+    .finding-copy strong { display:block; font-size:12px; }
+    .finding-copy p { margin:3px 0 0; color:var(--muted); font-size:11px; overflow-wrap:anywhere; }
+    .finding-detail { margin-top:6px; }
+    .finding-detail summary { width:max-content; max-width:100%; color:var(--muted); font-size:10px; cursor:pointer; }
+    .finding-detail code { display:block; margin-top:6px; padding:7px 8px; border-radius:8px; background:rgba(255,255,255,.72); color:var(--muted); font-size:10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .analysis-ok { display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border:1px solid color-mix(in srgb,var(--accent) 20%,var(--line)); border-radius:11px; background:var(--accent-soft); color:var(--accent); }
+    .analysis-ok svg { width:18px; height:18px; flex:0 0 auto; margin-top:1px; }
+    .analysis-ok p { margin:0; font-size:11px; font-weight:650; }
+    .button:disabled { cursor:not-allowed; opacity:.48; transform:none; }
+    .button:disabled:hover { border-color:var(--line); background:var(--surface); }
+    .button.primary:disabled:hover { border-color:var(--accent); background:var(--accent); }
+    .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; padding:16px 20px 0; }
+    .summary-item { position:relative; min-width:0; padding:13px 13px 12px; border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:14px; background:#f7f8f4; overflow:hidden; }
+    .summary-item::before { content:""; position:absolute; left:0; top:0; width:100%; height:3px; background:var(--accent); opacity:.22; }
+    .summary-label { display:block; color:var(--muted); font-size:10px; font-weight:700; }
+    .summary-value { display:block; margin-top:2px; font-size:17px; font-weight:800; overflow-wrap:anywhere; }
+    .entry-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:end; padding:16px 20px; }
+    .field { display:grid; gap:6px; min-width:0; }
+    .field label { font-size:11px; font-weight:750; color:var(--muted); }
+    select { width:100%; min-height:42px; padding:8px 38px 8px 11px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--text); }
+    .entry-note { margin:0; max-width:310px; color:var(--muted); font-size:11px; text-align:right; }
+    .file-section { border-top:1px solid var(--line); }
+    .file-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 20px; }
+    .file-head h3 { margin:0; font-size:14px; }
+    .file-head span { color:var(--muted); font-size:11px; }
+    .file-list { margin:0; padding:0 20px 16px; list-style:none; display:grid; gap:6px; max-height:370px; overflow:auto; overscroll-behavior:contain; }
+    .file-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:10px; align-items:center; min-height:44px; padding:8px 10px; border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:12px; background:#fcfcfb; }
+    .file-path { min-width:0; font-size:12px; font-weight:650; overflow-wrap:anywhere; }
+    .file-type { padding:2px 7px; border-radius:999px; background:var(--surface-muted); color:var(--muted); font-size:10px; font-weight:750; text-transform:uppercase; }
+    .file-size { min-width:62px; color:var(--muted); font-size:11px; text-align:right; white-space:nowrap; }
+    .result-actions { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; padding:0 20px 18px; }
+    .result-actions .button-row { margin-left:auto; }
+    .output-verification { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:start; margin:16px 20px; padding:12px 14px; border:1px solid color-mix(in srgb,var(--accent) 20%,var(--line)); border-radius:12px; background:var(--accent-soft); color:var(--accent); }
+    .output-verification[data-status="review"] { border-color:color-mix(in srgb,var(--warn) 24%,var(--line)); background:var(--warn-soft); color:var(--warn); }
+    .output-verification > svg { width:22px; height:22px; flex:0 0 auto; margin-top:1px; }
+    .output-verification strong { display:block; color:var(--text); font-size:12px; }
+    .output-verification p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+    .output-note { flex:1 1 430px; min-width:0; margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+    .button-row { display:flex; flex-wrap:wrap; gap:8px; }
+    .button { min-height:42px; padding:8px 14px; border:1px solid var(--line); border-radius:11px; background:var(--surface); font-weight:750; cursor:pointer; transition:border-color .15s ease,background .15s ease,transform .15s ease,box-shadow .15s ease; }
+    .button:hover { border-color:var(--line-strong); background:var(--surface-hover); box-shadow:0 5px 14px rgba(25,28,24,.08); }
+    .button:active { transform:translateY(1px); }
+    .button.primary { border-color:var(--accent); color:#fff; background:var(--accent); }
+    .button.primary:hover { border-color:var(--accent-hover); background:var(--accent-hover); }
+    .button.danger { color:var(--danger); }
+    .foundation-note { margin:0; color:var(--muted); font-size:11px; }
+    .error-panel { display:none; margin:0 0 18px; padding:14px 16px; border:1px solid color-mix(in srgb,var(--danger) 25%,var(--line)); border-radius:13px; background:var(--danger-soft); }
+    .error-panel[data-visible="true"] { display:block; }
+    .error-panel strong { display:block; color:var(--danger); }
+    .error-panel p { margin:4px 0 0; font-size:12px; }
+    .error-detail { margin-top:8px; }
+    .error-detail summary { color:var(--muted); font-size:11px; cursor:pointer; }
+    .error-detail code { display:block; margin-top:7px; padding:8px; border-radius:8px; background:rgba(255,255,255,.68); color:var(--muted); font-size:10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .privacy-strip { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:start; margin-top:18px; padding:14px 16px; border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:15px; background:var(--surface); }
+    .privacy-strip svg { width:20px; height:20px; margin-top:1px; color:var(--accent); }
+    .privacy-strip strong { display:block; font-size:12px; }
+    .privacy-strip p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+    details.build-info { margin-top:18px; border:1px solid var(--line); border-radius:12px; background:var(--surface); overflow:hidden; }
+    details.build-info > summary { padding:12px 14px; cursor:pointer; font-size:12px; font-weight:720; }
+    .build-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 14px 14px; }
+    .build-item { padding:9px; border-radius:9px; background:var(--surface-muted); }
+    .build-item span { display:block; color:var(--muted); font-size:9px; }
+    .build-item strong { display:block; margin-top:2px; overflow-wrap:anywhere; font-size:11px; }
+    footer { width:min(1120px,100%); margin:0 auto; padding:0 clamp(14px,2.8vw,30px) 32px; color:var(--muted); font-size:11px; }
+    dialog { width:min(610px,calc(100vw - 30px)); max-height:min(760px,calc(100dvh - 30px)); padding:0; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow-md); overflow:hidden; }
+    dialog[open] { display:flex; flex-direction:column; }
+    dialog::backdrop { background:rgba(0,0,0,.34); backdrop-filter:blur(2px); }
+    .dialog-header { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 17px; border-bottom:1px solid var(--line); background:var(--surface); }
+    .dialog-header h2 { margin:0; font-size:17px; }
+    .dialog-close { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--line); border-radius:9px; background:var(--surface); cursor:pointer; }
+    .dialog-close svg { width:17px; height:17px; }
+    .dialog-body { min-height:0; padding:16px 18px 22px; overflow:auto; overscroll-behavior:contain; }
+    .dialog-body h3 { margin:18px 0 7px; font-size:13px; }
+    .dialog-body h3:first-child { margin-top:0; }
+    .dialog-body p,.dialog-body li { color:var(--muted); font-size:12px; }
+    .dialog-body ol,.dialog-body ul { padding-left:20px; }
+    .dialog-note { padding:11px 12px; border-radius:10px; background:var(--surface-muted); }
+    .app-confirm-dialog { width:min(480px,calc(100vw - 30px)); }
+    .app-confirm-body { padding:14px 18px 18px; }
+    .app-confirm-message { margin:0; color:var(--muted); font-size:13px; }
+    .app-confirm-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
+    .app-confirm-button { min-height:42px; border:1px solid var(--line); border-radius:10px; background:var(--surface); font-weight:750; cursor:pointer; }
+    .app-confirm-button.primary { border-color:var(--accent); color:#fff; background:var(--accent); }
+    .app-confirm-button.danger { border-color:var(--danger); color:#fff; background:var(--danger); }
+    .app-toast { position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:60; display:flex; align-items:center; gap:12px; max-width:min(430px,calc(100vw - 36px)); padding:10px 13px; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:var(--shadow-md); opacity:0; pointer-events:none; transform:translateY(8px); transition:opacity .16s ease,transform .16s ease; }
+    .app-toast[data-visible="true"] { opacity:1; pointer-events:auto; transform:translateY(0); }
+    .app-toast-message { font-size:12px; }
+
+    .mobile-action-bar { display:none; }
+    @media (max-width:760px) {
+      .main { padding-top:18px; padding-bottom:42px; }
+      .page-intro { display:block; }
+      .local-badge { margin-top:12px; }
+      .input-grid { grid-template-columns:1fr; }
+      .input-button { min-height:72px; }
+      .quick-guide { grid-template-columns:1fr; }
+      .summary-grid { grid-template-columns:1fr 1fr; }
+      .entry-row { grid-template-columns:1fr; align-items:start; }
+      .entry-note { max-width:none; text-align:left; }
+      .file-item { grid-template-columns:minmax(0,1fr) auto; }
+      .file-size { grid-column:2; }
+      .file-type { display:none; }
+      .build-grid { grid-template-columns:1fr; }
+      body[data-mobile-action="true"] .main { padding-bottom:calc(122px + env(safe-area-inset-bottom)); }
+      body[data-mobile-action="true"] footer { padding-bottom:calc(104px + env(safe-area-inset-bottom)); }
+      .mobile-action-bar:not([hidden]) { position:fixed; left:10px; right:10px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:45; display:flex; align-items:center; gap:12px; padding:10px; border:1px solid color-mix(in srgb,var(--line) 86%,transparent); border-radius:14px; background:color-mix(in srgb,var(--surface) 96%,transparent); box-shadow:var(--shadow-md); backdrop-filter:blur(14px) saturate(1.1); }
+      .mobile-action-copy { min-width:0; flex:1 1 auto; }
+      .mobile-action-copy strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+      .mobile-action-copy span { display:block; margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); font-size:10px; }
+      .mobile-action-bar .button { flex:0 0 auto; min-height:46px; max-width:52%; }
+    }
+    @media (max-width:520px) {
+      .header-inner { gap:9px; }
+      .brand-mark { width:34px; height:34px; border-radius:10px; }
+      .brand-name { font-size:15px; }
+      .brand-meta { font-size:10px; }
+      .workflow-list { grid-template-columns:1fr 1fr; }
+      .workflow-step { padding:9px 11px; }
+      .workflow-step:nth-child(3)::before { display:none; }
+      .input-icon { width:46px; height:46px; }
+      .input-icon svg { width:30px; height:30px; }
+      .panel-head,.input-grid,.result-status,.entry-row,.file-head,.result-actions,.analysis-section,.quick-guide { padding-left:14px; padding-right:14px; }
+      .dropzone,.output-verification { margin-left:14px; margin-right:14px; }
+      .busy-row { margin-left:14px; margin-right:14px; align-items:flex-start; flex-wrap:wrap; }
+      .busy-copy { flex-basis:calc(100% - 40px); }
+      .busy-progress { width:100%; }
+      .busy-cancel { width:100%; min-height:44px; }
+      .summary-grid { padding-left:14px; padding-right:14px; }
+      .file-list { padding-left:14px; padding-right:14px; }
+      .result-actions { align-items:stretch; }
+      .result-actions .button-row { width:100%; }
+      .result-actions .button { flex:1 1 auto; min-height:46px; }
+      dialog { width:100%; max-width:none; max-height:calc(100dvh - 12px - env(safe-area-inset-top)); margin:auto 0 0; border-width:1px 0 0; border-radius:20px 20px 0 0; }
+      .dialog-body { padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+      .app-confirm-actions { grid-template-columns:1fr; }
+      .app-confirm-button { min-height:48px; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition-duration:.01ms!important; animation-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><img id="appBrandIcon" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjQgNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMy4zMyIgeT0iMy4zMyIgd2lkdGg9IjU3LjMiIGhlaWdodD0iNTcuMyIgcng9IjE0LjMiIGZpbGw9IiMwMzZhNTMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4yIC0xLjUpIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZGZkZmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGcgc3Ryb2tlPSJub25lIj48cmVjdCB4PSI5LjUiIHk9IjE0LjEiIHdpZHRoPSIyNy44IiBoZWlnaHQ9IjE3LjUiIHJ4PSIyLjMiIGZpbGw9IiNmZGZkZmQiLz48cmVjdCB4PSIxMC42IiB5PSIxOC41IiB3aWR0aD0iMjUuNiIgaGVpZ2h0PSIxMS45IiByeD0iMS4xIiBmaWxsPSIjMDM2YTUzIi8+PHJlY3QgeD0iMTEuNyIgeT0iMTkuNiIgd2lkdGg9IjIzLjQiIGhlaWdodD0iOS43IiByeD0iLjMiIGZpbGw9IiNmZGZkZmQiLz48ZyBmaWxsPSIjMDM2YTUzIj48Y2lyY2xlIGN4PSIxMi42IiBjeT0iMTYuNSIgcj0iMSIvPjxjaXJjbGUgY3g9IjE2LjEiIGN5PSIxNi41IiByPSIxIi8+PGNpcmNsZSBjeD0iMTkuNiIgY3k9IjE2LjUiIHI9IjEiLz48Y2lyY2xlIGN4PSIyMC44IiBjeT0iMjIuNyIgcj0iMS43NSIvPjxwYXRoIGQ9Ik0xMS43IDI4LjZsNC4zLTQuOSAzLjggNC4zIDEuOS0yLjIgMi43IDIuOHYuN0gxMS43eiIvPjwvZz48L2c+PHBhdGggZD0ibTI1LjggMjIuMmg3LjNtLTcuMyAyLjloNy4zbS03LjMgMi45aDUuMiIgc3Ryb2tlPSIjMDM2YTUzIiBzdHJva2Utd2lkdGg9IjEuNDUiLz48cGF0aCBkPSJtMzAuOCAzMS41YzEuNSAzLjYgMy45IDUuMyA3LjMgNS40aDIuMm0tMS45LTIuNCAyLjggMi43LTIuOCAyLjgiIHN0cm9rZS13aWR0aD0iMS41NSIvPjxwYXRoIGQ9Im0zNy44IDM4LjFjLTIuOS4zLTQuNyAxLjgtNS44IDQiIHN0cm9rZS13aWR0aD0iMS4zNSIvPjxnIHRyYW5zZm9ybT0icm90YXRlKC0xNSAxNC43IDM5LjUpIiBzdHJva2Utd2lkdGg9IjEuMiI+PHJlY3QgeD0iOS44IiB5PSIzNS44IiB3aWR0aD0iOC43IiBoZWlnaHQ9IjcuNiIgcng9Ii43IiBmaWxsPSIjZmRmZGZkIi8+PGNpcmNsZSBjeD0iMTYuMSIgY3k9IjM4LjciIHI9IjEuMDUiIGZpbGw9IiMwMzZhNTMiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Im0xMC43IDQyLjUgMi4yLTIuNSAyLjIgMiAxLjItMS4xIDEuNSAxLjYiIHN0cm9rZT0iIzAzNmE1MyIvPjwvZz48ZyBzdHJva2U9IiMwMzZhNTMiPjxnIHRyYW5zZm9ybT0icm90YXRlKDggMjQuNiA0MC4yKSI+PHBhdGggZD0ibTIwLjYgMzUuOGg2LjFsMi4yIDIuMnY2LjVhMSAxIDAgMDEtMSAxaC03LjNhMSAxIDAgMDEtMS0xdi03LjdhMSAxIDAgMDExLTF6IiBmaWxsPSIjZmRmZGZkIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjYuNyAzNS44VjM4aDIuMiIvPjxwYXRoIGQ9Im0yMiAzOS4yLTEuNCAxLjEgMS40IDEuMW00LjMtMi4yIDEuNCAxLjEtMS40IDEuMSIgc3Ryb2tlLXdpZHRoPSIxLjEiLz48L2c+PHBhdGggZD0iTTEwLjMgNDQuNWg5LjlsLjkuOWg4LjRjMS4yIDAgMS45IDEuMSAxLjYgMi4ybC0xLjcgNi41YTIgMiAwIDAgMS0xLjkgMS41SDEzYTIgMiAwIDAgMS0yLTEuNmwtMS4zLTcuNWMtLjItMSAuNS0yIDEuNi0yeiIgZmlsbD0iI2ZkZmRmZCIgc3Ryb2tlLXdpZHRoPSIxLjE1Ii8+PHBhdGggZD0iTTQyLjIgMjMuNmgxMS4xbDUuNiA1Ljd2MjAuMmMwIDEuMS0uOCAxLjgtMS44IDEuOEg0Mi4yYy0xLjEgMC0xLjgtLjctMS44LTEuOFYyNS40YzAtMS4xLjctMS44IDEuOC0xLjh6IiBmaWxsPSIjZmRmZGZkIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJtNTMuMyAyMy42djUuN2g1LjYiIHN0cm9rZS13aWR0aD0iMS4xNSIvPjxyZWN0IHg9IjQyLjQiIHk9IjMxLjUiIHdpZHRoPSIxNC41IiBoZWlnaHQ9IjkuMyIgcng9Ii44IiBmaWxsPSIjMDM2YTUzIiBzdHJva2U9Im5vbmUiLz48cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtLjYpIiBkPSJtNDQuMSAzNC4ydjMuOW0wLTJoMS43bTAtMS45djMuOW0xLjctMy45aDIuNW0tMS4yNSAwdjMuOW0yLjI1IDB2LTMuOWwxLjM1IDIuNyAxLjM1LTIuN3YzLjltMS4zLTMuOXYzLjloMS43IiBzdHJva2U9IiNmZGZkZmQiIHN0cm9rZS13aWR0aD0iMS4wNSIvPjxwYXRoIGQ9Im00My41IDQzLjdoMTIuOG0tMTIuOCAzLjFoOC45IiBzdHJva2Utd2lkdGg9IjEuNTUiLz48L2c+PC9nPjwvc3ZnPgo=" alt=""></div>
+        <div class="brand-copy">
+          <p class="brand-name"><span id="brandName">Offline Web Packager</span><span class="version-badge" id="versionBadge">v1.0.0</span></p>
+          <p class="brand-meta" data-i18n="brandMeta">Webページを1つのHTMLへ</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="language-button" id="languageButton" type="button" aria-label="Switch language">EN</button>
+        <button class="header-icon-button" id="helpButton" type="button" data-i18n-title="helpTitle" data-i18n-aria-label="helpTitle" title="使い方と注意事項" aria-label="使い方と注意事項">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.35 2.35 0 1 1 3.72 1.9c-.92.67-1.52 1.12-1.52 2.1"/><path d="M12 17h.01"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="page-intro" aria-labelledby="heroTitle">
+      <div>
+        <h1 id="heroTitle" data-i18n="introTitle">Webページを1つのHTMLにまとめる</h1>
+        <p data-i18n="lead">HTML、ZIP、フォルダを端末内で読み込み、構成を確認して、対応範囲なら1つのHTMLを作成します。</p>
+      </div>
+      <div class="local-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></svg>
+        <span data-i18n="localBadge">完全ローカル処理</span>
+      </div>
+    </section>
+
+    <nav class="workflow" id="workflow" data-i18n-aria-label="workflowLabel" aria-label="作業の流れ">
+      <ol class="workflow-list">
+        <li class="workflow-step" id="workflowStep1" data-state="current"><span class="workflow-number">1</span><span class="workflow-label" data-i18n="stepAdd">ファイルを追加</span></li>
+        <li class="workflow-step" id="workflowStep2" data-state="upcoming"><span class="workflow-number">2</span><span class="workflow-label" data-i18n="stepCheck">確認</span></li>
+        <li class="workflow-step" id="workflowStep3" data-state="upcoming"><span class="workflow-number">3</span><span class="workflow-label" data-i18n="stepCreate">HTMLを作成</span></li>
+        <li class="workflow-step" id="workflowStep4" data-state="upcoming"><span class="workflow-number">4</span><span class="workflow-label" data-i18n="stepSave">保存</span></li>
+      </ol>
+    </nav>
+
+    <section class="panel" id="inputPanel" aria-labelledby="inputTitle">
+      <div class="panel-head">
+        <div><h2 id="inputTitle" data-i18n="inputTitle">ページ一式を追加</h2><p data-i18n="inputBody">手元のHTML、ZIP、またはWebページのフォルダを選んでください。</p></div>
+      </div>
+      <div class="input-grid">
+        <button class="input-button" id="chooseHtmlButton" data-kind="html" type="button">
+          <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3.5h10l5 5v20h-15z" stroke-width="1.7"/><path d="M18.5 3.5v5h5" stroke-width="1.7"/><rect x="11.5" y="12" width="9.5" height="3" rx="1.2" fill="currentColor" stroke="none" opacity=".16"/><path d="m13.8 19-2.3 2 2.3 2m4.4-4 2.3 2-2.3 2" stroke-width="1.9"/><path d="m16.7 18.2-1.4 5.6" stroke-width="1.6"/></svg></span>
+          <span><span class="input-label" data-i18n="htmlButton">HTMLファイル</span><span class="input-note" data-i18n="htmlNote">1つのHTMLを確認</span></span>
+        </button>
+        <button class="input-button" id="chooseZipButton" data-kind="zip" type="button">
+          <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3.5h10l5 5v20h-15z" stroke-width="1.7"/><path d="M18.5 3.5v5h5" stroke-width="1.7"/><path d="M15.2 6.1h3.1M15.2 9h3.1M15.2 11.9h3.1M15.2 14.8h3.1" stroke-width="1.7"/><path d="M16.75 14.9v4.2" stroke-width="1.7"/><rect x="13.9" y="19" width="5.7" height="5.2" rx="1.3" stroke-width="1.7"/><path d="M15.4 21.6h2.7" stroke-width="1.4"/></svg></span>
+          <span><span class="input-label" data-i18n="zipButton">ZIP</span><span class="input-note" data-i18n="zipNote">フォルダ構成を保って展開</span></span>
+        </button>
+        <button class="input-button" id="chooseFolderButton" data-kind="folder" type="button">
+          <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9h9l2.8 3H27.5v14.5h-23z" stroke-width="1.8"/><path d="M5 12.5h22" stroke-width="1.5"/><path d="M10 18h12M10 21.5h8" stroke-width="1.5" opacity=".72"/></svg></span>
+          <span><span class="input-label" data-i18n="folderButton">フォルダ</span><span class="input-note" data-i18n="folderNote">Webページ一式をまとめて読み込み</span></span>
+        </button>
+      </div>
+      <div class="dropzone" id="dropzone" data-active="false" role="button" tabindex="0" data-i18n-aria-label="dropAria" aria-label="HTMLまたはZIPを選択、またはHTML・ZIP・フォルダをドラッグ＆ドロップ">
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M5 13v6h14v-6"/></svg>
+          <strong data-i18n="dropTitle">ここにドラッグ＆ドロップ</strong>
+          <span data-i18n="dropBody">クリックしてHTML / ZIPを選択することもできます</span>
+        </div>
+      </div>
+      <div class="quick-guide" aria-label="Quick guide">
+        <div class="quick-guide-item"><strong data-i18n="guideTitle1">まず何を選べばよい？</strong><p data-i18n="guideBody1">ページ1枚だけならHTML、関連ファイルもあるならZIPかフォルダがおすすめです。</p></div>
+        <div class="quick-guide-item"><strong data-i18n="guideTitle2">変換できないときは？</strong><p data-i18n="guideBody2">理由を一覧で表示します。成功扱いにせず、何を直せばよいか分かる形にします。</p></div>
+        <div class="quick-guide-item"><strong data-i18n="guideTitle3">作成後の扱いは？</strong><p data-i18n="guideBody3">生成したHTMLはそのまま保存できます。元の入力はサーバーへ送信しません。</p></div>
+      </div>
+      <div class="busy-row" id="busyRow" data-visible="false" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <div class="busy-copy"><strong id="busyText" data-i18n="reading">読み込んでいます…</strong><div class="busy-progress-line"><progress class="busy-progress" id="busyProgress" max="100"></progress><span class="busy-progress-text" id="busyProgressText"></span></div></div>
+        <button class="button busy-cancel" id="cancelOperationButton" type="button" hidden data-i18n="cancelOperation">キャンセル</button>
+      </div>
+      <input id="quickInput" class="sr-only" type="file" accept=".html,.htm,.zip,text/html,application/zip">
+      <input id="htmlInput" class="sr-only" type="file" accept=".html,.htm,text/html">
+      <input id="zipInput" class="sr-only" type="file" accept=".zip,application/zip">
+      <input id="folderInput" class="sr-only" type="file" webkitdirectory directory multiple>
+    </section>
+
+    <section class="error-panel" id="errorPanel" data-visible="false" role="alert" tabindex="-1">
+      <strong id="errorTitle" data-i18n="errorTitle">読み込めませんでした</strong>
+      <p id="errorMessage"></p>
+      <details class="error-detail" id="errorDetail" hidden><summary data-i18n="technicalDetail">技術的な詳細</summary><code id="errorCode"></code></details>
+    </section>
+
+    <section class="panel result-panel" id="resultPanel" hidden aria-labelledby="resultTitle">
+      <div class="result-status" id="analysisStatus" data-status="analyzing" aria-live="polite">
+        <span class="result-status-icon" id="analysisStatusIcon" aria-hidden="true"></span>
+        <div><h2 id="resultTitle" tabindex="-1">解析しています</h2><p id="resultSubtitle">ファイルの参照関係を静的に確認しています。HTMLやJavaScriptは実行しません。</p></div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-item"><span class="summary-label" data-i18n="sourceType">入力</span><strong class="summary-value" id="sourceTypeValue">—</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="fileCount">ファイル</span><strong class="summary-value" id="fileCountValue">0</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="htmlCount">HTML</span><strong class="summary-value" id="htmlCountValue">0</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="totalSize">合計サイズ</span><strong class="summary-value" id="totalSizeValue">0 B</strong></div>
+      </div>
+      <div class="entry-row">
+        <div class="field"><label for="entryHtmlSelect" data-i18n="entryHtml">開始HTML</label><select id="entryHtmlSelect"></select></div>
+        <p class="entry-note" id="entryNote"></p>
+      </div>
+      <section class="analysis-section" aria-labelledby="analysisTitle">
+        <div class="analysis-head">
+          <div><h3 id="analysisTitle" data-i18n="analysisTitle">確認結果</h3><p data-i18n="analysisBody">開始HTMLからたどれる参照と、対応外の構成を静的に確認します。</p></div>
+          <div class="analysis-counts" id="analysisCounts"></div>
+        </div>
+        <div id="analysisResults"></div>
+      </section>
+      <div class="file-section">
+        <div class="file-head"><h3 data-i18n="filesTitle">読み込んだファイル</h3><span id="fileListHint"></span></div>
+        <ul class="file-list" id="fileList"></ul>
+      </div>
+      <div class="result-actions">
+        <p class="foundation-note" id="versionStageNote" data-i18n="analysisStageNote">確認結果に問題がなければ、次は「1つのHTMLを作成」を押します。</p>
+        <div class="button-row"><button class="button danger" id="clearButton" type="button" data-i18n="clear">別のファイルに切り替える</button><button class="button primary" id="createHtmlButton" type="button" disabled data-i18n="createHtml">1つのHTMLを作成</button></div>
+      </div>
+    </section>
+
+    <section class="panel output-panel" id="outputPanel" hidden aria-labelledby="outputTitle">
+      <div class="result-status" data-status="convertible" aria-live="polite">
+        <span class="result-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></span>
+        <div><h2 id="outputTitle" tabindex="-1" data-i18n="outputTitle">HTMLを作成しました</h2><p data-i18n="outputBody">必要なローカルファイルを1つのHTML内へ取り込みました。</p></div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-item"><span class="summary-label" data-i18n="outputFile">保存ファイル</span><strong class="summary-value output-filename" id="outputFilename">—</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="outputSize">生成サイズ</span><strong class="summary-value" id="outputSize">—</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="embeddedFiles">取り込んだファイル</span><strong class="summary-value" id="embeddedFilesValue">0</strong></div>
+        <div class="summary-item"><span class="summary-label" data-i18n="outputEntry">開始HTML</span><strong class="summary-value output-filename" id="outputEntryValue">—</strong></div>
+      </div>
+      <div class="output-verification" id="outputVerification" data-status="verified">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+        <div><strong id="outputVerificationTitle" data-i18n="verificationTitle">作成後の確認</strong><p id="outputVerificationBody" data-i18n="verificationVerified">未解決のローカル参照や取り込み漏れは見つかりませんでした。</p></div>
+      </div>
+      <div class="result-actions">
+        <p class="output-note" data-i18n="generatedRuntimeNote">生成したHTMLの実行時動作は、元のHTML / JavaScriptの内容に依存します。このツール自体は入力ファイルを外部送信しませんが、生成HTMLの安全性までは保証しません。</p>
+        <div class="button-row"><button class="button" id="releaseOutputButton" type="button" data-i18n="releaseOutput">作成結果を閉じる</button><button class="button primary" id="saveHtmlButton" type="button" data-i18n="saveHtml">HTMLを保存</button></div>
+      </div>
+    </section>
+
+    <section class="privacy-strip" aria-label="Privacy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="M9 12h6"/></svg>
+      <div><strong data-i18n="privacyTitle">このアプリ自身は完全ローカル処理です</strong><p data-i18n="privacyBody">追加したHTML、ZIP、画像、JavaScript等を外部サーバーへ送信しません。読み込んだHTMLやJavaScriptも解析中に実行しません。生成HTMLの実行時動作は、元のHTML / JavaScriptに依存します。</p></div>
+    </section>
+
+    <details class="build-info"><summary data-i18n="buildInfo">ビルド情報</summary><div class="build-grid"><div class="build-item"><span data-i18n="appVersion">アプリバージョン</span><strong id="buildVersion">—</strong></div><div class="build-item"><span data-i18n="builtAt">生成日時</span><strong id="builtAt">—</strong></div><div class="build-item"><span data-i18n="runtimeNetwork">アプリの外部通信</span><strong data-i18n="runtimeNetworkValue">なし</strong></div></div></details>
+  </main>
+
+  <footer><span id="footerName">Offline Web Packager</span> · MIT License · <span data-i18n="footer">ブラウザ内でページ一式を確認</span></footer>
+
+  <div class="mobile-action-bar" id="mobileActionBar" hidden role="region" data-i18n-aria-label="mobileActionLabel" aria-label="次の操作">
+    <div class="mobile-action-copy"><strong id="mobileActionTitle"></strong><span id="mobileActionHint"></span></div>
+    <button class="button primary" id="mobilePrimaryAction" type="button"></button>
+  </div>
+
+  <div class="sr-only" id="statusAnnouncer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="app-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true" data-visible="false"><span class="app-toast-message" id="appToastMessage"></span></div>
+
+  <dialog class="app-confirm-dialog" id="appConfirmDialog" aria-labelledby="appConfirmTitle" aria-describedby="appConfirmMessage">
+    <div class="dialog-header"><h2 id="appConfirmTitle">確認</h2><button class="dialog-close" id="appConfirmClose" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="app-confirm-body"><p class="app-confirm-message" id="appConfirmMessage"></p><div class="app-confirm-actions"><button class="app-confirm-button" id="appConfirmCancel" type="button">キャンセル</button><button class="app-confirm-button primary" id="appConfirmOk" type="button">続ける</button></div></div>
+  </dialog>
+
+  <dialog id="helpDialog" aria-labelledby="helpTitle">
+    <div class="dialog-header"><h2 id="helpTitle" data-i18n="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="closeHelpButton" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog-body">
+      <h3 data-i18n="helpBasicsTitle">基本操作</h3>
+      <ol><li data-i18n="helpStep1">HTML、ZIP、またはフォルダを追加します。ドラッグ＆ドロップも使えます。</li><li data-i18n="helpStep2">ZIPやフォルダでは、フォルダ構成を保ったままファイルを読み込みます。</li><li data-i18n="helpStep3">複数のHTMLがある場合は、自動検出した開始HTMLを確認して必要なら変更します。</li></ol>
+      <h3 data-i18n="helpSafetyTitle">読み込み時の安全設計</h3>
+      <ul><li data-i18n="helpSafety1">読み込んだHTMLやJavaScriptを、このアプリが勝手に実行することはありません。</li><li data-i18n="helpSafety2">ZIP内の「../」や絶対パスなど、フォルダの外側を指すファイル名は拒否します。</li><li data-i18n="helpSafety3">このアプリはマルウェアスキャナーではありません。「安全なHTML」と判定する機能ではありません。</li></ul>
+      <h3 data-i18n="helpLimitsTitle">大きな入力</h3>
+      <ul><li data-i18n="helpLimit1">1ファイルは50 MBまでです。</li><li data-i18n="helpLimit2">入力全体は100 MB、ファイル数は2,000件までです。</li><li data-i18n="helpLimit3">ZIPは展開前にファイル数・展開後サイズ・極端な圧縮率を確認します。</li></ul>
+      <h3 data-i18n="helpBrowserTitle">このブラウザで使える機能</h3>
+      <ul><li><span data-i18n="helpBrowserFolder">フォルダ選択</span>: <strong id="folderSupportStatus">—</strong></li><li><span data-i18n="helpBrowserZip">圧縮ZIPの展開</span>: <strong id="zipSupportStatus">—</strong></li><li><span data-i18n="helpBrowserSave">HTMLの保存</span>: <strong id="saveSupportStatus">—</strong></li></ul>
+      <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
+      <p data-i18n="helpPrivacyBody">このアプリ自身は完全ローカル処理です。入力ファイルをサーバーへ送信しません。ただし、今後生成するHTMLの実行時動作は元のHTML / JavaScriptに依存します。</p>
+      <p class="dialog-note" data-i18n="helpVersionNote">v1.0.0では、対応範囲・判定・単一HTML作成・保存までの回帰確認を行い、正式版として仕上げました。</p>
+    </div>
+  </dialog>
+
+  <script>
+(function (global) {
+  'use strict';
+
+  const HTML_EXTENSIONS = new Set(['html', 'htm']);
+  const ZIP_LOCAL_FILE = 0x04034b50;
+  const ZIP_CENTRAL_FILE = 0x02014b50;
+  const ZIP_END = 0x06054b50;
+  const DEFAULT_LIMITS = Object.freeze({
+    maxFiles: 2000,
+    maxTotalBytes: 100 * 1024 * 1024,
+    maxSingleBytes: 50 * 1024 * 1024,
+    largeFileWarningBytes: 50 * 1024 * 1024,
+    maxZipCompressionRatio: 200
+  });
+  const CRC_TABLE = (() => {
+    const table = new Uint32Array(256);
+    for (let n = 0; n < 256; n += 1) {
+      let c = n;
+      for (let k = 0; k < 8; k += 1) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+      table[n] = c >>> 0;
+    }
+    return table;
+  })();
+
+  class PackagerInputError extends Error {
+    constructor(code, message, detail = '') {
+      super(message);
+      this.name = 'PackagerInputError';
+      this.code = code;
+      this.detail = detail;
+    }
+  }
+
+
+  function abortError() {
+    return new PackagerInputError('operation-cancelled', '処理をキャンセルしました。');
+  }
+
+  function throwIfAborted(signal) {
+    if (signal && signal.aborted) throw abortError();
+  }
+
+  function reportProgress(options, stage, completed, total, detail = '') {
+    throwIfAborted(options && options.signal);
+    const callback = options && options.onProgress;
+    if (typeof callback !== 'function') return;
+    const safeTotal = Number.isFinite(total) && total > 0 ? total : 0;
+    const safeCompleted = Number.isFinite(completed) ? Math.max(0, completed) : 0;
+    callback({ stage, completed: safeCompleted, total: safeTotal, detail });
+  }
+
+  function inputLimits(options = {}) {
+    return {
+      maxFiles: Number.isFinite(options.maxFiles) ? options.maxFiles : DEFAULT_LIMITS.maxFiles,
+      maxTotalBytes: Number.isFinite(options.maxTotalBytes) ? options.maxTotalBytes : DEFAULT_LIMITS.maxTotalBytes,
+      maxSingleBytes: Number.isFinite(options.maxSingleBytes) ? options.maxSingleBytes : DEFAULT_LIMITS.maxSingleBytes,
+      largeFileWarningBytes: Number.isFinite(options.largeFileWarningBytes) ? options.largeFileWarningBytes : DEFAULT_LIMITS.largeFileWarningBytes,
+      maxZipCompressionRatio: Number.isFinite(options.maxZipCompressionRatio) ? options.maxZipCompressionRatio : DEFAULT_LIMITS.maxZipCompressionRatio
+    };
+  }
+
+  function assertInputLimits(records, options = {}) {
+    const files = Array.isArray(records) ? records : [];
+    const limits = inputLimits(options);
+    if (files.length > limits.maxFiles) {
+      throw new PackagerInputError('too-many-files', 'ファイル数が上限を超えています。', `${files.length} / ${limits.maxFiles}`);
+    }
+    let totalBytes = 0;
+    for (let index = 0; index < files.length; index += 1) {
+      throwIfAborted(options.signal);
+      const record = files[index] || {};
+      const size = Number(record.size ?? record.bytes?.byteLength ?? record.file?.size ?? 0) || 0;
+      const path = record.path || record.name || `file ${index + 1}`;
+      if (size > limits.maxSingleBytes) {
+        throw new PackagerInputError('file-too-large', '50 MBを超えるファイルは読み込めません。', `${path}: ${size} bytes`);
+      }
+      totalBytes += size;
+      if (totalBytes > limits.maxTotalBytes) {
+        throw new PackagerInputError('input-too-large', '入力全体が100 MBの上限を超えています。', `${totalBytes} bytes`);
+      }
+    }
+    return { fileCount: files.length, totalBytes, limits };
+  }
+
+  function toUint8Array(value) {
+    if (value instanceof Uint8Array) return value;
+    if (value instanceof ArrayBuffer) return new Uint8Array(value);
+    if (ArrayBuffer.isView(value)) return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+    throw new TypeError('Expected ArrayBuffer or Uint8Array.');
+  }
+
+  function safeDecodeURIComponent(value) {
+    try { return decodeURIComponent(value); } catch { return value; }
+  }
+
+  function hasTraversalSegment(path) {
+    const decoded = safeDecodeURIComponent(String(path).replace(/\\/g, '/'));
+    return decoded.split('/').some(segment => segment === '..');
+  }
+
+  function assertSafeArchivePath(rawPath) {
+    const value = String(rawPath || '');
+    const slashPath = value.replace(/\\/g, '/');
+    const decoded = safeDecodeURIComponent(slashPath);
+    if (!value || /\0/.test(value)) throw new PackagerInputError('zip-path-invalid', 'ZIP内に無効なファイル名があります。', value);
+    if (/^[a-zA-Z]:[\\/]/.test(value) || /^\\\\/.test(value) || slashPath.startsWith('/') || decoded.startsWith('/')) {
+      throw new PackagerInputError('zip-path-absolute', 'ZIP内に端末上の絶対パスを示すファイル名があります。', value);
+    }
+    if (hasTraversalSegment(value)) {
+      throw new PackagerInputError('zip-path-traversal', 'ZIP内にフォルダの外側を参照するファイル名があります。', value);
+    }
+  }
+
+  function normalizeVirtualPath(rawPath, options = {}) {
+    const rejectTraversal = options.rejectTraversal !== false;
+    let value = String(rawPath || '').replace(/\\/g, '/').normalize('NFC');
+    if (/\0/.test(value)) throw new PackagerInputError('path-invalid', 'ファイル名に無効な文字が含まれています。', rawPath);
+    value = value.replace(/^\.\//, '');
+    const parts = [];
+    for (const part of value.split('/')) {
+      if (!part || part === '.') continue;
+      if (part === '..') {
+        if (rejectTraversal) throw new PackagerInputError('path-traversal', 'フォルダの外側を参照するパスは読み込めません。', rawPath);
+        if (parts.length) parts.pop();
+        continue;
+      }
+      parts.push(part);
+    }
+    const normalized = parts.join('/');
+    if (!normalized) throw new PackagerInputError('path-empty', '空のファイル名は読み込めません。', rawPath);
+    return normalized;
+  }
+
+  function extensionOf(path) {
+    const name = String(path).split('/').pop() || '';
+    const dot = name.lastIndexOf('.');
+    return dot > -1 ? name.slice(dot + 1).toLowerCase() : '';
+  }
+
+  function stripCommonRoot(entries) {
+    const list = entries.map(entry => ({ ...entry, path: normalizeVirtualPath(entry.path) }));
+    if (!list.length) return list;
+    const split = list.map(entry => entry.path.split('/'));
+    if (!split.every(parts => parts.length >= 2)) return list;
+    const first = split[0][0];
+    if (!split.every(parts => parts[0] === first)) return list;
+    return list.map((entry, index) => ({ ...entry, path: split[index].slice(1).join('/') }));
+  }
+
+  function detectStartHtml(paths) {
+    const candidates = paths
+      .map(path => normalizeVirtualPath(path))
+      .filter(path => HTML_EXTENSIONS.has(extensionOf(path)))
+      .map(path => {
+        const parts = path.split('/');
+        const basename = parts[parts.length - 1].toLowerCase();
+        const depth = parts.length - 1;
+        let score = 0;
+        if (basename === 'index.html') score += 1000;
+        else if (basename === 'index.htm') score += 900;
+        else if (basename === 'default.html' || basename === 'default.htm') score += 520;
+        if (depth === 0) score += 500;
+        score -= depth * 12;
+        return { path, score, depth, basename };
+      })
+      .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path, 'en'));
+
+    if (!candidates.length) return { selected: '', candidates: [], reason: 'none', ambiguous: false };
+    const selected = candidates[0].path;
+    const topScore = candidates[0].score;
+    const ambiguous = candidates.length > 1 && candidates[1].score === topScore;
+    const lower = selected.toLowerCase();
+    const reason = lower === 'index.html' || lower === 'index.htm'
+      ? 'root-index'
+      : /(^|\/)index\.html?$/.test(lower)
+        ? 'nested-index'
+        : candidates.length === 1
+          ? 'single-html'
+          : 'best-candidate';
+    return { selected, candidates: candidates.map(item => item.path), reason, ambiguous };
+  }
+
+  function crc32(input) {
+    const bytes = toUint8Array(input);
+    let crc = 0xffffffff;
+    for (let i = 0; i < bytes.length; i += 1) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function findEndOfCentralDirectory(bytes) {
+    const min = Math.max(0, bytes.length - 0xffff - 22);
+    for (let offset = bytes.length - 22; offset >= min; offset -= 1) {
+      if (bytes[offset] === 0x50 && bytes[offset + 1] === 0x4b && bytes[offset + 2] === 0x05 && bytes[offset + 3] === 0x06) return offset;
+    }
+    return -1;
+  }
+
+  function decodeZipName(bytes, utf8) {
+    if (utf8) return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+    try {
+      const decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+      if (!decoded.includes('\ufffd')) return decoded;
+    } catch { /* fall through */ }
+    let output = '';
+    for (const byte of bytes) output += String.fromCharCode(byte);
+    return output;
+  }
+
+  function supportsDeflateRaw() {
+    if (typeof DecompressionStream !== 'function' || typeof Blob !== 'function' || typeof Blob.prototype.stream !== 'function' || typeof Response !== 'function') return false;
+    try {
+      new DecompressionStream('deflate-raw');
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function inflateRaw(compressed) {
+    if (!supportsDeflateRaw()) {
+      throw new PackagerInputError('zip-deflate-unsupported', 'このブラウザでは圧縮されたZIPを展開できません。', 'DecompressionStream(\'deflate-raw\') is unavailable.');
+    }
+    let stream;
+    try {
+      stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    } catch (error) {
+      throw new PackagerInputError('zip-deflate-unsupported', 'このブラウザではこのZIPの圧縮方式を展開できません。', String(error && error.message || error));
+    }
+    try {
+      return new Uint8Array(await new Response(stream).arrayBuffer());
+    } catch (error) {
+      throw new PackagerInputError('zip-corrupt', 'ZIPの展開中にエラーが発生しました。', String(error && error.message || error));
+    }
+  }
+
+  async function readZip(input, options = {}) {
+    const bytes = toUint8Array(input);
+    const limits = inputLimits(options);
+    const maxEntries = Number.isFinite(options.maxEntries) ? options.maxEntries : limits.maxFiles;
+    const maxTotalUncompressed = Number.isFinite(options.maxTotalUncompressed) ? options.maxTotalUncompressed : limits.maxTotalBytes;
+    const maxSingleUncompressed = Number.isFinite(options.maxSingleUncompressed) ? options.maxSingleUncompressed : limits.maxSingleBytes;
+    const maxCompressionRatio = Number.isFinite(options.maxCompressionRatio) ? options.maxCompressionRatio : limits.maxZipCompressionRatio;
+    throwIfAborted(options.signal);
+    if (bytes.byteLength > limits.maxSingleBytes) {
+      throw new PackagerInputError('zip-input-too-large', '50 MBを超えるZIPは読み込めません。', `${bytes.byteLength} bytes`);
+    }
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const eocd = findEndOfCentralDirectory(bytes);
+    if (eocd < 0) throw new PackagerInputError('zip-invalid', 'ZIPとして読み込めませんでした。', 'End of central directory was not found.');
+    if (view.getUint32(eocd, true) !== ZIP_END) throw new PackagerInputError('zip-invalid', 'ZIPとして読み込めませんでした。');
+
+    const diskNumber = view.getUint16(eocd + 4, true);
+    const centralDisk = view.getUint16(eocd + 6, true);
+    const entriesOnDisk = view.getUint16(eocd + 8, true);
+    const entryCount = view.getUint16(eocd + 10, true);
+    const centralSize = view.getUint32(eocd + 12, true);
+    const centralOffset = view.getUint32(eocd + 16, true);
+    if (diskNumber !== 0 || centralDisk !== 0 || entriesOnDisk !== entryCount) {
+      throw new PackagerInputError('zip-multidisk', '複数ファイルに分割されたZIPには対応していません。');
+    }
+    if (entryCount === 0xffff || centralSize === 0xffffffff || centralOffset === 0xffffffff) {
+      throw new PackagerInputError('zip64-unsupported', '非常に大きなZIP形式にはまだ対応していません。', 'ZIP64 is not supported.');
+    }
+    if (entryCount > Math.max(maxEntries * 2, maxEntries + 512)) throw new PackagerInputError('zip-too-many-entries', 'ZIP内の項目数が多すぎます。', `${entryCount} entries`);
+    if (centralOffset + centralSize > bytes.length) throw new PackagerInputError('zip-corrupt', 'ZIPの管理情報が壊れています。');
+
+    const metadata = [];
+    let cursor = centralOffset;
+    let totalUncompressed = 0;
+    let fileEntryCount = 0;
+    for (let index = 0; index < entryCount; index += 1) {
+      reportProgress(options, 'zip-index', index, Math.max(entryCount, 1));
+      if (cursor + 46 > bytes.length || view.getUint32(cursor, true) !== ZIP_CENTRAL_FILE) {
+        throw new PackagerInputError('zip-corrupt', 'ZIPのファイル一覧が壊れています。', `Central entry ${index + 1}`);
+      }
+      const madeBy = view.getUint16(cursor + 4, true);
+      const flags = view.getUint16(cursor + 8, true);
+      const method = view.getUint16(cursor + 10, true);
+      const expectedCrc = view.getUint32(cursor + 16, true);
+      const compressedSize = view.getUint32(cursor + 20, true);
+      const uncompressedSize = view.getUint32(cursor + 24, true);
+      const nameLength = view.getUint16(cursor + 28, true);
+      const extraLength = view.getUint16(cursor + 30, true);
+      const commentLength = view.getUint16(cursor + 32, true);
+      const diskStart = view.getUint16(cursor + 34, true);
+      const externalAttributes = view.getUint32(cursor + 38, true);
+      const localOffset = view.getUint32(cursor + 42, true);
+      const next = cursor + 46 + nameLength + extraLength + commentLength;
+      if (next > bytes.length) throw new PackagerInputError('zip-corrupt', 'ZIPのファイル名情報が壊れています。');
+      const nameBytes = bytes.subarray(cursor + 46, cursor + 46 + nameLength);
+      const rawName = decodeZipName(nameBytes, Boolean(flags & 0x0800));
+      assertSafeArchivePath(rawName);
+      const path = normalizeVirtualPath(rawName);
+      const isDirectory = rawName.endsWith('/');
+      if (!isDirectory) {
+        fileEntryCount += 1;
+        if (fileEntryCount > maxEntries) throw new PackagerInputError('zip-too-many-files', 'ZIP内のファイル数が2,000件の上限を超えています。', `${fileEntryCount} files`);
+      }
+      const hostOs = madeBy >>> 8;
+      const unixMode = (externalAttributes >>> 16) & 0xffff;
+      const isSymlink = hostOs === 3 && (unixMode & 0xf000) === 0xa000;
+      if (isSymlink) throw new PackagerInputError('zip-symlink', 'ZIP内のシンボリックリンクには対応していません。', rawName);
+      if (flags & 0x0001) throw new PackagerInputError('zip-encrypted', 'パスワード付きZIPには対応していません。', rawName);
+      if (!isDirectory && method !== 0 && method !== 8) {
+        throw new PackagerInputError('zip-method-unsupported', 'このZIPで使われている圧縮方式には対応していません。', `${rawName}: method ${method}`);
+      }
+      if (diskStart !== 0) throw new PackagerInputError('zip-multidisk', '複数ファイルに分割されたZIPには対応していません。');
+      if (compressedSize === 0xffffffff || uncompressedSize === 0xffffffff || localOffset === 0xffffffff) {
+        throw new PackagerInputError('zip64-unsupported', '非常に大きなZIP形式にはまだ対応していません。', rawName);
+      }
+      if (!isDirectory && uncompressedSize > maxSingleUncompressed) {
+        throw new PackagerInputError('zip-entry-too-large', 'ZIP内に大きすぎるファイルがあります。', `${rawName}: ${uncompressedSize} bytes`);
+      }
+      if (!isDirectory && compressedSize > 0 && uncompressedSize > 1024 * 1024 && (uncompressedSize / compressedSize) > maxCompressionRatio) {
+        throw new PackagerInputError('zip-compression-ratio', 'ZIP内に展開後のサイズが急増するファイルがあります。', `${rawName}: ${Math.round(uncompressedSize / compressedSize)}x`);
+      }
+      if (!isDirectory) {
+        totalUncompressed += uncompressedSize;
+        if (totalUncompressed > maxTotalUncompressed) {
+          throw new PackagerInputError('zip-expanded-too-large', 'ZIPを展開したときの合計サイズが大きすぎます。', `${totalUncompressed} bytes`);
+        }
+      }
+      metadata.push({ path, rawName, isDirectory, method, flags, expectedCrc, compressedSize, uncompressedSize, localOffset });
+      cursor = next;
+    }
+
+    reportProgress(options, 'zip-index', entryCount, Math.max(entryCount, 1));
+    const files = [];
+    const seen = new Set();
+    let extractedCount = 0;
+    const fileMetadataCount = metadata.filter(item => !item.isDirectory).length;
+    for (const item of metadata) {
+      throwIfAborted(options.signal);
+      if (item.isDirectory) continue;
+      if (seen.has(item.path)) throw new PackagerInputError('zip-duplicate-path', 'ZIP内に同じ場所を指すファイルが複数あります。', item.path);
+      seen.add(item.path);
+      const local = item.localOffset;
+      if (local + 30 > bytes.length || view.getUint32(local, true) !== ZIP_LOCAL_FILE) {
+        throw new PackagerInputError('zip-corrupt', 'ZIP内のファイル情報が壊れています。', item.rawName);
+      }
+      const localNameLength = view.getUint16(local + 26, true);
+      const localExtraLength = view.getUint16(local + 28, true);
+      const dataStart = local + 30 + localNameLength + localExtraLength;
+      const dataEnd = dataStart + item.compressedSize;
+      if (dataStart < 0 || dataEnd > bytes.length) throw new PackagerInputError('zip-corrupt', 'ZIP内のファイルデータが壊れています。', item.rawName);
+      const compressed = bytes.subarray(dataStart, dataEnd);
+      const data = item.method === 0 ? new Uint8Array(compressed) : await inflateRaw(compressed);
+      if (data.byteLength !== item.uncompressedSize) {
+        throw new PackagerInputError('zip-size-mismatch', 'ZIP内のファイルサイズが一致しません。', item.rawName);
+      }
+      if (crc32(data) !== item.expectedCrc) {
+        throw new PackagerInputError('zip-crc-mismatch', 'ZIP内のファイルを正しく読み取れませんでした。', item.rawName);
+      }
+      files.push({ path: item.path, bytes: data, size: data.byteLength });
+      extractedCount += 1;
+      reportProgress(options, 'zip-extract', extractedCount, Math.max(fileMetadataCount, 1), item.path);
+    }
+    return stripCommonRoot(files);
+  }
+
+
+  function stripUrlSuffix(value) {
+    const text = String(value || '').trim();
+    const hash = text.indexOf('#');
+    const query = text.indexOf('?');
+    let end = text.length;
+    if (hash >= 0) end = Math.min(end, hash);
+    if (query >= 0) end = Math.min(end, query);
+    return text.slice(0, end);
+  }
+
+  function directoryOf(path) {
+    const normalized = String(path || '').replace(/\\/g, '/');
+    const index = normalized.lastIndexOf('/');
+    return index >= 0 ? normalized.slice(0, index + 1) : '';
+  }
+
+  function normalizeResolvedPath(value) {
+    const decoded = safeDecodeURIComponent(String(value || '').replace(/\\/g, '/')).normalize('NFC');
+    const parts = [];
+    for (const segment of decoded.split('/')) {
+      if (!segment || segment === '.') continue;
+      if (segment === '..') {
+        if (!parts.length) return { path: '', outsideRoot: true };
+        parts.pop();
+      } else {
+        parts.push(segment);
+      }
+    }
+    return { path: parts.join('/'), outsideRoot: false };
+  }
+
+  function classifyReference(rawValue) {
+    const raw = String(rawValue || '').trim();
+    if (!raw || raw.startsWith('#')) return { kind: 'ignored', raw };
+    if (/^(?:data|blob|javascript|mailto|tel|about):/i.test(raw)) return { kind: 'ignored', raw };
+    if (/^\/\//.test(raw)) return { kind: 'external', raw, url: raw };
+    const scheme = raw.match(/^([a-z][a-z0-9+.-]*):/i);
+    if (scheme) {
+      if (/^https?$/i.test(scheme[1])) return { kind: 'external', raw, url: raw };
+      return { kind: 'unsupported-scheme', raw, scheme: scheme[1].toLowerCase() };
+    }
+    return { kind: 'local', raw };
+  }
+
+  function resolveVirtualReference(fromPath, rawValue, baseHref = '') {
+    const classified = classifyReference(rawValue);
+    if (classified.kind !== 'local') return classified;
+    const clean = stripUrlSuffix(classified.raw);
+    if (!clean) return { kind: 'ignored', raw: classified.raw };
+
+    let baseDirectory = directoryOf(fromPath);
+    if (baseHref) {
+      const baseClass = classifyReference(baseHref);
+      if (baseClass.kind === 'external') return { kind: 'external-base', raw: classified.raw, baseHref };
+      if (baseClass.kind === 'unsupported-scheme') return { kind: 'unsupported-base', raw: classified.raw, baseHref, scheme: baseClass.scheme };
+      if (baseClass.kind === 'local') {
+        const baseClean = stripUrlSuffix(baseHref);
+        const baseJoined = baseClean.startsWith('/') ? baseClean.slice(1) : `${directoryOf(fromPath)}${baseClean}`;
+        const normalizedBase = normalizeResolvedPath(baseJoined);
+        if (normalizedBase.outsideRoot) return { kind: 'outside-root', raw: classified.raw, baseHref };
+        baseDirectory = baseClean.endsWith('/') ? `${normalizedBase.path}${normalizedBase.path ? '/' : ''}` : directoryOf(normalizedBase.path);
+      }
+    }
+
+    const joined = clean.startsWith('/') ? clean.slice(1) : `${baseDirectory}${clean}`;
+    const normalized = normalizeResolvedPath(joined);
+    if (normalized.outsideRoot || !normalized.path) return { kind: 'outside-root', raw: classified.raw };
+    return { kind: 'local', raw: classified.raw, path: normalized.path };
+  }
+
+  function parseHtmlAttributes(tagSource) {
+    const attrs = Object.create(null);
+    const body = String(tagSource || '').replace(/^<\/?\s*[\w:-]+/i, '').replace(/\/?>\s*$/, '');
+    const re = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+    let match;
+    while ((match = re.exec(body))) {
+      const name = match[1].toLowerCase();
+      attrs[name] = match[2] ?? match[3] ?? match[4] ?? '';
+    }
+    return attrs;
+  }
+
+  function parseSrcset(value) {
+    const source = String(value || '');
+    const candidates = [];
+    let index = 0;
+
+    while (index < source.length) {
+      while (index < source.length && /[\s,]/.test(source[index])) index += 1;
+      if (index >= source.length) break;
+
+      const urlStart = index;
+      const isData = source.slice(index, index + 5).toLowerCase() === 'data:';
+      if (isData) {
+        while (index < source.length && !/\s/.test(source[index])) index += 1;
+      } else {
+        while (index < source.length && !/[\s,]/.test(source[index])) index += 1;
+      }
+      let url = source.slice(urlStart, index);
+      if (!url) {
+        index += 1;
+        continue;
+      }
+
+      // srcset allows a candidate with no descriptor to end directly in a comma.
+      // For data: URLs the separator comma is collected with the URL token, while
+      // ordinary URLs stop before the comma. Handle both forms without splitting the
+      // comma that belongs inside the data: URL itself.
+      if (url.endsWith(',')) {
+        url = url.replace(/,+$/, '');
+        if (url) candidates.push({ url, descriptor: '' });
+        continue;
+      }
+      if (index < source.length && source[index] === ',') {
+        index += 1;
+        candidates.push({ url, descriptor: '' });
+        continue;
+      }
+
+      const descriptorStart = index;
+      while (index < source.length && source[index] !== ',') index += 1;
+      const descriptor = source.slice(descriptorStart, index).trim();
+      if (index < source.length && source[index] === ',') index += 1;
+
+      candidates.push({ url, descriptor });
+    }
+    return candidates;
+  }
+
+  function splitSrcset(value) {
+    return parseSrcset(value).map(candidate => candidate.url);
+  }
+
+  function fragmentSuffix(value) {
+    const raw = String(value || '').trim();
+    const index = raw.indexOf('#');
+    return index >= 0 ? raw.slice(index) : '';
+  }
+
+  function queryFragmentSuffix(value) {
+    const raw = String(value || '').trim();
+    const query = raw.indexOf('?');
+    const fragment = raw.indexOf('#');
+    const indexes = [query, fragment].filter(index => index >= 0);
+    return indexes.length ? raw.slice(Math.min(...indexes)) : '';
+  }
+
+  function lineNumberFor(text, index) {
+    if (!Number.isFinite(index) || index < 0) return 0;
+    let line = 1;
+    for (let i = 0; i < index; i += 1) if (text.charCodeAt(i) === 10) line += 1;
+    return line;
+  }
+
+  async function readRecordText(record) {
+    if (!record) return '';
+    if (typeof record.text === 'string') return record.text;
+    if (record.bytes != null) return new TextDecoder('utf-8', { fatal: false }).decode(toUint8Array(record.bytes));
+    if (record.file && typeof record.file.text === 'function') return record.file.text();
+    if (typeof record.text === 'function') return record.text();
+    return '';
+  }
+
+  async function analyzeProject(records, entryHtml, options = {}) {
+    const files = Array.isArray(records) ? records : [];
+    throwIfAborted(options.signal);
+    if (options.enforceInputLimits !== false) assertInputLimits(files, options);
+    const exact = new Map();
+    const lower = new Map();
+    for (const source of files) {
+      const path = normalizeVirtualPath(source.path);
+      const record = { ...source, path, size: Number(source.size ?? source.bytes?.byteLength ?? 0) || 0 };
+      exact.set(path, record);
+      const key = path.toLocaleLowerCase('en-US');
+      if (!lower.has(key)) lower.set(key, []);
+      lower.get(key).push(path);
+    }
+
+    const findings = [];
+    const findingKeys = new Set();
+    const dependencies = [];
+    const dependencyKeys = new Set();
+    const scanned = new Set();
+    const queued = [];
+    const largeFileWarningBytes = Number.isFinite(options.largeFileWarningBytes) ? options.largeFileWarningBytes : DEFAULT_LIMITS.largeFileWarningBytes;
+
+    function addFinding(severity, code, data = {}) {
+      const key = [severity, code, data.path || '', data.target || '', data.line || '', data.detail || ''].join('|');
+      if (findingKeys.has(key)) return;
+      findingKeys.add(key);
+      findings.push({ severity, code, ...data });
+    }
+
+    function addDependency(from, requested, actual, kind) {
+      const key = `${from}|${requested}|${actual || ''}|${kind}`;
+      if (dependencyKeys.has(key)) return;
+      dependencyKeys.add(key);
+      dependencies.push({ from, requested, actual: actual || '', kind });
+    }
+
+    function locateLocal(requestedPath, fromPath, rawTarget, kind) {
+      if (exact.has(requestedPath)) {
+        addDependency(fromPath, rawTarget, requestedPath, kind);
+        return requestedPath;
+      }
+      const alternatives = lower.get(requestedPath.toLocaleLowerCase('en-US')) || [];
+      if (alternatives.length === 1) {
+        addFinding('warning', 'case-mismatch', { path: fromPath, target: rawTarget, resolved: alternatives[0] });
+        addDependency(fromPath, rawTarget, alternatives[0], kind);
+        return alternatives[0];
+      }
+      if (alternatives.length > 1) {
+        addFinding('block', 'case-ambiguous', { path: fromPath, target: rawTarget, detail: alternatives.join(', ') });
+        return '';
+      }
+      addFinding('block', 'missing-local-file', { path: fromPath, target: rawTarget, resolved: requestedPath });
+      return '';
+    }
+
+    function handleReference(fromPath, rawTarget, kind, baseHref = '', optionsRef = {}) {
+      const resolved = resolveVirtualReference(fromPath, rawTarget, baseHref);
+      if (resolved.kind === 'ignored') return '';
+      if (resolved.kind === 'external') {
+        addFinding(optionsRef.navigation ? 'warning' : 'block', optionsRef.navigation ? 'external-link' : 'external-resource', { path: fromPath, target: rawTarget, kind });
+        return '';
+      }
+      if (resolved.kind === 'external-base') {
+        addFinding('block', 'external-base-url', { path: fromPath, target: baseHref });
+        return '';
+      }
+      if (resolved.kind === 'unsupported-base' || resolved.kind === 'unsupported-scheme') {
+        addFinding('warning', 'unsupported-url-scheme', { path: fromPath, target: rawTarget, detail: resolved.scheme || '' });
+        return '';
+      }
+      if (resolved.kind === 'outside-root') {
+        addFinding('block', 'reference-outside-root', { path: fromPath, target: rawTarget });
+        return '';
+      }
+      const actual = locateLocal(resolved.path, fromPath, rawTarget, kind);
+      if (actual && optionsRef.scan) queued.push({ path: actual, kind: optionsRef.scan });
+      return actual;
+    }
+
+    function scanJavaScript(text, path, inlineLine = 0) {
+      const tests = [
+        ['block', 'dynamic-import', /\bimport\s*\(/g],
+        ['block', 'import-meta-url', /\bimport\.meta(?:\.url)?\b/g],
+        ['block', 'es-module-syntax', /(^|[;\n\r]\s*)import\s+(?!\()|(^|[;\n\r]\s*)export\s+(?:default\s+|const\s+|let\s+|var\s+|function\s+|class\s+|\{)/gm],
+        ['block', 'web-worker', /\b(?:new\s+)?(?:Worker|SharedWorker)\s*\(/g],
+        ['block', 'service-worker', /\bnavigator\s*\.\s*serviceWorker\s*\.\s*register\s*\(/g],
+        ['block', 'wasm-loader', /\bWebAssembly\s*\.|["'`]([^"'`]*\.wasm(?:[?#][^"'`]*)?)["'`]/g],
+        ['block', 'runtime-fetch', /\bfetch\s*\(/g],
+        ['block', 'runtime-xhr', /\bXMLHttpRequest\b/g],
+        ['block', 'runtime-network-api', /\b(?:WebSocket|EventSource)\s*\(|\bnavigator\s*\.\s*sendBeacon\s*\(/g],
+        ['warning', 'dynamic-resource-loading', /document\s*\.\s*createElement\s*\(\s*["'](?:script|link|img|iframe)["']\s*\)|\.setAttribute\s*\(\s*["'](?:src|href)["']|\.(?:src|href)\s*=/g]
+      ];
+      for (const [severity, code, re] of tests) {
+        re.lastIndex = 0;
+        const match = re.exec(text);
+        if (match) addFinding(severity, code, { path, line: inlineLine || lineNumberFor(text, match.index) });
+      }
+    }
+
+    function scanCss(text, path) {
+      const importRe = /@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^\s);]+))\s*\)?[^;]*;/gi;
+      let match;
+      while ((match = importRe.exec(text))) {
+        const target = match[1] || match[2] || match[3] || '';
+        handleReference(path, target, 'css-import', '', { scan: 'css' });
+      }
+      const urlRe = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s][^)]*))\s*\)/gi;
+      while ((match = urlRe.exec(text))) {
+        const target = (match[1] ?? match[2] ?? match[3] ?? '').trim();
+        if (!target || target.startsWith('#')) continue;
+        handleReference(path, target, 'css-url');
+      }
+    }
+
+    function scanHtml(text, path) {
+      let baseHref = '';
+      const baseTag = text.match(/<base\b[^>]*>/i);
+      if (baseTag) {
+        const attrs = parseHtmlAttributes(baseTag[0]);
+        baseHref = attrs.href || '';
+        const classified = classifyReference(baseHref);
+        if (classified.kind === 'external') addFinding('block', 'external-base-url', { path, target: baseHref });
+        else if (classified.kind === 'unsupported-scheme') addFinding('warning', 'unsupported-url-scheme', { path, target: baseHref, detail: classified.scheme });
+      }
+
+      const metaRe = /<meta\b[^>]*>/gi;
+      let tagMatch;
+      while ((tagMatch = metaRe.exec(text))) {
+        const attrs = parseHtmlAttributes(tagMatch[0]);
+        if ((attrs['http-equiv'] || '').toLowerCase() === 'content-security-policy') {
+          addFinding('warning', 'csp-present', { path, line: lineNumberFor(text, tagMatch.index), detail: attrs.content || '' });
+        }
+      }
+
+      const linkRe = /<link\b[^>]*>/gi;
+      while ((tagMatch = linkRe.exec(text))) {
+        const attrs = parseHtmlAttributes(tagMatch[0]);
+        const href = attrs.href;
+        if (!href) continue;
+        const rel = (attrs.rel || '').toLowerCase().split(/\s+/).filter(Boolean);
+        if (rel.includes('manifest')) {
+          addFinding('block', 'pwa-manifest', { path, target: href, line: lineNumberFor(text, tagMatch.index) });
+          handleReference(path, href, 'manifest', baseHref);
+        } else if (rel.includes('stylesheet')) {
+          handleReference(path, href, 'stylesheet', baseHref, { scan: 'css' });
+        } else if (rel.some(value => ['icon', 'shortcut', 'apple-touch-icon', 'mask-icon'].includes(value))) {
+          handleReference(path, href, 'icon', baseHref);
+        } else if (rel.some(value => ['preload', 'modulepreload'].includes(value))) {
+          if (rel.includes('modulepreload')) addFinding('block', 'es-module', { path, target: href, line: lineNumberFor(text, tagMatch.index) });
+          handleReference(path, href, rel.includes('modulepreload') ? 'modulepreload' : 'preload', baseHref);
+        }
+      }
+
+      const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+      while ((tagMatch = scriptRe.exec(text))) {
+        const attrs = parseHtmlAttributes(`<script${tagMatch[1]}>`);
+        const moduleScript = (attrs.type || '').trim().toLowerCase() === 'module';
+        if (moduleScript) addFinding('block', 'es-module', { path, target: attrs.src || '', line: lineNumberFor(text, tagMatch.index) });
+        if (attrs.src) {
+          const actual = handleReference(path, attrs.src, moduleScript ? 'module-script' : 'script', baseHref, { scan: 'javascript' });
+          if (moduleScript && actual) queued.push({ path: actual, kind: 'javascript' });
+        } else if (tagMatch[2]) {
+          scanJavaScript(tagMatch[2], path, lineNumberFor(text, tagMatch.index));
+        }
+      }
+
+      const resourceTags = [
+        ['img', 'src', 'image'], ['source', 'src', 'media'], ['video', 'src', 'video'], ['video', 'poster', 'image'],
+        ['audio', 'src', 'audio'], ['track', 'src', 'track'], ['input', 'src', 'image']
+      ];
+      for (const [tagName, attrName, kind] of resourceTags) {
+        const re = new RegExp(`<${tagName}\\b[^>]*>`, 'gi');
+        while ((tagMatch = re.exec(text))) {
+          const attrs = parseHtmlAttributes(tagMatch[0]);
+          if (attrs[attrName]) handleReference(path, attrs[attrName], kind, baseHref);
+          if (attrs.srcset) for (const target of splitSrcset(attrs.srcset)) handleReference(path, target, 'srcset', baseHref);
+        }
+      }
+
+      const iframeRe = /<iframe\b[^>]*>/gi;
+      while ((tagMatch = iframeRe.exec(text))) {
+        const attrs = parseHtmlAttributes(tagMatch[0]);
+        if (!attrs.src) continue;
+        const ref = resolveVirtualReference(path, attrs.src, baseHref);
+        if (ref.kind === 'local') {
+          addFinding('block', 'local-iframe', { path, target: attrs.src, line: lineNumberFor(text, tagMatch.index) });
+          locateLocal(ref.path, path, attrs.src, 'iframe');
+        } else if (ref.kind === 'external') {
+          addFinding('block', 'external-resource', { path, target: attrs.src, kind: 'iframe' });
+        }
+      }
+
+      const objectRe = /<(?:object|embed)\b[^>]*>/gi;
+      while ((tagMatch = objectRe.exec(text))) {
+        const attrs = parseHtmlAttributes(tagMatch[0]);
+        const target = attrs.data || attrs.src || '';
+        if (target) addFinding('warning', 'unsupported-embedded-object', { path, target, line: lineNumberFor(text, tagMatch.index) });
+      }
+
+      const anchorRe = /<a\b[^>]*>/gi;
+      while ((tagMatch = anchorRe.exec(text))) {
+        const attrs = parseHtmlAttributes(tagMatch[0]);
+        const href = attrs.href || '';
+        if (!href) continue;
+        const classified = classifyReference(href);
+        if (classified.kind === 'external') {
+          addFinding('warning', 'external-link', { path, target: href, line: lineNumberFor(text, tagMatch.index) });
+          continue;
+        }
+        if (classified.kind !== 'local') continue;
+        const ref = resolveVirtualReference(path, href, baseHref);
+        if (ref.kind !== 'local') continue;
+        const linkKind = HTML_EXTENSIONS.has(extensionOf(ref.path)) ? 'html-navigation' : 'local-link';
+        const actual = locateLocal(ref.path, path, href, linkKind);
+        if (!actual || actual === path) continue;
+        if (HTML_EXTENSIONS.has(extensionOf(actual))) {
+          addFinding('block', 'multi-page-navigation', { path, target: href, resolved: actual, line: lineNumberFor(text, tagMatch.index) });
+        } else {
+          addFinding('block', 'local-file-link', { path, target: href, resolved: actual, line: lineNumberFor(text, tagMatch.index) });
+        }
+      }
+
+      const styleRe = /<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi;
+      while ((tagMatch = styleRe.exec(text))) scanCss(tagMatch[1] || '', path);
+      const styleAttrRe = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
+      while ((tagMatch = styleAttrRe.exec(text))) scanCss(tagMatch[1] || tagMatch[2] || '', path);
+    }
+
+    let sizeIndex = 0;
+    for (const record of exact.values()) {
+      throwIfAborted(options.signal);
+      sizeIndex += 1;
+      reportProgress(options, 'analyze-index', sizeIndex, Math.max(exact.size, 1), record.path);
+      if (record.size > largeFileWarningBytes) addFinding('warning', 'large-file', { path: record.path, size: record.size });
+    }
+
+    const htmlPaths = [...exact.keys()].filter(path => HTML_EXTENSIONS.has(extensionOf(path))).sort((a, b) => a.localeCompare(b, 'en'));
+    const detection = detectStartHtml(htmlPaths);
+    let selectedEntry = entryHtml ? normalizeVirtualPath(entryHtml) : detection.selected;
+    if (!selectedEntry || !exact.has(selectedEntry) || !HTML_EXTENSIONS.has(extensionOf(selectedEntry))) {
+      addFinding('block', 'entry-html-missing', { path: selectedEntry || '' });
+      selectedEntry = '';
+    }
+    if (detection.ambiguous) addFinding('warning', 'entry-html-ambiguous', { path: selectedEntry });
+    if (htmlPaths.length > 1) addFinding('warning', 'additional-html-files', { path: selectedEntry, count: htmlPaths.length - 1 });
+
+    if (selectedEntry) queued.push({ path: selectedEntry, kind: 'html' });
+    let scannedCount = 0;
+    while (queued.length) {
+      throwIfAborted(options.signal);
+      const item = queued.shift();
+      const scanKey = `${item.kind}:${item.path}`;
+      if (scanned.has(scanKey)) continue;
+      scanned.add(scanKey);
+      const record = exact.get(item.path);
+      if (!record) continue;
+      const text = await readRecordText(record);
+      if (item.kind === 'html') scanHtml(text, item.path);
+      else if (item.kind === 'css') scanCss(text, item.path);
+      else if (item.kind === 'javascript') scanJavaScript(text, item.path);
+      scannedCount += 1;
+      reportProgress(options, 'analyze-scan', scannedCount, Math.max(scannedCount + queued.length, 1), item.path);
+      if (scannedCount % 25 === 0) await Promise.resolve();
+    }
+
+    const blocks = findings.filter(item => item.severity === 'block');
+    const warnings = findings.filter(item => item.severity === 'warning');
+    const status = blocks.length ? 'blocked' : warnings.length ? 'review' : 'convertible';
+    reportProgress(options, 'analyze-done', 1, 1);
+    return {
+      status,
+      entryHtml: selectedEntry,
+      findings,
+      dependencies,
+      counts: { block: blocks.length, warning: warnings.length, dependencies: dependencies.length, scanned: scanned.size },
+      analyzedAt: new Date().toISOString()
+    };
+  }
+
+
+  function mimeTypeForPath(path) {
+    const ext = extensionOf(path);
+    const byExtension = {
+      html: 'text/html;charset=utf-8', htm: 'text/html;charset=utf-8', css: 'text/css;charset=utf-8', js: 'text/javascript;charset=utf-8',
+      png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', svg: 'image/svg+xml', ico: 'image/x-icon',
+      woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf', otf: 'font/otf',
+      mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4', aac: 'audio/aac', flac: 'audio/flac',
+      mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', m4v: 'video/x-m4v', ogv: 'video/ogg',
+      txt: 'text/plain;charset=utf-8', json: 'application/json;charset=utf-8'
+    };
+    return byExtension[ext] || 'application/octet-stream';
+  }
+
+  function bytesToBase64(input) {
+    const bytes = toUint8Array(input);
+    if (typeof Buffer !== 'undefined' && typeof Buffer.from === 'function') return Buffer.from(bytes).toString('base64');
+    let binary = '';
+    const chunk = 0x8000;
+    for (let offset = 0; offset < bytes.length; offset += chunk) {
+      const part = bytes.subarray(offset, Math.min(bytes.length, offset + chunk));
+      binary += String.fromCharCode(...part);
+    }
+    return btoa(binary);
+  }
+
+  async function readRecordBytes(record) {
+    if (!record) return new Uint8Array();
+    if (record.bytes != null) return new Uint8Array(toUint8Array(record.bytes));
+    if (record.file && typeof record.file.arrayBuffer === 'function') return new Uint8Array(await record.file.arrayBuffer());
+    if (typeof record.text === 'string') return new TextEncoder().encode(record.text);
+    if (typeof record.text === 'function') return new TextEncoder().encode(await record.text());
+    return new Uint8Array();
+  }
+
+  async function dataUriForRecord(record, path) {
+    const bytes = await readRecordBytes(record);
+    return `data:${mimeTypeForPath(path)};base64,${bytesToBase64(bytes)}`;
+  }
+
+  async function replaceAsync(text, regex, replacer) {
+    const source = String(text || '');
+    const matches = [];
+    regex.lastIndex = 0;
+    let match;
+    while ((match = regex.exec(source))) {
+      matches.push({ match, index: match.index });
+      if (match[0] === '') regex.lastIndex += 1;
+    }
+    if (!matches.length) return source;
+    const replacements = await Promise.all(matches.map(item => replacer(item.match, item.index)));
+    let output = '';
+    let cursor = 0;
+    for (let index = 0; index < matches.length; index += 1) {
+      const item = matches[index];
+      output += source.slice(cursor, item.index) + replacements[index];
+      cursor = item.index + item.match[0].length;
+    }
+    return output + source.slice(cursor);
+  }
+
+  function replaceTagAttribute(tagSource, attributeName, value) {
+    const tag = String(tagSource || '');
+    const escaped = String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    const re = new RegExp(`(\\s${attributeName}\\s*=\\s*)(?:"[^"]*"|'[^']*'|[^\\s>]+)`, 'i');
+    if (re.test(tag)) return tag.replace(re, `$1"${escaped}"`);
+    const closeIndex = tag.lastIndexOf('>');
+    if (closeIndex < 0) return tag;
+    const insertAt = tag[closeIndex - 1] === '/' ? closeIndex - 1 : closeIndex;
+    return `${tag.slice(0, insertAt)} ${attributeName}="${escaped}"${tag.slice(insertAt)}`;
+  }
+
+  function outputFilenameForEntry(entryHtml) {
+    const base = (String(entryHtml || 'index.html').split('/').pop() || 'index.html').replace(/\.html?$/i, '');
+    const safe = base.replace(/[<>:"/\\|?*\x00-\x1f]/g, '-').replace(/[. ]+$/g, '').trim() || 'index';
+    return `${safe}-offline.html`;
+  }
+
+  function decodeTextDataUri(value) {
+    const uri = String(value || '');
+    if (!/^data:/i.test(uri)) return null;
+    const comma = uri.indexOf(',');
+    if (comma < 0) return null;
+    const meta = uri.slice(5, comma);
+    const body = uri.slice(comma + 1);
+    try {
+      if (/;base64(?:;|$)/i.test(meta)) {
+        if (typeof Buffer !== 'undefined' && typeof Buffer.from === 'function') return Buffer.from(body, 'base64').toString('utf8');
+        const binary = atob(body);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+        return new TextDecoder().decode(bytes);
+      }
+      return decodeURIComponent(body);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function verifyPackagedHtml(html, filename = 'index-offline.html', options = {}) {
+    const output = String(html || '');
+    const outputName = normalizeVirtualPath(filename || 'index-offline.html');
+    const bytes = new TextEncoder().encode(output).byteLength;
+    const reanalysis = await analyzeProject([{ path: outputName, text: output, size: bytes }], outputName, { largeFileWarningBytes: Number.MAX_SAFE_INTEGER, enforceInputLimits: false });
+    const findings = [];
+    const findingKeys = new Set();
+
+    function addFinding(severity, code, data = {}) {
+      const key = [severity, code, data.path || '', data.target || '', data.detail || ''].join('|');
+      if (findingKeys.has(key)) return;
+      findingKeys.add(key);
+      findings.push({ severity, code, ...data });
+    }
+
+    for (const item of reanalysis.findings) addFinding(item.severity, item.code, item);
+
+    const embeddedFiles = new Set((options.embeddedFiles || []).map(value => normalizeVirtualPath(value)));
+    const sourceAnalysis = options.sourceAnalysis || options.analysis || null;
+    if (sourceAnalysis && Array.isArray(sourceAnalysis.dependencies)) {
+      for (const dependency of sourceAnalysis.dependencies) {
+        const actual = dependency && dependency.actual ? normalizeVirtualPath(dependency.actual) : '';
+        if (!actual || actual === normalizeVirtualPath(sourceAnalysis.entryHtml || '')) continue;
+        if (!embeddedFiles.has(actual)) {
+          addFinding('block', 'generated-dependency-not-embedded', {
+            path: dependency.from || sourceAnalysis.entryHtml || '',
+            target: dependency.requested || actual,
+            resolved: actual,
+            detail: dependency.kind || ''
+          });
+        }
+      }
+    }
+
+    let embeddedStylesheets = 0;
+    const linkRe = /<link\b[^>]*>/gi;
+    let match;
+    while ((match = linkRe.exec(output))) {
+      const attrs = parseHtmlAttributes(match[0]);
+      const rel = (attrs.rel || '').toLowerCase().split(/\s+/).filter(Boolean);
+      const href = attrs.href || '';
+      if (!rel.includes('stylesheet') || !/^data:text\/css(?:[;,]|$)/i.test(href)) continue;
+      embeddedStylesheets += 1;
+      const css = decodeTextDataUri(href);
+      if (css == null) {
+        addFinding('block', 'generated-css-data-invalid', { path: outputName, target: 'embedded stylesheet' });
+        continue;
+      }
+      const references = [];
+      const importRe = /@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^\s);]+))\s*\)?[^;]*;/gi;
+      let cssMatch;
+      while ((cssMatch = importRe.exec(css))) references.push({ target: cssMatch[1] || cssMatch[2] || cssMatch[3] || '', kind: 'css-import' });
+      const urlRe = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s][^)]*))\s*\)/gi;
+      while ((cssMatch = urlRe.exec(css))) references.push({ target: (cssMatch[1] ?? cssMatch[2] ?? cssMatch[3] ?? '').trim(), kind: 'css-url' });
+      for (const reference of references) {
+        const target = reference.target;
+        if (!target || target.startsWith('#')) continue;
+        const classified = classifyReference(target);
+        if (classified.kind === 'ignored') continue;
+        if (classified.kind === 'local') addFinding('block', 'generated-css-unresolved-reference', { path: outputName, target, detail: reference.kind });
+        else if (classified.kind === 'external') addFinding('block', 'generated-css-external-reference', { path: outputName, target, detail: reference.kind });
+        else addFinding('warning', 'generated-css-unsupported-reference', { path: outputName, target, detail: classified.scheme || reference.kind });
+      }
+    }
+
+    const anchorRe = /<a\b[^>]*>/gi;
+    while ((match = anchorRe.exec(output))) {
+      const attrs = parseHtmlAttributes(match[0]);
+      const href = attrs.href || '';
+      if (!href) continue;
+      const resolved = resolveVirtualReference(outputName, href);
+      if (resolved.kind === 'local' && resolved.path !== outputName) {
+        addFinding('block', 'generated-local-link-reference', { path: outputName, target: href, resolved: resolved.path });
+      }
+    }
+
+    const blocks = findings.filter(item => item.severity === 'block');
+    const warnings = findings.filter(item => item.severity === 'warning');
+    return {
+      status: blocks.length ? 'blocked' : warnings.length ? 'review' : 'verified',
+      findings,
+      reanalysis,
+      counts: {
+        block: blocks.length,
+        warning: warnings.length,
+        reanalyzedReferences: reanalysis.counts.dependencies,
+        sourceDependencies: sourceAnalysis?.dependencies?.length || 0,
+        embeddedFiles: embeddedFiles.size,
+        embeddedStylesheets
+      },
+      verifiedAt: new Date().toISOString()
+    };
+  }
+
+  async function packageProject(records, entryHtml, options = {}) {
+    const files = Array.isArray(records) ? records : [];
+    throwIfAborted(options.signal);
+    assertInputLimits(files, options);
+    reportProgress(options, 'package-prepare', 0, 1);
+    const analysis = options.analysis || await analyzeProject(files, entryHtml, options);
+    if (analysis.status !== 'convertible') {
+      throw new PackagerInputError('package-not-convertible', '確認事項または変換できない理由が残っているため、HTMLを作成できません。', analysis.status);
+    }
+
+    const exact = new Map();
+    for (const source of files) {
+      const path = normalizeVirtualPath(source.path);
+      exact.set(path, { ...source, path, size: Number(source.size ?? source.bytes?.byteLength ?? 0) || 0 });
+    }
+    const selectedEntry = normalizeVirtualPath(entryHtml || analysis.entryHtml);
+    const entryRecord = exact.get(selectedEntry);
+    if (!entryRecord) throw new PackagerInputError('entry-html-missing', '開始するHTMLが見つかりません。', selectedEntry);
+
+    const embedded = new Set();
+    const cssCache = new Map();
+    const uriCache = new Map();
+    const progressTargets = new Set((analysis.dependencies || []).map(item => item.actual).filter(Boolean).filter(path => path !== selectedEntry));
+    const progressTotal = Math.max(progressTargets.size, 1);
+    function markEmbedded(path) {
+      if (!embedded.has(path)) {
+        embedded.add(path);
+        reportProgress(options, 'package-embed', embedded.size, progressTotal, path);
+      }
+    }
+
+    function requireLocal(fromPath, rawTarget, baseHref = '') {
+      const resolved = resolveVirtualReference(fromPath, rawTarget, baseHref);
+      if (resolved.kind !== 'local' || !exact.has(resolved.path)) {
+        throw new PackagerInputError('package-reference-unresolved', '単一HTMLへ取り込めないファイル参照があります。', `${fromPath} -> ${rawTarget}`);
+      }
+      return resolved.path;
+    }
+
+    async function assetDataUri(path) {
+      throwIfAborted(options.signal);
+      if (uriCache.has(path)) return uriCache.get(path);
+      const record = exact.get(path);
+      if (!record) throw new PackagerInputError('package-file-missing', '必要なファイルが見つかりません。', path);
+      const uri = await dataUriForRecord(record, path);
+      throwIfAborted(options.signal);
+      uriCache.set(path, uri);
+      markEmbedded(path);
+      return uri;
+    }
+
+    async function rewriteCss(text, cssPath, stack = new Set()) {
+      let output = String(text || '');
+      const importRe = /@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^\s);]+))\s*\)?\s*([^;]*);/gi;
+      output = await replaceAsync(output, importRe, async match => {
+        const target = match[1] || match[2] || match[3] || '';
+        const media = (match[4] || '').trim();
+        const resolved = resolveVirtualReference(cssPath, target);
+        if (resolved.kind === 'ignored') return match[0];
+        const importedPath = requireLocal(cssPath, target);
+        if (stack.has(importedPath)) throw new PackagerInputError('css-import-cycle', 'CSSの読み込みが循環しています。', importedPath);
+        const imported = await inlineCss(importedPath, new Set([...stack, cssPath]));
+        markEmbedded(importedPath);
+        return media ? `@media ${media}{\n${imported}\n}` : imported;
+      });
+      const urlRe = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s][^)]*))\s*\)/gi;
+      output = await replaceAsync(output, urlRe, async match => {
+        const target = (match[1] ?? match[2] ?? match[3] ?? '').trim();
+        if (!target || target.startsWith('#')) return match[0];
+        const classified = classifyReference(target);
+        if (classified.kind === 'ignored') return match[0];
+        const assetPath = requireLocal(cssPath, target);
+        return `url("${await assetDataUri(assetPath)}${fragmentSuffix(target)}")`;
+      });
+      return output;
+    }
+
+    async function inlineCss(path, stack = new Set()) {
+      if (cssCache.has(path)) return cssCache.get(path);
+      if (stack.has(path)) throw new PackagerInputError('css-import-cycle', 'CSSの読み込みが循環しています。', path);
+      const record = exact.get(path);
+      const text = await readRecordText(record);
+      const rewritten = await rewriteCss(text, path, new Set([...stack, path]));
+      cssCache.set(path, rewritten);
+      return rewritten;
+    }
+
+    let html = await readRecordText(entryRecord);
+    throwIfAborted(options.signal);
+    reportProgress(options, 'package-prepare', 1, 1, selectedEntry);
+    let baseHref = '';
+    const baseTag = html.match(/<base\b[^>]*>/i);
+    if (baseTag) baseHref = parseHtmlAttributes(baseTag[0]).href || '';
+
+    const linkRe = /<link\b[^>]*>/gi;
+    html = await replaceAsync(html, linkRe, async match => {
+      const tag = match[0];
+      const attrs = parseHtmlAttributes(tag);
+      const href = attrs.href || '';
+      if (!href) return tag;
+      const rel = (attrs.rel || '').toLowerCase().split(/\s+/).filter(Boolean);
+      if (rel.includes('stylesheet')) {
+        const cssPath = requireLocal(selectedEntry, href, baseHref);
+        const css = await inlineCss(cssPath);
+        const uri = `data:text/css;charset=utf-8;base64,${bytesToBase64(new TextEncoder().encode(css))}`;
+        markEmbedded(cssPath);
+        return replaceTagAttribute(tag, 'href', uri);
+      }
+      if (rel.some(value => ['icon', 'shortcut', 'apple-touch-icon', 'mask-icon', 'preload'].includes(value))) {
+        const resolved = resolveVirtualReference(selectedEntry, href, baseHref);
+        if (resolved.kind === 'local' && exact.has(resolved.path)) return replaceTagAttribute(tag, 'href', `${await assetDataUri(resolved.path)}${fragmentSuffix(href)}`);
+      }
+      return tag;
+    });
+
+    const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\s*\/\s*script\s*>/gi;
+    html = await replaceAsync(html, scriptRe, async match => {
+      const tag = match[0];
+      const opening = tag.slice(0, tag.indexOf('>') + 1);
+      const attrs = parseHtmlAttributes(opening);
+      if (!attrs.src) return tag;
+      const scriptPath = requireLocal(selectedEntry, attrs.src, baseHref);
+      const uri = await assetDataUri(scriptPath);
+      const rewrittenOpening = replaceTagAttribute(opening, 'src', uri);
+      return `${rewrittenOpening}${match[2] || ''}<` + `/script>`;
+    });
+
+    const resourceSpecs = [
+      ['img', ['src', 'srcset']], ['source', ['src', 'srcset']], ['video', ['src', 'poster']],
+      ['audio', ['src']], ['track', ['src']], ['input', ['src']]
+    ];
+    for (const [tagName, attributes] of resourceSpecs) {
+      const tagRe = new RegExp(`<${tagName}\\b[^>]*>`, 'gi');
+      html = await replaceAsync(html, tagRe, async match => {
+        let tag = match[0];
+        let attrs = parseHtmlAttributes(tag);
+        for (const attr of attributes) {
+          const value = attrs[attr];
+          if (!value) continue;
+          if (attr === 'srcset') {
+            const candidates = [];
+            for (const candidate of parseSrcset(value)) {
+              const ref = resolveVirtualReference(selectedEntry, candidate.url, baseHref);
+              const descriptor = candidate.descriptor ? ` ${candidate.descriptor}` : '';
+              if (ref.kind === 'local') {
+                const uri = await assetDataUri(requireLocal(selectedEntry, candidate.url, baseHref));
+                candidates.push(`${uri}${fragmentSuffix(candidate.url)}${descriptor}`);
+              } else {
+                candidates.push(`${candidate.url}${descriptor}`);
+              }
+            }
+            tag = replaceTagAttribute(tag, attr, candidates.join(', '));
+          } else {
+            const ref = resolveVirtualReference(selectedEntry, value, baseHref);
+            if (ref.kind === 'local') {
+              const uri = await assetDataUri(requireLocal(selectedEntry, value, baseHref));
+              tag = replaceTagAttribute(tag, attr, `${uri}${fragmentSuffix(value)}`);
+            }
+          }
+          attrs = parseHtmlAttributes(tag);
+        }
+        return tag;
+      });
+    }
+
+    const anchorRe = /<a\b[^>]*>/gi;
+    html = await replaceAsync(html, anchorRe, async match => {
+      const tag = match[0];
+      const attrs = parseHtmlAttributes(tag);
+      const href = attrs.href || '';
+      if (!href) return tag;
+      const resolved = resolveVirtualReference(selectedEntry, href, baseHref);
+      if (resolved.kind === 'local' && resolved.path === selectedEntry) {
+        return replaceTagAttribute(tag, 'href', queryFragmentSuffix(href) || '#');
+      }
+      return tag;
+    });
+
+    const styleRe = /<style\b([^>]*)>([\s\S]*?)<\s*\/\s*style\s*>/gi;
+    html = await replaceAsync(html, styleRe, async match => {
+      const opening = match[0].slice(0, match[0].indexOf('>') + 1);
+      const css = await rewriteCss(match[2] || '', selectedEntry);
+      return `${opening}${css}<` + `/style>`;
+    });
+
+    const styleAttrRe = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
+    html = await replaceAsync(html, styleAttrRe, async match => {
+      const css = await rewriteCss(match[1] || match[2] || '', selectedEntry);
+      const escaped = css.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+      return ` style="${escaped}"`;
+    });
+
+    if (!/^\s*<!doctype\b/i.test(html)) html = `<!doctype html>\n${html}`;
+    const outputBytes = new TextEncoder().encode(html).byteLength;
+    const embeddedFiles = [...embedded].sort((a, b) => a.localeCompare(b, 'en'));
+    const filename = outputFilenameForEntry(selectedEntry);
+    throwIfAborted(options.signal);
+    reportProgress(options, 'package-verify', 0, 1);
+    const verification = await verifyPackagedHtml(html, filename, { sourceAnalysis: analysis, embeddedFiles });
+    throwIfAborted(options.signal);
+    reportProgress(options, 'package-verify', 1, 1);
+    if (verification.status === 'blocked') {
+      const detail = verification.findings.filter(item => item.severity === 'block').slice(0, 8).map(item => `${item.code}${item.target ? `: ${item.target}` : ''}`).join('\n');
+      throw new PackagerInputError('package-verification-failed', '作成したHTMLの確認で問題が見つかったため、保存用HTMLは作成しませんでした。', detail);
+    }
+    reportProgress(options, 'package-done', 1, 1);
+    return {
+      html,
+      filename,
+      mime: 'text/html;charset=utf-8',
+      size: outputBytes,
+      entryHtml: selectedEntry,
+      embeddedFiles,
+      analysis,
+      verification
+    };
+  }
+
+  function classifyPath(path) {
+    const ext = extensionOf(path);
+    if (HTML_EXTENSIONS.has(ext)) return 'html';
+    if (ext === 'css') return 'css';
+    if (['js', 'mjs', 'cjs'].includes(ext)) return 'javascript';
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'avif', 'ico'].includes(ext)) return 'image';
+    if (['woff', 'woff2', 'ttf', 'otf'].includes(ext)) return 'font';
+    if (['mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac'].includes(ext)) return 'audio';
+    if (['mp4', 'webm', 'mov', 'm4v', 'ogv'].includes(ext)) return 'video';
+    if (ext === 'json') return 'json';
+    return 'other';
+  }
+
+  const api = Object.freeze({
+    PackagerInputError,
+    DEFAULT_LIMITS,
+    assertInputLimits,
+    normalizeVirtualPath,
+    assertSafeArchivePath,
+    stripCommonRoot,
+    detectStartHtml,
+    extensionOf,
+    classifyPath,
+    stripUrlSuffix,
+    resolveVirtualReference,
+    parseHtmlAttributes,
+    parseSrcset,
+    splitSrcset,
+    fragmentSuffix,
+    queryFragmentSuffix,
+    analyzeProject,
+    packageProject,
+    verifyPackagedHtml,
+    mimeTypeForPath,
+    outputFilenameForEntry,
+    crc32,
+    supportsDeflateRaw,
+    readZip
+  });
+
+  global.OfflineWebPackagerCore = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+  </script>
+  <script>
+    (() => {
+      'use strict';
+      const APP_CONFIG = {"$schema":"./schemas/app-config.schema.json","name":"Offline Web Packager","nameJa":"Offline Web Packager","slug":"offline-web-packager","version":"1.0.0","description":"Analyze local HTML, ZIP, or web-page folders entirely in the browser and package supported static pages into one HTML file without uploading input data.","descriptionJa":"手元のHTML、ZIP、Webページ一式をブラウザ内だけで解析し、対応範囲の静的ページを1つのHTMLにまとめます。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-offline-web-packager"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"},"sizeBudget":{"readableWarningMb":2,"selfExtractWarningMb":1}}};
+      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-09-25T05:07:09.4830103Z","app":{"name":"Offline Web Packager","slug":"offline-web-packager","version":"1.0.0"},"dependencies":[]};
+      const assetBundle = {"schemaVersion":2,"dependencies":{}};
+      const Core = window.OfflineWebPackagerCore;
+      if (!Core) throw new Error('OfflineWebPackagerCore was not initialized.');
+
+      const translations = {
+        ja: {
+          brandMeta:"Webページを1つのHTMLへ", workflowLabel:"作業の流れ", stepAdd:"ファイルを追加", stepCheck:"確認", stepCreate:"HTMLを作成", stepSave:"保存", mobileActionLabel:"次の操作", helpTitle:"使い方と注意事項", close:"閉じる",
+          introTitle:"Webページを1つのHTMLにまとめる", lead:"HTML、ZIP、フォルダを端末内で読み込み、構成を確認して、対応範囲なら1つのHTMLを作成します。", localBadge:"完全ローカル処理",
+          inputTitle:"ページ一式を追加", inputBody:"手元のHTML、ZIP、またはWebページのフォルダを選んでください。", htmlButton:"HTMLファイル", htmlNote:"1つのHTMLを確認", zipButton:"ZIP", zipNote:"フォルダ構成を保って展開", folderButton:"フォルダ", folderNote:"Webページ一式をまとめて読み込み", guideTitle1:"まず何を選べばよい？", guideBody1:"ページ1枚だけならHTML、関連ファイルもあるならZIPかフォルダがおすすめです。", guideTitle2:"変換できないときは？", guideBody2:"理由を一覧で表示します。成功扱いにせず、何を直せばよいか分かる形にします。", guideTitle3:"作成後の扱いは？", guideBody3:"生成したHTMLはそのまま保存できます。元の入力はサーバーへ送信しません。",
+          dropAria:"HTMLまたはZIPを選択、またはHTML・ZIP・フォルダをドラッグ＆ドロップ", dropTitle:"ここにドラッグ＆ドロップ", dropBody:"クリックしてHTML / ZIPを選択することもできます", reading:"読み込んでいます…", analyzing:"構成を確認しています…", packaging:"HTMLを作成して確認しています…", cancelOperation:"キャンセル", cancelling:"キャンセルしています…", cancelled:"処理をキャンセルしました", progressZipIndex:"ZIPの内容を確認しています…", progressZipExtract:"ZIPを展開しています…", progressInputIndex:"ファイルを確認しています…", progressAnalyzeIndex:"ファイル一覧を確認しています…", progressAnalyzeScan:"参照関係を確認しています…", progressPackagePrepare:"HTMLを準備しています…", progressPackageEmbed:"ファイルを取り込んでいます…", progressPackageVerify:"作成後の確認をしています…",
+          errorTitle:"読み込めませんでした", technicalDetail:"技術的な詳細",
+          sourceType:"入力", fileCount:"ファイル", htmlCount:"HTML", totalSize:"合計サイズ", entryHtml:"開始HTML", filesTitle:"読み込んだファイル", clear:"別のファイルに切り替える", createHtml:"1つのHTMLを作成",
+          analysisTitle:"確認結果", analysisBody:"開始HTMLからたどれる参照と、v1で自動変換しない構成を静的に確認します。", analysisStageNote:"確認結果に問題がなければ、次は「1つのHTMLを作成」を押します。",
+          statusAnalyzingTitle:"解析しています", statusAnalyzingBody:"ファイルの参照関係を静的に確認しています。HTMLやJavaScriptは実行しません。",
+          statusConvertibleTitle:"1つのHTMLにまとめられます", statusConvertibleBody:"静的解析で確認できた範囲では、v1の自動変換を妨げる問題は見つかりませんでした。",
+          statusReviewTitle:"確認が必要です", statusReviewBody:"変換を妨げると断定できる問題はありませんが、確認しておきたい点があります。",
+          statusBlockedTitle:"このままでは1ファイルにできません", statusBlockedBody:"v1では自動変換しない構成、または必要ファイルの不足が見つかりました。",
+          issueBlock:"変換できない理由", issueWarning:"確認事項", refsChecked:"参照確認", analysisOk:"静的解析でたどれた範囲では、未解決のローカルファイル参照や対応外の構成は見つかりませんでした。",
+          privacyTitle:"このアプリ自身は完全ローカル処理です", privacyBody:"追加したHTML、ZIP、画像、JavaScript等を外部サーバーへ送信しません。読み込んだHTMLやJavaScriptも解析中に実行しません。生成HTMLの実行時動作は、元のHTML / JavaScriptに依存します。",
+          buildInfo:"ビルド情報", appVersion:"アプリバージョン", builtAt:"生成日時", runtimeNetwork:"アプリの外部通信", runtimeNetworkValue:"なし", footer:"ブラウザ内で解析して1つのHTMLを作成",
+          helpBasicsTitle:"基本操作", helpStep1:"HTML、ZIP、またはフォルダを追加します。ドロップ領域はHTML / ZIPのクリック選択にも使えます。", helpStep2:"開始HTMLからCSS、通常のJavaScript、画像、フォントなどの参照をたどります。", helpStep3:"「1つのHTMLにまとめられます」と表示されたら「HTMLを作成」→「HTMLを保存」で完了します。",
+          helpSafetyTitle:"解析時の安全設計", helpLimitsTitle:"大きな入力", helpBrowserTitle:"このブラウザで使える機能", helpBrowserFolder:"フォルダ選択", helpBrowserZip:"圧縮ZIPの展開", helpBrowserSave:"HTMLの保存", browserAvailable:"利用できます", browserFallback:"代替動作で利用できます", browserUnavailable:"利用できません", helpLimit1:"1ファイルは50 MBまでです。", helpLimit2:"入力全体は100 MB、ファイル数は2,000件までです。", helpLimit3:"ZIPは展開前にファイル数・展開後サイズ・極端な圧縮率を確認します。", helpSafety1:"読み込んだHTMLやJavaScriptを、このアプリが勝手に実行することはありません。", helpSafety2:"ZIP内の「../」や絶対パスなど、フォルダの外側を指すファイル名は拒否します。", helpSafety3:"このアプリはマルウェアスキャナーではありません。「安全なHTML」と判定する機能ではありません。",
+          helpPrivacyTitle:"プライバシー", helpPrivacyBody:"このアプリ自身は完全ローカル処理です。入力ファイルをサーバーへ送信しません。生成HTMLの実行時動作は元のHTML / JavaScriptに依存します。", helpVersionNote:"v1.0.0では、対応範囲・判定・単一HTML作成・保存までの回帰確認を行い、正式版として仕上げました。",
+          confirmTitle:"確認", replaceMessage:"現在読み込んでいるファイルを解除して、新しい入力に置き換えますか？", replace:"置き換える", cancel:"キャンセル", clearTitle:"読み込みを解除", clearMessage:"現在読み込んでいるファイルをこのアプリから解除します。元のファイルは削除されません。", clearAction:"解除する",
+          sourceHtml:"HTML", sourceZip:"ZIP", sourceFolder:"フォルダ", sourceDrop:"ドラッグ＆ドロップ", noHtml:"HTMLファイルが見つかりません。", startAutoRoot:"index.html を開始HTMLとして選びました。", startAutoNested:"index.html を開始HTMLの候補として選びました。", startAutoSingle:"HTMLが1つだけなので開始HTMLとして選びました。", startAutoBest:"候補の中から開始HTMLを選びました。必要なら変更してください。", startAmbiguous:"開始HTMLの候補が複数あります。内容に合うものを選んでください。",
+          fileListAll:"{count}件を表示", fileListLimited:"{shown} / {count}件を表示", cleared:"読み込みを解除しました", folderEmpty:"フォルダ内にファイルがありません。", folderUnsupported:"このブラウザではフォルダ選択を利用できません。ZIPにまとめて読み込んでください。", folderPathUnsupported:"このブラウザではフォルダ内の相対パスを取得できません。ZIPにまとめて読み込んでください。", zipDeflateUnsupported:"このブラウザでは圧縮されたZIPを展開できません。フォルダ入力を使うか、STORE方式のZIPを使用してください。", saveUnsupported:"このブラウザでは生成HTMLを端末へ保存できません。", htmlOpened:"生成HTMLを新しいタブで開きました。ブラウザの保存機能を使って保存してください。", unsupportedDrop:"HTML、ZIP、またはフォルダをドロップしてください。", quickUnsupported:"HTMLまたはZIPを選択してください。", folderDropDirectOpenUnsupported:"このブラウザでは、端末から直接開いた状態のフォルダDrag & Dropを読み取れません。上の「フォルダ」ボタンかZIPを使用してください。", mixedZip:"ZIPとほかのファイルは同時に読み込めません。ZIPは1つずつ追加してください。", zipOne:"ZIPは1つずつ読み込んでください。", htmlOne:"HTMLファイルを1つ選んでください。", noFiles:"読み込めるファイルがありません。", duplicatePath:"同じパスのファイルが複数あります。", tooManyFiles:"ファイル数が2,000件の上限を超えています。", fileTooLarge:"50 MBを超えるファイルは読み込めません。", inputTooLarge:"入力全体が100 MBの上限を超えています。", zipCompressionRatio:"展開後のサイズが急増するZIPは読み込めません。", unknownError:"処理中に予期しないエラーが発生しました。", outputTitle:"HTMLを作成しました", outputBody:"必要なローカルファイルを1つのHTML内へ取り込みました。", outputFile:"保存ファイル", outputSize:"生成サイズ", embeddedFiles:"取り込んだファイル", outputEntry:"開始HTML", verificationTitle:"作成後の確認", verificationVerified:"未解決のローカル参照や取り込み漏れは見つかりませんでした。", verificationReview:"生成HTMLに確認事項があります。保存前に内容を確認してください。", generatedRuntimeNote:"生成したHTMLの実行時動作は、元のHTML / JavaScriptの内容に依存します。このツール自体は入力ファイルを外部送信しませんが、生成HTMLの安全性までは保証しません。", releaseOutput:"作成結果を閉じる", releaseOutputTitle:"生成結果を破棄", releaseOutputMessage:"作成したHTMLをこのアプリから破棄してメモリを解放します。入力ファイルは残るため、必要ならもう一度作成できます。", releaseOutputAction:"破棄する", outputReleased:"生成結果を破棄しました", saveHtml:"HTMLを保存", htmlSaved:"HTMLの保存を開始しました", mobileAnalyzingTitle:"構成を確認中", mobileAnalyzingHint:"完了すると次の操作を表示します", mobilePackagingTitle:"HTMLを作成中", mobilePackagingHint:"必要ファイルをまとめて再確認しています", mobileCreateTitle:"作成できます", mobileCreateHint:"必要ファイルを1つにまとめます", mobileReviewTitle:"確認が必要です", mobileReviewHint:"確認結果を見てください", mobileBlockedTitle:"このままでは作成できません", mobileBlockedHint:"理由を確認してください", mobileOutputTitle:"HTMLを作成しました", mobileOutputHint:"端末へ保存できます", mobileResultAction:"結果を見る", mobileWorking:"処理中…", savedAnnouncement:"HTMLの保存を開始しました"
+        },
+        en: {
+          brandMeta:"Web pages into one HTML", workflowLabel:"Workflow", stepAdd:"Add files", stepCheck:"Check", stepCreate:"Create HTML", stepSave:"Save", mobileActionLabel:"Next action", helpTitle:"How to use & notes", close:"Close",
+          introTitle:"Combine a web page into one HTML file", lead:"Load an HTML file, ZIP, or folder locally, check its structure, and create one HTML file when the page is supported.", localBadge:"Fully local processing",
+          inputTitle:"Add the page files", inputBody:"Choose an HTML file, ZIP, or folder containing the web page.", htmlButton:"HTML file", htmlNote:"Check a single HTML file", zipButton:"ZIP", zipNote:"Expand while keeping paths", folderButton:"Folder", folderNote:"Load the complete page folder", guideTitle1:"Which input should I choose?", guideBody1:"Use HTML for a single page. If there are related files, ZIP or folder input is usually the best choice.", guideTitle2:"What if it cannot be packaged?", guideBody2:"The app lists the reasons instead of treating a broken result as success, so you can see what needs attention.", guideTitle3:"What happens after creation?", guideBody3:"You can save the generated HTML as-is. Your original input is not uploaded to a server.",
+          dropAria:"Choose HTML or ZIP, or drag and drop HTML, ZIP, or a folder", dropTitle:"Drag & drop here", dropBody:"Click to choose HTML / ZIP, or drop a folder", reading:"Reading files…", analyzing:"Checking the page structure…", packaging:"Creating and verifying HTML…", cancelOperation:"Cancel", cancelling:"Cancelling…", cancelled:"Processing cancelled", progressZipIndex:"Checking ZIP contents…", progressZipExtract:"Extracting ZIP…", progressInputIndex:"Checking files…", progressAnalyzeIndex:"Checking file list…", progressAnalyzeScan:"Checking references…", progressPackagePrepare:"Preparing HTML…", progressPackageEmbed:"Embedding files…", progressPackageVerify:"Running the post-build check…",
+          errorTitle:"Could not process the input", technicalDetail:"Technical details",
+          sourceType:"Input", fileCount:"Files", htmlCount:"HTML", totalSize:"Total size", entryHtml:"Start HTML", filesTitle:"Loaded files", clear:"Switch to another file", createHtml:"Create one HTML file",
+          analysisTitle:"Check results", analysisBody:"Statically follows references from the start HTML and detects structures v1 does not convert automatically.", analysisStageNote:"If there are no issues in the check result, the next step is to create one HTML file.",
+          statusAnalyzingTitle:"Analyzing", statusAnalyzingBody:"Checking file references statically. Loaded HTML and JavaScript are not executed.",
+          statusConvertibleTitle:"Can be combined into one HTML file", statusConvertibleBody:"Within the scope of static analysis, no issue that blocks v1 automatic conversion was found.",
+          statusReviewTitle:"Review needed", statusReviewBody:"No definite conversion blocker was found, but there are items worth checking.",
+          statusBlockedTitle:"Cannot be made into one file as-is", statusBlockedBody:"A structure v1 does not automatically convert, or a required missing file, was found.",
+          issueBlock:"Blocking reasons", issueWarning:"Review items", refsChecked:"References checked", analysisOk:"Within the references reached by static analysis, no unresolved local file reference or unsupported structure was found.",
+          privacyTitle:"This app itself is fully local", privacyBody:"HTML, ZIP, images, JavaScript, and other inputs are not sent to an external server. Loaded HTML and JavaScript are not executed during analysis. Runtime behavior of generated HTML depends on the original HTML / JavaScript.",
+          buildInfo:"Build information", appVersion:"App version", builtAt:"Built at", runtimeNetwork:"App network access", runtimeNetworkValue:"None", footer:"Analyze and create one HTML file in the browser",
+          helpBasicsTitle:"Basics", helpStep1:"Add an HTML file, ZIP, or folder. You can also click the drop area to choose an HTML file or ZIP.", helpStep2:"The app follows references from the start HTML to CSS, classic JavaScript, images, fonts, and other files.", helpStep3:"When the result says the page can be combined, choose Create HTML and then Save HTML.",
+          helpSafetyTitle:"Safe analysis", helpLimitsTitle:"Large inputs", helpBrowserTitle:"Available in this browser", helpBrowserFolder:"Folder selection", helpBrowserZip:"Compressed ZIP extraction", helpBrowserSave:"Save HTML", browserAvailable:"Available", browserFallback:"Available with fallback", browserUnavailable:"Unavailable", helpLimit1:"Each file is limited to 50 MB.", helpLimit2:"Total input is limited to 100 MB and 2,000 files.", helpLimit3:"ZIP files are checked for file count, expanded size, and extreme compression ratios before extraction.", helpSafety1:"This app does not execute loaded HTML or JavaScript during analysis.", helpSafety2:"ZIP paths such as ../ or absolute paths that point outside the archive root are rejected.", helpSafety3:"This app is not a malware scanner and does not label an HTML file as safe.",
+          helpPrivacyTitle:"Privacy", helpPrivacyBody:"This app itself is fully local and does not upload input files. Runtime behavior of generated HTML depends on the original HTML / JavaScript.", helpVersionNote:"v1.0.0 completes the final regression for supported inputs, diagnostics, single-HTML creation, and saving.",
+          confirmTitle:"Confirm", replaceMessage:"Remove the currently loaded files from this app and replace them with the new input?", replace:"Replace", cancel:"Cancel", clearTitle:"Remove loaded files", clearMessage:"Remove the currently loaded files from this app. Your original files will not be deleted.", clearAction:"Remove",
+          sourceHtml:"HTML", sourceZip:"ZIP", sourceFolder:"Folder", sourceDrop:"Drag & drop", noHtml:"No HTML file was found.", startAutoRoot:"index.html was selected as the start HTML.", startAutoNested:"An index.html file was selected as the start HTML candidate.", startAutoSingle:"The only HTML file was selected as the start HTML.", startAutoBest:"A start HTML candidate was selected. Change it if needed.", startAmbiguous:"There are multiple start HTML candidates. Choose the one that matches the page.",
+          fileListAll:"Showing {count}", fileListLimited:"Showing {shown} of {count}", cleared:"Loaded files removed", folderEmpty:"The folder does not contain files.", folderUnsupported:"Folder selection is not available in this browser. Add the page as a ZIP instead.", folderPathUnsupported:"This browser cannot preserve relative paths for folder input. Add the page as a ZIP instead.", zipDeflateUnsupported:"This browser cannot expand compressed ZIP entries. Use folder input or a STORE-only ZIP.", saveUnsupported:"This browser cannot save the generated HTML to the device.", htmlOpened:"The generated HTML was opened in a new tab. Use the browser save command to save it.", unsupportedDrop:"Drop an HTML file, ZIP, or folder.", quickUnsupported:"Choose an HTML file or ZIP.", folderDropDirectOpenUnsupported:"This browser cannot read a dropped folder while the app is opened directly from the device. Use the Folder button above or a ZIP instead.", mixedZip:"Do not mix a ZIP with other files. Add one ZIP at a time.", zipOne:"Choose one ZIP at a time.", htmlOne:"Choose one HTML file.", noFiles:"No readable files were found.", duplicatePath:"Multiple files resolve to the same path.", tooManyFiles:"The 2,000-file limit was exceeded.", fileTooLarge:"Files larger than 50 MB cannot be loaded.", inputTooLarge:"The total input exceeds the 100 MB limit.", zipCompressionRatio:"This ZIP expands too sharply to process safely.", unknownError:"An unexpected error occurred while processing the input.", outputTitle:"HTML created", outputBody:"Required local files were embedded into one HTML file.", outputFile:"File to save", outputSize:"Output size", embeddedFiles:"Embedded files", outputEntry:"Start HTML", verificationTitle:"Post-build check", verificationVerified:"No unresolved local references or missed embedded dependencies were found.", verificationReview:"The generated HTML has review items. Check them before saving.", generatedRuntimeNote:"Runtime behavior of the generated HTML depends on the original HTML / JavaScript. This tool stays local, but it does not guarantee the generated HTML is safe.", releaseOutput:"Close generated result", releaseOutputTitle:"Discard generated result", releaseOutputMessage:"Discard the generated HTML from this app to release its memory. Input files remain loaded, so you can create it again if needed.", releaseOutputAction:"Discard", outputReleased:"Generated result discarded", saveHtml:"Save HTML", htmlSaved:"HTML download started", mobileAnalyzingTitle:"Checking structure", mobileAnalyzingHint:"The next action appears when complete", mobilePackagingTitle:"Creating HTML", mobilePackagingHint:"Embedding files and running the post-build check", mobileCreateTitle:"Ready to create", mobileCreateHint:"Combine required files into one HTML", mobileReviewTitle:"Review needed", mobileReviewHint:"Check the results", mobileBlockedTitle:"Cannot create as-is", mobileBlockedHint:"Check the reasons", mobileOutputTitle:"HTML created", mobileOutputHint:"Ready to save to this device", mobileResultAction:"View results", mobileWorking:"Working…", savedAnnouncement:"HTML download started"
+        }
+      };
+
+      const FINDING_COPY = {
+        'entry-html-missing': {
+          ja:['開始するHTMLが見つかりません','1ファイル化の基準にするHTMLを選べません。'],
+          en:['Start HTML was not found','There is no HTML file that can be used as the entry page.']
+        },
+        'entry-html-ambiguous': {
+          ja:['開始HTMLの候補が複数あります','自動選択したHTMLが意図した開始ページか確認してください。'],
+          en:['Multiple start HTML candidates','Check that the automatically selected HTML is the intended start page.']
+        },
+        'additional-html-files': {
+          ja:['ほかのHTMLファイルも含まれています','開始HTML以外のページが含まれています。ページ間移動が必要な場合はv1の自動変換対象外です。'],
+          en:['Additional HTML files are included','Files other than the start HTML are present. Multi-page navigation is outside v1 automatic conversion.']
+        },
+        'missing-local-file': {
+          ja:['必要なファイルが見つかりません','ページから参照されているローカルファイルが入力内にありません。'],
+          en:['A required file is missing','A local file referenced by the page is not present in the input.']
+        },
+        'case-mismatch': {
+          ja:['ファイル名の大文字・小文字が一致していません','参照名と実際のファイル名で大文字・小文字が異なります。環境によっては読み込めません。'],
+          en:['Filename letter case does not match','The reference and actual filename differ in uppercase/lowercase letters and may fail on some systems.']
+        },
+        'case-ambiguous': {
+          ja:['同じ名前として扱われるファイルが複数あります','大文字・小文字だけが異なる候補が複数あり、参照先を一意に決められません。'],
+          en:['Multiple files match the same name','More than one case-only filename match exists, so the reference cannot be resolved uniquely.']
+        },
+        'external-link': {
+          ja:['外部サイトへのリンクがあります','通常のリンクです。1ファイル化を妨げませんが、オフラインではリンク先を開けません。'],
+          en:['There is a link to an external site','This normal link does not block packaging, but its destination will not open while offline.']
+        },
+        'external-resource': {
+          ja:['外部サイトのファイルを読み込む構成です','ページ表示に必要なファイルを外部URLから読み込んでいます。v1では自動ダウンロードしません。'],
+          en:['The page loads a file from an external site','A required resource is loaded from an external URL. v1 does not download it automatically.']
+        },
+        'external-base-url': {
+          ja:['外部サイトを基準にしたパスです','ページ内の相対パスが外部URLを基準に解決される構成です。'],
+          en:['Relative paths use an external base URL','Relative references are resolved against an external URL.']
+        },
+        'reference-outside-root': {
+          ja:['入力フォルダの外側を参照しています','相対パスを解決すると、読み込んだページ一式の外側になります。'],
+          en:['A reference points outside the input root','Resolving the relative path points outside the loaded page files.']
+        },
+        'unsupported-url-scheme': {
+          ja:['通常のファイル参照ではないURLがあります','v1で自動処理しない形式のURLが使われています。'],
+          en:['A non-file URL scheme is used','The page uses a URL scheme that v1 does not process automatically.']
+        },
+        'es-module': {
+          ja:['現在の変換対象外のJavaScript構成です','別のJavaScriptファイルをモジュールとして読み込む構成はv1では自動変換しません。'],
+          en:['This JavaScript structure is outside v1 conversion','JavaScript loaded as a module is not automatically converted in v1.']
+        },
+        'es-module-syntax': {
+          ja:['JavaScriptモジュールの記述があります','import / export を使うJavaScriptはv1では自動変換しません。'],
+          en:['JavaScript module syntax was found','JavaScript using import / export is not automatically converted in v1.']
+        },
+        'dynamic-import': {
+          ja:['実行中にJavaScriptを追加読み込みする記述があります','動的なJavaScript読み込みはv1では自動変換しません。'],
+          en:['JavaScript is loaded dynamically at runtime','Dynamic JavaScript imports are not automatically converted in v1.']
+        },
+        'import-meta-url': {
+          ja:['実行中のファイル位置を使うJavaScriptがあります','1ファイル化で意味が変わる可能性があるため、v1では自動変換しません。'],
+          en:['JavaScript depends on its runtime file location','Its meaning can change after packaging, so v1 does not convert it automatically.']
+        },
+        'runtime-fetch': {
+          ja:['実行中に別ファイルやURLを読み込む記述があります','ページを開いた後に fetch() でデータを読む構成はv1では自動変換しません。'],
+          en:['The page loads data or a URL at runtime','Runtime fetch() loading is not automatically converted in v1.']
+        },
+        'runtime-xhr': {
+          ja:['実行中に通信やファイル読み込みを行う記述があります','XMLHttpRequestを使う構成はv1では自動変換しません。'],
+          en:['The page performs runtime loading or network access','XMLHttpRequest usage is not automatically converted in v1.']
+        },
+        'runtime-network-api': {
+          ja:['外部接続につながる記述が見つかりました','ページ実行中に継続通信や送信を行うAPIが使われています。'],
+          en:['A statement that can create an external connection was found','The page uses an API for runtime connections or sending data.']
+        },
+        'web-worker': {
+          ja:['JavaScriptを別処理で動かす構成です','Worker / SharedWorkerを使うページはv1では自動変換しません。'],
+          en:['JavaScript runs in a separate worker','Pages using Worker / SharedWorker are not automatically converted in v1.']
+        },
+        'service-worker': {
+          ja:['オフライン機能を登録する構成です','Service Workerを登録するページはv1では自動変換しません。'],
+          en:['The page registers offline/background behavior','Pages registering a Service Worker are not automatically converted in v1.']
+        },
+        'pwa-manifest': {
+          ja:['Webアプリ用の設定ファイルがあります','PWA用のmanifestを使う構成はv1では自動変換しません。'],
+          en:['A web-app manifest is used','PWA manifest handling is outside v1 automatic conversion.']
+        },
+        'wasm-loader': {
+          ja:['WebAssemblyを読み込む構成です','WASMを読み込むページはv1では自動変換しません。'],
+          en:['The page loads WebAssembly','Pages loading WASM are not automatically converted in v1.']
+        },
+        'local-iframe': {
+          ja:['別のHTMLをページ内に読み込む構成です','ローカルiframeの統合はv1では自動変換しません。'],
+          en:['Another local HTML page is embedded','Local iframe integration is outside v1 automatic conversion.']
+        },
+        'multi-page-navigation': {
+          ja:['別のHTMLページへ移動する構成です','複数ページサイトを1つへ統合する処理はv1では行いません。'],
+          en:['The page navigates to another local HTML page','v1 does not merge a multi-page site into one file.']
+        },
+        'local-file-link': {
+          ja:['別のローカルファイルへのリンクがあります','リンク先のファイルはv1の1ファイル化では自動的に取り込みません。'],
+          en:['There is a link to another local file','v1 does not automatically embed linked local files into the one-file output.']
+        },
+        'csp-present': {
+          ja:['ページ内に読み込み制限が設定されています','1ファイル化後にスタイルやスクリプトの扱いを調整する必要がある可能性があります。'],
+          en:['The page defines content loading restrictions','Its style/script restrictions may need adjustment after packaging.']
+        },
+        'large-file': {
+          ja:['非常に大きなファイルがあります','50 MBを超えるファイルがあり、ブラウザのメモリ使用量が大きくなる可能性があります。'],
+          en:['A very large file is included','A file exceeds 50 MB and may require substantial browser memory.']
+        },
+        'dynamic-resource-loading': {
+          ja:['実行中に読み込み先を組み立てる可能性があります','JavaScriptが要素のsrc / hrefを後から設定しています。静的解析だけでは参照先を断定できません。'],
+          en:['A resource may be assigned dynamically at runtime','JavaScript sets src / href later, so static analysis cannot determine every target.']
+        },
+        'unsupported-embedded-object': {
+          ja:['埋め込みオブジェクトがあります','object / embed の内容はv1の自動変換対象として保証しません。'],
+          en:['An embedded object is present','object / embed content is not guaranteed for v1 automatic conversion.']
+        }
+      };
+
+      const $ = selector => document.querySelector(selector);
+      const quickInput = $('#quickInput');
+      const htmlInput = $('#htmlInput');
+      const zipInput = $('#zipInput');
+      const folderInput = $('#folderInput');
+      const resultPanel = $('#resultPanel');
+      const errorPanel = $('#errorPanel');
+      const dropzone = $('#dropzone');
+      const busyRow = $('#busyRow');
+      const fileList = $('#fileList');
+      const entryHtmlSelect = $('#entryHtmlSelect');
+      const analysisResults = $('#analysisResults');
+      const analysisCounts = $('#analysisCounts');
+      const createHtmlButton = $('#createHtmlButton');
+      const outputPanel = $('#outputPanel');
+      const state = { files:new Map(), sourceKind:'', sourceName:'', entryHtml:'', language:readStorage(`${APP_CONFIG.slug}:language`) || detectLanguage(), busy:false, analysis:null, analysisRevision:0, output:null, savedOnce:false, busyMode:'', operationController:null, progress:null, capabilities:null };
+
+      function detectCapabilities() {
+        const anchor=document.createElement('a');
+        const hasFile=typeof File !== 'undefined';
+        const folderPicker=('webkitdirectory' in folderInput) && (!hasFile || 'webkitRelativePath' in File.prototype);
+        const directoryDrop=typeof DataTransferItem !== 'undefined' && (typeof DataTransferItem.prototype.getAsEntry==='function' || typeof DataTransferItem.prototype.webkitGetAsEntry==='function');
+        const deflateRaw=typeof Core.supportsDeflateRaw==='function' ? Core.supportsDeflateRaw() : false;
+        const blobUrl=typeof URL !== 'undefined' && typeof URL.createObjectURL==='function' && typeof URL.revokeObjectURL==='function';
+        const anchorDownload='download' in anchor;
+        return Object.freeze({folderPicker,directoryDrop,deflateRaw,blobUrl,anchorDownload});
+      }
+      state.capabilities=detectCapabilities();
+
+      function readStorage(key) { try { return localStorage.getItem(key); } catch { return null; } }
+      function writeStorage(key,value) { try { localStorage.setItem(key,value); } catch { /* optional */ } }
+      function detectLanguage() { return /^ja\b/i.test(navigator.language || '') ? 'ja' : 'en'; }
+      function t(key) { return translations[state.language][key] ?? translations.ja[key] ?? key; }
+      function formatTemplate(value, replacements) { return Object.entries(replacements).reduce((text,[key,val]) => text.replace(`{${key}}`,String(val)),value); }
+      function formatBytes(bytes) { if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'; const units=['B','KB','MB','GB']; const index=Math.min(Math.floor(Math.log(bytes)/Math.log(1024)),units.length-1); const value=bytes/Math.pow(1024,index); return `${value >= 100 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`; }
+      function announce(message) { const node=$('#statusAnnouncer'); node.textContent=''; requestAnimationFrame(()=>{ node.textContent=message; }); }
+
+      const AppToast = (() => { let timer=0; return { show(message) { clearTimeout(timer); $('#appToastMessage').textContent=message; $('#appToast').dataset.visible='true'; timer=setTimeout(()=>$('#appToast').dataset.visible='false',2800); } }; })();
+      window.AppToast = AppToast;
+
+      const AppConfirm = (() => {
+        const dialog=$('#appConfirmDialog'), title=$('#appConfirmTitle'), message=$('#appConfirmMessage'), cancel=$('#appConfirmCancel'), ok=$('#appConfirmOk'); let resolver=null, restoreFocus=null;
+        function finish(value) { if (!dialog.open) return; const current=resolver; resolver=null; dialog.close(); if (restoreFocus instanceof HTMLElement && restoreFocus.isConnected) restoreFocus.focus({preventScroll:true}); restoreFocus=null; if (current) current(value); }
+        $('#appConfirmClose').addEventListener('click',()=>finish(false)); cancel.addEventListener('click',()=>finish(false)); ok.addEventListener('click',()=>finish(true)); dialog.addEventListener('cancel',event=>{ event.preventDefault(); finish(false); });
+        return { ask({heading,body,confirmLabel,danger=false}) { if (dialog.open) finish(false); title.textContent=heading; message.textContent=body; cancel.textContent=t('cancel'); ok.textContent=confirmLabel; ok.classList.toggle('danger',danger); ok.classList.toggle('primary',!danger); restoreFocus=document.activeElement; return new Promise(resolve=>{ resolver=resolve; dialog.showModal(); requestAnimationFrame(()=>cancel.focus({preventScroll:true})); }); } };
+      })();
+
+      class VirtualFileSystem {
+        constructor() { this.map=new Map(); }
+        add(record) {
+          const path=Core.normalizeVirtualPath(record.path);
+          if (this.map.has(path)) throw new Core.PackagerInputError('duplicate-path',t('duplicatePath'),path);
+          this.map.set(path,{...record,path,size:Number(record.size)||0});
+        }
+        get size() { return this.map.size; }
+        values() { return [...this.map.values()].sort((a,b)=>a.path.localeCompare(b.path,'en')); }
+        totalSize() { let total=0; for (const file of this.map.values()) total += file.size; return total; }
+        htmlPaths() { return this.values().filter(file=>Core.classifyPath(file.path)==='html').map(file=>file.path); }
+        clear() { this.map.clear(); }
+      }
+
+      function progressLabel(stage) {
+        const key={ 'zip-index':'progressZipIndex','zip-extract':'progressZipExtract','input-index':'progressInputIndex','analyze-index':'progressAnalyzeIndex','analyze-scan':'progressAnalyzeScan','package-prepare':'progressPackagePrepare','package-embed':'progressPackageEmbed','package-verify':'progressPackageVerify' }[stage];
+        return key ? t(key) : (state.busyMode==='packaging' ? t('packaging') : state.busyMode==='analyzing' ? t('analyzing') : t('reading'));
+      }
+      function updateProgress(info={}) {
+        state.progress=info;
+        const progress=$('#busyProgress'), text=$('#busyProgressText');
+        const total=Number(info.total)||0, completed=Number(info.completed)||0;
+        $('#busyText').textContent=progressLabel(info.stage);
+        if (total>0) { const percent=Math.max(0,Math.min(100,Math.round((completed/total)*100))); progress.value=percent; text.textContent=`${percent}%`; }
+        else { progress.removeAttribute('value'); text.textContent=''; }
+      }
+      function setBusy(value,label='',mode='',options={}) {
+        state.busy=value; state.busyMode=value ? (mode || 'reading') : '';
+        if (value && options.controller) state.operationController=options.controller;
+        if (!value) { state.operationController=null; state.progress=null; }
+        busyRow.dataset.visible=String(value); $('#busyText').textContent=label || t('reading');
+        const cancelButton=$('#cancelOperationButton'); cancelButton.hidden=!(value && options.canCancel); cancelButton.disabled=false;
+        const progress=$('#busyProgress'), progressText=$('#busyProgressText');
+        if (!value) { progress.removeAttribute('value'); progressText.textContent=''; } else if (!state.progress) { progress.removeAttribute('value'); progressText.textContent=''; }
+        $('#inputPanel').setAttribute('aria-busy',String(value)); resultPanel.setAttribute('aria-busy',String(value));
+        for (const button of [$('#chooseHtmlButton'),$('#chooseZipButton')]) button.disabled=value; $('#chooseFolderButton').disabled=value || !state.capabilities.folderPicker;
+        dropzone.setAttribute('aria-disabled',String(value));
+        entryHtmlSelect.disabled=value || !(state.files instanceof VirtualFileSystem) || !state.files.htmlPaths().length;
+      }
+      function clearError() { errorPanel.dataset.visible='false'; $('#errorMessage').textContent=''; $('#errorDetail').hidden=true; $('#errorCode').textContent=''; }
+      function friendlyErrorMessage(error) {
+        const key={ 'too-many-files':'tooManyFiles','zip-too-many-files':'tooManyFiles','zip-too-many-entries':'tooManyFiles','file-too-large':'fileTooLarge','zip-entry-too-large':'fileTooLarge','zip-input-too-large':'fileTooLarge','input-too-large':'inputTooLarge','zip-expanded-too-large':'inputTooLarge','zip-compression-ratio':'zipCompressionRatio','folder-picker-unsupported':'folderUnsupported','folder-relative-path-unsupported':'folderPathUnsupported','zip-deflate-unsupported':'zipDeflateUnsupported','save-unsupported':'saveUnsupported' }[error?.code];
+        if (key) return t(key);
+        return error instanceof Core.PackagerInputError ? error.message : t('unknownError');
+      }
+      function showError(error) { const message=friendlyErrorMessage(error); $('#errorMessage').textContent=message; const detail=[error?.code,error?.detail,error?.message && error?.message !== message ? error.message : ''].filter(Boolean).join('\n'); $('#errorDetail').hidden=!detail; $('#errorCode').textContent=detail; errorPanel.dataset.visible='true'; errorPanel.scrollIntoView({behavior:'smooth',block:'nearest'}); requestAnimationFrame(()=>errorPanel.focus({preventScroll:true})); announce(message); }
+      function handleOperationError(error) { if (error?.code==='operation-cancelled') { clearError(); AppToast.show(t('cancelled')); announce(t('cancelled')); return true; } showError(error); return false; }
+
+      function sourceLabel() { return t(state.sourceKind === 'html' ? 'sourceHtml' : state.sourceKind === 'zip' ? 'sourceZip' : state.sourceKind === 'folder' ? 'sourceFolder' : 'sourceDrop'); }
+      function startNote(detection) { if (detection.ambiguous) return t('startAmbiguous'); if (detection.reason==='root-index') return t('startAutoRoot'); if (detection.reason==='nested-index') return t('startAutoNested'); if (detection.reason==='single-html') return t('startAutoSingle'); if (detection.reason==='none') return t('noHtml'); return t('startAutoBest'); }
+      function typeLabel(path) { const type=Core.classifyPath(path); return type === 'javascript' ? 'JS' : type.toUpperCase(); }
+      function iconSvg(kind) {
+        if (kind === 'blocked') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6m0 4h.01"/></svg>';
+        if (kind === 'review') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.8 19h18.4z"/><path d="M12 9v4m0 3h.01"/></svg>';
+        if (kind === 'analyzing') return '<span class="spinner" aria-hidden="true"></span>';
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>';
+      }
+
+      function findingCopy(item) {
+        const copy = FINDING_COPY[item.code]?.[state.language] || FINDING_COPY[item.code]?.ja;
+        if (copy) return { title:copy[0], body:copy[1] };
+        return state.language === 'ja'
+          ? { title:'確認事項があります', body:'静的解析で確認が必要な記述が見つかりました。' }
+          : { title:'An item needs review', body:'Static analysis found a statement that needs review.' };
+      }
+
+      function findingDetail(item) {
+        const parts=[`code: ${item.code}`];
+        if (item.path) parts.push(`file: ${item.path}`);
+        if (item.line) parts.push(`line: ${item.line}`);
+        if (item.target) parts.push(`target: ${item.target}`);
+        if (item.resolved) parts.push(`resolved: ${item.resolved}`);
+        if (item.size) parts.push(`size: ${item.size} bytes`);
+        if (item.detail) parts.push(`detail: ${item.detail}`);
+        return parts.join('\n');
+      }
+
+      function renderAnalysis() {
+        const status=$('#analysisStatus'), icon=$('#analysisStatusIcon'), title=$('#resultTitle'), subtitle=$('#resultSubtitle');
+        analysisCounts.innerHTML='';
+        analysisResults.innerHTML='';
+        createHtmlButton.disabled=true;
+        createHtmlButton.title='';
+
+        if (!state.analysis) {
+          status.dataset.status='analyzing'; icon.innerHTML=iconSvg('analyzing'); title.textContent=t('statusAnalyzingTitle'); subtitle.textContent=t('statusAnalyzingBody');
+          return;
+        }
+
+        const result=state.analysis;
+        status.dataset.status=result.status;
+        icon.innerHTML=iconSvg(result.status);
+        if (result.status==='convertible') { title.textContent=t('statusConvertibleTitle'); subtitle.textContent=t('statusConvertibleBody'); }
+        else if (result.status==='review') { title.textContent=t('statusReviewTitle'); subtitle.textContent=t('statusReviewBody'); }
+        else { title.textContent=t('statusBlockedTitle'); subtitle.textContent=t('statusBlockedBody'); }
+        createHtmlButton.disabled=state.busy || result.status!=='convertible';
+        createHtmlButton.title=result.status==='convertible' ? '' : (state.language==='ja' ? '確認事項または変換できない理由が残っています' : 'Resolve review or blocking items before creating HTML');
+
+        const countSpecs=[
+          ['block',result.counts.block,t('issueBlock')],
+          ['warning',result.counts.warning,t('issueWarning')],
+          ['refs',result.counts.dependencies,t('refsChecked')]
+        ];
+        for (const [kind,count,label] of countSpecs) {
+          if (kind !== 'refs' && !count) continue;
+          const span=document.createElement('span'); span.className='analysis-count'; span.dataset.kind=kind; span.textContent=`${label} ${count}`; analysisCounts.append(span);
+        }
+
+        if (!result.findings.length) {
+          const ok=document.createElement('div'); ok.className='analysis-ok';
+          ok.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>';
+          const p=document.createElement('p'); p.textContent=t('analysisOk'); ok.append(p); analysisResults.append(ok); return;
+        }
+
+        const list=document.createElement('ul'); list.className='finding-list';
+        const ordered=[...result.findings].sort((a,b)=>(a.severity==='block'?0:1)-(b.severity==='block'?0:1) || String(a.path||'').localeCompare(String(b.path||''),'en'));
+        for (const item of ordered) {
+          const li=document.createElement('li'); li.className='finding-item'; li.dataset.severity=item.severity;
+          const iconWrap=document.createElement('span'); iconWrap.className='finding-icon'; iconWrap.innerHTML=item.severity==='block' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v9m0 4h.01"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v8m0 4h.01"/></svg>';
+          const copyWrap=document.createElement('div'); copyWrap.className='finding-copy';
+          const copy=findingCopy(item); const strong=document.createElement('strong'); strong.textContent=copy.title; const body=document.createElement('p'); body.textContent=copy.body; copyWrap.append(strong,body);
+          if (item.target) { const target=document.createElement('p'); target.textContent=state.language==='ja' ? `対象: ${item.target}` : `Target: ${item.target}`; copyWrap.append(target); }
+          const details=document.createElement('details'); details.className='finding-detail'; const summary=document.createElement('summary'); summary.textContent=t('technicalDetail'); const code=document.createElement('code'); code.textContent=findingDetail(item); details.append(summary,code); copyWrap.append(details);
+          li.append(iconWrap,copyWrap); list.append(li);
+        }
+        analysisResults.append(list);
+      }
+
+      function renderWorkflow() {
+        let current=1;
+        let doneThrough=0;
+        if (state.files.size) { current=2; doneThrough=1; }
+        if (state.busy && state.busyMode==='packaging' && state.analysis?.status==='convertible') { current=3; doneThrough=2; }
+        else if (state.analysis && !state.busy) {
+          if (state.analysis.status==='convertible') { current=3; doneThrough=2; }
+          else { current=2; doneThrough=1; }
+        }
+        if (state.output) { current=4; doneThrough=3; }
+        if (state.savedOnce && state.output) { current=4; doneThrough=4; }
+        for (let i=1;i<=4;i++) {
+          const step=$(`#workflowStep${i}`);
+          step.dataset.state=i<=doneThrough ? 'done' : i===current ? 'current' : 'upcoming';
+          step.setAttribute('aria-current',i===current ? 'step' : 'false');
+        }
+      }
+
+      function renderMobileAction() {
+        const bar=$('#mobileActionBar'), button=$('#mobilePrimaryAction'), title=$('#mobileActionTitle'), hint=$('#mobileActionHint');
+        if (!state.files.size) { bar.hidden=true; document.body.dataset.mobileAction='false'; return; }
+        bar.hidden=false; document.body.dataset.mobileAction='true';
+        button.disabled=false; button.classList.add('primary'); button.dataset.action='';
+        if (state.busy || !state.analysis) { const packaging=state.busyMode==='packaging'; title.textContent=t(packaging?'mobilePackagingTitle':'mobileAnalyzingTitle'); hint.textContent=t(packaging?'mobilePackagingHint':'mobileAnalyzingHint'); button.textContent=t('mobileWorking'); button.disabled=true; return; }
+        if (state.output) { title.textContent=t('mobileOutputTitle'); hint.textContent=t('mobileOutputHint'); button.textContent=t('saveHtml'); button.dataset.action='save'; return; }
+        if (state.analysis.status==='convertible') { title.textContent=t('mobileCreateTitle'); hint.textContent=t('mobileCreateHint'); button.textContent=t('createHtml'); button.dataset.action='create'; return; }
+        const blocked=state.analysis.status==='blocked'; title.textContent=t(blocked?'mobileBlockedTitle':'mobileReviewTitle'); hint.textContent=t(blocked?'mobileBlockedHint':'mobileReviewHint'); button.textContent=t('mobileResultAction'); button.dataset.action='result'; button.classList.remove('primary');
+      }
+
+      function renderCapabilities() {
+        const folderButton=$('#chooseFolderButton');
+        folderButton.disabled=state.busy || !state.capabilities.folderPicker;
+        const folderNote=folderButton.querySelector('.input-note');
+        if (folderNote) folderNote.textContent=state.capabilities.folderPicker ? t('folderNote') : t('folderUnsupported');
+        const folderStatus=$('#folderSupportStatus'), zipStatus=$('#zipSupportStatus'), saveStatus=$('#saveSupportStatus');
+        if (folderStatus) folderStatus.textContent=state.capabilities.folderPicker ? t('browserAvailable') : t('browserUnavailable');
+        if (zipStatus) zipStatus.textContent=state.capabilities.deflateRaw ? t('browserAvailable') : t('browserFallback');
+        if (saveStatus) saveStatus.textContent=state.capabilities.blobUrl ? (state.capabilities.anchorDownload ? t('browserAvailable') : t('browserFallback')) : t('browserUnavailable');
+      }
+
+      function render() {
+        $('#brandName').textContent=state.language==='ja' ? APP_CONFIG.nameJa : APP_CONFIG.name;
+        $('#versionBadge').textContent=`v${APP_CONFIG.version}`;
+        $('#footerName').textContent=state.language==='ja' ? APP_CONFIG.nameJa : APP_CONFIG.name;
+        document.documentElement.lang=state.language;
+        document.title=state.language==='ja' ? `${APP_CONFIG.nameJa} | ${t('introTitle')}` : `${APP_CONFIG.name} | ${t('introTitle')}`;
+        document.querySelectorAll('[data-i18n]').forEach(el=>{ const key=el.dataset.i18n; if (translations[state.language][key] != null) el.textContent=t(key); });
+        document.querySelectorAll('[data-i18n-title]').forEach(el=>el.title=t(el.dataset.i18nTitle));
+        document.querySelectorAll('[data-i18n-aria-label]').forEach(el=>el.setAttribute('aria-label',t(el.dataset.i18nAriaLabel)));
+        $('#languageButton').textContent=state.language==='ja' ? 'EN' : 'JA';
+        $('#buildVersion').textContent=APP_CONFIG.version;
+        $('#builtAt').textContent=BUILD_MANIFEST.generatedAtUtc || '—';
+        renderCapabilities();
+        renderWorkflow();
+        renderMobileAction();
+        if (!state.files.size) { resultPanel.hidden=true; outputPanel.hidden=true; return; }
+        resultPanel.hidden=false;
+        $('#sourceTypeValue').textContent=sourceLabel();
+        $('#fileCountValue').textContent=state.files.size.toLocaleString(state.language==='ja'?'ja-JP':'en-US');
+        const htmlPaths=state.files.htmlPaths();
+        $('#htmlCountValue').textContent=htmlPaths.length.toLocaleString(state.language==='ja'?'ja-JP':'en-US');
+        $('#totalSizeValue').textContent=formatBytes(state.files.totalSize());
+        const detection=Core.detectStartHtml(htmlPaths);
+        if (!state.entryHtml || !htmlPaths.includes(state.entryHtml)) state.entryHtml=detection.selected;
+        entryHtmlSelect.innerHTML='';
+        if (!htmlPaths.length) { const option=document.createElement('option'); option.value=''; option.textContent=t('noHtml'); entryHtmlSelect.append(option); entryHtmlSelect.disabled=true; }
+        else { entryHtmlSelect.disabled=state.busy; for (const path of htmlPaths) { const option=document.createElement('option'); option.value=path; option.textContent=path; option.selected=path===state.entryHtml; entryHtmlSelect.append(option); } }
+        $('#entryNote').textContent=startNote(detection);
+        renderAnalysis();
+        outputPanel.hidden=!state.output;
+        if (state.output) {
+          $('#outputFilename').textContent=state.output.filename;
+          $('#outputSize').textContent=formatBytes(state.output.size);
+          $('#embeddedFilesValue').textContent=state.output.embeddedFiles.length.toLocaleString(state.language==='ja'?'ja-JP':'en-US');
+          $('#outputEntryValue').textContent=state.output.entryHtml;
+          const verification=state.output.verification;
+          const verificationBox=$('#outputVerification');
+          verificationBox.dataset.status=verification?.status==='review' ? 'review' : 'verified';
+          $('#outputVerificationTitle').textContent=t('verificationTitle');
+          $('#outputVerificationBody').textContent=verification?.status==='review' ? t('verificationReview') : t('verificationVerified');
+        }
+        const files=state.files.values(); const maxVisible=500; const shown=files.slice(0,maxVisible); fileList.innerHTML='';
+        for (const file of shown) { const li=document.createElement('li'); li.className='file-item'; const path=document.createElement('span'); path.className='file-path'; path.textContent=file.path; path.title=file.path; const type=document.createElement('span'); type.className='file-type'; type.textContent=typeLabel(file.path); const size=document.createElement('span'); size.className='file-size'; size.textContent=formatBytes(file.size); li.append(path,type,size); fileList.append(li); }
+        $('#fileListHint').textContent=shown.length===files.length ? formatTemplate(t('fileListAll'),{count:files.length}) : formatTemplate(t('fileListLimited'),{shown:shown.length,count:files.length});
+      }
+
+      function applyLanguage() { render(); writeStorage(`${APP_CONFIG.slug}:language`,state.language); }
+      async function confirmReplace() { if (!state.files.size) return true; return AppConfirm.ask({heading:t('confirmTitle'),body:t('replaceMessage'),confirmLabel:t('replace')}); }
+
+      function createOperation(label,mode,canCancel=false) {
+        const controller=new AbortController();
+        state.progress=null;
+        setBusy(true,label,mode,{controller,canCancel});
+        return controller;
+      }
+      function finishOperation(controller) {
+        if (!controller || state.operationController===controller) setBusy(false);
+      }
+
+      async function runAnalysis({focusResult=false,controller=null,manageBusy=true}={}) {
+        const revision=++state.analysisRevision;
+        const ownController=!controller;
+        const activeController=controller || new AbortController();
+        state.analysis=null;
+        state.output=null;
+        render();
+        setBusy(true,t('analyzing'),'analyzing',{controller:activeController,canCancel:false});
+        try {
+          const result=await Core.analyzeProject(state.files.values(),state.entryHtml,{
+            largeFileWarningBytes:Core.DEFAULT_LIMITS.largeFileWarningBytes,
+            signal:activeController.signal,
+            onProgress:updateProgress
+          });
+          if (revision!==state.analysisRevision) return;
+          state.analysis=result;
+          clearError();
+          render();
+          const statusMessage=result.status==='convertible' ? t('statusConvertibleTitle') : result.status==='review' ? t('statusReviewTitle') : t('statusBlockedTitle');
+          announce(statusMessage);
+          if (focusResult) requestAnimationFrame(()=>$('#resultTitle').focus({preventScroll:true}));
+        } catch (error) {
+          if (revision!==state.analysisRevision) return;
+          handleOperationError(error);
+        } finally {
+          if (revision===state.analysisRevision && (manageBusy || ownController)) { finishOperation(activeController); render(); }
+        }
+      }
+
+      async function commitEntries(entries,sourceKind,sourceName='',controller=null) {
+        const activeController=controller || new AbortController();
+        Core.assertInputLimits(entries,{signal:activeController.signal});
+        const next=new VirtualFileSystem();
+        const total=Math.max(entries.length,1);
+        for (let index=0; index<entries.length; index+=1) {
+          if (activeController.signal.aborted) throw new Core.PackagerInputError('operation-cancelled',t('cancelled'));
+          next.add(entries[index]);
+          updateProgress({stage:'input-index',completed:index+1,total,detail:entries[index].path});
+          if ((index+1)%50===0) await Promise.resolve();
+        }
+        if (!next.size) throw new Core.PackagerInputError('no-files',t('noFiles'));
+        state.files=next; state.sourceKind=sourceKind; state.sourceName=sourceName; state.entryHtml=Core.detectStartHtml(next.htmlPaths()).selected; state.analysis=null; state.output=null; state.savedOnce=false; clearError(); render(); resultPanel.scrollIntoView({behavior:'smooth',block:'start'});
+        await runAnalysis({focusResult:true,controller:activeController,manageBusy:false});
+      }
+
+      async function loadHtmlFile(file,skipConfirm=false) {
+        if (!file || !['html','htm'].includes(Core.extensionOf(file.name))) throw new Core.PackagerInputError('html-required',t('htmlOne'));
+        if (!skipConfirm && !(await confirmReplace())) { htmlInput.value=''; return; }
+        const controller=createOperation(t('reading'),'reading',false); clearError();
+        try {
+          Core.assertInputLimits([{path:file.name,file,size:file.size}],{signal:controller.signal});
+          await commitEntries([{path:file.name,file,size:file.size,source:'file'}],'html',file.name,controller);
+        } catch (error) { handleOperationError(error); }
+        finally { finishOperation(controller); htmlInput.value=''; render(); }
+      }
+
+      async function loadZipFile(file,skipConfirm=false) {
+        if (!file || Core.extensionOf(file.name)!=='zip') throw new Core.PackagerInputError('zip-required',t('zipOne'));
+        if (!skipConfirm && !(await confirmReplace())) { zipInput.value=''; return; }
+        const controller=createOperation(t('reading'),'reading',true); clearError();
+        try {
+          Core.assertInputLimits([{path:file.name,file,size:file.size}],{signal:controller.signal});
+          const buffer=await file.arrayBuffer();
+          if (controller.signal.aborted) throw new Core.PackagerInputError('operation-cancelled',t('cancelled'));
+          const unpacked=await Core.readZip(buffer,{signal:controller.signal,onProgress:updateProgress});
+          await commitEntries(unpacked.map(item=>({path:item.path,bytes:item.bytes,size:item.size,source:'zip'})),'zip',file.name,controller);
+        } catch (error) { handleOperationError(error); }
+        finally { finishOperation(controller); zipInput.value=''; render(); }
+      }
+
+      function filesFromFolderInput(fileListInput) {
+        if (!state.capabilities.folderPicker) throw new Core.PackagerInputError('folder-picker-unsupported',t('folderUnsupported'));
+        const files=[...fileListInput];
+        if (files.some(file=>!file.webkitRelativePath)) throw new Core.PackagerInputError('folder-relative-path-unsupported',t('folderPathUnsupported'));
+        const raw=files.map(file=>({path:file.webkitRelativePath,file,size:file.size,source:'folder'}));
+        Core.assertInputLimits(raw);
+        return Core.stripCommonRoot(raw);
+      }
+
+      async function loadFolderFiles(files,skipConfirm=false,sourceKind='folder') {
+        if (!files.length) throw new Core.PackagerInputError('folder-empty',t('folderEmpty'));
+        if (!skipConfirm && !(await confirmReplace())) { folderInput.value=''; return; }
+        const controller=createOperation(t('reading'),'reading',false); clearError();
+        try {
+          Core.assertInputLimits(files,{signal:controller.signal});
+          await commitEntries(files,sourceKind,sourceKind==='folder' ? (files[0]?.path.split('/')[0] || '') : '',controller);
+        } catch (error) { handleOperationError(error); }
+        finally { finishOperation(controller); folderInput.value=''; render(); }
+      }
+
+      function readDirectoryChunk(reader) { return new Promise((resolve,reject)=>reader.readEntries(resolve,reject)); }
+      async function readDirectoryEntries(directory) { const reader=directory.createReader(); const all=[]; while (true) { const chunk=await readDirectoryChunk(reader); if (!chunk.length) break; all.push(...chunk); } return all; }
+      function entryToFile(entry) { return new Promise((resolve,reject)=>entry.file(resolve,reject)); }
+      async function walkEntry(entry,prefix='',stats={files:0,totalBytes:0}) {
+        const path=prefix ? `${prefix}/${entry.name}` : entry.name;
+        if (entry.isFile) {
+          const file=await entryToFile(entry);
+          stats.files+=1; stats.totalBytes+=file.size;
+          if (stats.files>Core.DEFAULT_LIMITS.maxFiles) throw new Core.PackagerInputError('too-many-files',t('tooManyFiles'),`${stats.files} files`);
+          if (file.size>Core.DEFAULT_LIMITS.maxSingleBytes) throw new Core.PackagerInputError('file-too-large',t('fileTooLarge'),`${path}: ${file.size} bytes`);
+          if (stats.totalBytes>Core.DEFAULT_LIMITS.maxTotalBytes) throw new Core.PackagerInputError('input-too-large',t('inputTooLarge'),`${stats.totalBytes} bytes`);
+          return [{path,file,size:file.size,source:'drop'}];
+        }
+        if (entry.isDirectory) { const children=await readDirectoryEntries(entry); const nested=[]; for (const child of children) nested.push(...await walkEntry(child,path,stats)); return nested; }
+        return [];
+      }
+
+      function getDroppedEntry(item) {
+        if (!item) return null;
+        const getter=typeof item.getAsEntry==='function' ? item.getAsEntry : typeof item.webkitGetAsEntry==='function' ? item.webkitGetAsEntry : null;
+        if (!getter) return null;
+        try { return getter.call(item); } catch { return null; }
+      }
+
+      function directDroppedFiles(dataTransfer) {
+        const items=[...(dataTransfer?.items || [])].filter(item=>item.kind==='file');
+        if (!items.length) return [...(dataTransfer?.files || [])];
+        const files=items.map(item=>{ try { return typeof item.getAsFile==='function' ? item.getAsFile() : null; } catch { return null; } });
+        return files.every(Boolean) ? files : [...(dataTransfer?.files || [])];
+      }
+
+      async function loadQuickFile(file) {
+        if (!file) throw new Core.PackagerInputError('quick-empty',t('quickUnsupported'));
+        const extension=Core.extensionOf(file.name);
+        if (['html','htm'].includes(extension)) return loadHtmlFile(file);
+        if (extension==='zip') return loadZipFile(file);
+        throw new Core.PackagerInputError('quick-unsupported',t('quickUnsupported'),file.name);
+      }
+
+      async function handleDrop(event) {
+        event.preventDefault(); dropzone.dataset.active='false'; if (state.busy) return;
+        const dataTransfer=event.dataTransfer;
+        const items=[...(dataTransfer?.items || [])];
+        try {
+          const droppedEntries=items.map(getDroppedEntry).filter(Boolean);
+          const hasDirectory=droppedEntries.some(entry=>entry.isDirectory);
+
+          // Direct files must use DataTransferItem.getAsFile()/dataTransfer.files first.
+          // FileSystemFileEntry.file() can fail when this standalone app is opened via file://.
+          if (!hasDirectory) {
+            const files=directDroppedFiles(dataTransfer);
+            if (files.length) {
+              const entries=files.map(file=>({path:file.name,file,size:file.size,source:'drop'}));
+              Core.assertInputLimits(entries);
+              const normalized=Core.stripCommonRoot(entries);
+              const zipEntries=normalized.filter(entry=>Core.extensionOf(entry.path)==='zip');
+              if (zipEntries.length) {
+                if (normalized.length!==1 || zipEntries.length!==1) throw new Core.PackagerInputError('drop-mixed-zip',t('mixedZip'));
+                return loadZipFile(zipEntries[0].file);
+              }
+              if (normalized.length===1 && ['html','htm'].includes(Core.extensionOf(normalized[0].path))) return loadHtmlFile(normalized[0].file);
+              return loadFolderFiles(normalized,false,'drop');
+            }
+          }
+
+          const entries=[]; const dropStats={files:0,totalBytes:0};
+          try {
+            if (droppedEntries.length) {
+              for (const entry of droppedEntries) entries.push(...await walkEntry(entry,'',dropStats));
+            }
+          } catch (error) {
+            if (error?.name==='EncodingError' || /URI supplied to the API was malformed|Data URL has exceeded/i.test(String(error?.message || ''))) {
+              throw new Core.PackagerInputError('folder-drop-file-protocol-unsupported',t('folderDropDirectOpenUnsupported'),String(error?.message || error));
+            }
+            throw error;
+          }
+          if (!entries.length) {
+            for (const file of [...(dataTransfer?.files || [])]) entries.push({path:file.name,file,size:file.size,source:'drop'});
+            Core.assertInputLimits(entries);
+          }
+          if (!entries.length) throw new Core.PackagerInputError('drop-empty',t('unsupportedDrop'));
+          const normalized=Core.stripCommonRoot(entries);
+          const zipEntries=normalized.filter(entry=>Core.extensionOf(entry.path)==='zip');
+          if (zipEntries.length) {
+            if (normalized.length!==1 || zipEntries.length!==1) throw new Core.PackagerInputError('drop-mixed-zip',t('mixedZip'));
+            return loadZipFile(zipEntries[0].file);
+          }
+          if (normalized.length===1 && ['html','htm'].includes(Core.extensionOf(normalized[0].path))) return loadHtmlFile(normalized[0].file);
+          return loadFolderFiles(normalized,false,'drop');
+        } catch (error) { handleOperationError(error); setBusy(false); render(); }
+      }
+
+      $('#chooseHtmlButton').addEventListener('click',()=>htmlInput.click());
+      dropzone.addEventListener('click',()=>{ if (!state.busy) quickInput.click(); });
+      dropzone.addEventListener('keydown',event=>{ if (state.busy || (event.key!=='Enter' && event.key!==' ')) return; event.preventDefault(); quickInput.click(); });
+      $('#chooseZipButton').addEventListener('click',()=>zipInput.click());
+      $('#chooseFolderButton').addEventListener('click',()=>{ if (!state.capabilities.folderPicker) { showError(new Core.PackagerInputError('folder-picker-unsupported',t('folderUnsupported'))); return; } folderInput.click(); });
+      quickInput.addEventListener('change',async()=>{ try { if (quickInput.files?.length===1) await loadQuickFile(quickInput.files[0]); else if (quickInput.files?.length) showError(new Core.PackagerInputError('quick-count',t('quickUnsupported'))); } catch (error) { handleOperationError(error); } finally { quickInput.value=''; } });
+      htmlInput.addEventListener('change',async()=>{ try { if (htmlInput.files?.length===1) await loadHtmlFile(htmlInput.files[0]); else if (htmlInput.files?.length) showError(new Core.PackagerInputError('html-count',t('htmlOne'))); } catch (error) { handleOperationError(error); htmlInput.value=''; } });
+      zipInput.addEventListener('change',async()=>{ try { if (zipInput.files?.length===1) await loadZipFile(zipInput.files[0]); else if (zipInput.files?.length) showError(new Core.PackagerInputError('zip-count',t('zipOne'))); } catch (error) { handleOperationError(error); zipInput.value=''; } });
+      folderInput.addEventListener('change',async()=>{ try { if (folderInput.files?.length) await loadFolderFiles(filesFromFolderInput(folderInput.files)); } catch (error) { handleOperationError(error); folderInput.value=''; render(); } });
+      entryHtmlSelect.addEventListener('change',()=>{ state.entryHtml=entryHtmlSelect.value; state.savedOnce=false; runAnalysis(); });
+      createHtmlButton.addEventListener('click',async()=>{
+        if (state.busy || !state.analysis || state.analysis.status!=='convertible') return;
+        const controller=createOperation(t('packaging'),'packaging',true); clearError(); state.output=null; render();
+        try {
+          state.output=await Core.packageProject(state.files.values(),state.entryHtml,{analysis:state.analysis,signal:controller.signal,onProgress:updateProgress});
+          state.savedOnce=false;
+          render();
+          outputPanel.scrollIntoView({behavior:'smooth',block:'nearest'});
+          requestAnimationFrame(()=>$('#outputTitle').focus({preventScroll:true}));
+          announce(t('outputTitle'));
+        } catch (error) { handleOperationError(error); }
+        finally { finishOperation(controller); render(); }
+      });
+      $('#saveHtmlButton').addEventListener('click',()=>{
+        if (!state.output) return;
+        if (!state.capabilities.blobUrl) { showError(new Core.PackagerInputError('save-unsupported',t('saveUnsupported'))); return; }
+        const blob=new Blob([state.output.html],{type:'text/html;charset=utf-8'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.hidden=true;
+        if (state.capabilities.anchorDownload) a.download=state.output.filename;
+        else { a.target='_blank'; a.rel='noopener'; }
+        document.body.append(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),state.capabilities.anchorDownload ? 1500 : 60000);
+        state.savedOnce=true; render();
+        const message=state.capabilities.anchorDownload ? t('htmlSaved') : t('htmlOpened');
+        AppToast.show(message); announce(message);
+      });
+      $('#releaseOutputButton').addEventListener('click',async()=>{
+        if (!state.output) return;
+        const ok=await AppConfirm.ask({heading:t('releaseOutputTitle'),body:t('releaseOutputMessage'),confirmLabel:t('releaseOutputAction'),danger:true});
+        if (!ok) return;
+        if (state.output && typeof state.output.html==='string') state.output.html='';
+        state.output=null; state.savedOnce=false; render(); AppToast.show(t('outputReleased')); announce(t('outputReleased'));
+        requestAnimationFrame(()=>createHtmlButton.focus({preventScroll:true}));
+      });
+      $('#cancelOperationButton').addEventListener('click',()=>{
+        const controller=state.operationController;
+        if (!controller || controller.signal.aborted) return;
+        controller.abort();
+        $('#cancelOperationButton').disabled=true;
+        $('#busyText').textContent=t('cancelling');
+        announce(t('cancelling'));
+      });
+      $('#clearButton').addEventListener('click',async()=>{
+        if (!state.files.size) return;
+        const ok=await AppConfirm.ask({heading:t('clearTitle'),body:t('clearMessage'),confirmLabel:t('clearAction'),danger:true}); if (!ok) return;
+        state.analysisRevision+=1; if (state.operationController) state.operationController.abort();
+        if (state.output && typeof state.output.html==='string') state.output.html='';
+        if (state.files instanceof VirtualFileSystem) state.files.clear();
+        state.files=new VirtualFileSystem(); state.sourceKind=''; state.sourceName=''; state.entryHtml=''; state.analysis=null; state.output=null; state.savedOnce=false;
+        quickInput.value=''; htmlInput.value=''; zipInput.value=''; folderInput.value=''; clearError(); setBusy(false); render(); AppToast.show(t('cleared'));
+      });
+      ['dragenter','dragover'].forEach(name=>dropzone.addEventListener(name,event=>{ event.preventDefault(); if (!state.busy) dropzone.dataset.active='true'; }));
+      ['dragleave','drop'].forEach(name=>dropzone.addEventListener(name,event=>{ if (name==='dragleave' && event.relatedTarget && dropzone.contains(event.relatedTarget)) return; dropzone.dataset.active='false'; }));
+      dropzone.addEventListener('drop',handleDrop);
+      $('#mobilePrimaryAction').addEventListener('click',()=>{ const action=$('#mobilePrimaryAction').dataset.action; if (action==='create') createHtmlButton.click(); else if (action==='save') $('#saveHtmlButton').click(); else if (action==='result') { resultPanel.scrollIntoView({behavior:'smooth',block:'start'}); requestAnimationFrame(()=>$('#resultTitle').focus({preventScroll:true})); } });
+      $('#languageButton').addEventListener('click',()=>{ state.language=state.language==='ja'?'en':'ja'; applyLanguage(); });
+      const helpDialog=$('#helpDialog'); let helpRestoreFocus=null; function closeHelp(){ helpDialog.close(); if (helpRestoreFocus instanceof HTMLElement && helpRestoreFocus.isConnected) helpRestoreFocus.focus({preventScroll:true}); helpRestoreFocus=null; } $('#helpButton').addEventListener('click',()=>{ helpRestoreFocus=document.activeElement; helpDialog.showModal(); requestAnimationFrame(()=>$('#closeHelpButton').focus({preventScroll:true})); }); $('#closeHelpButton').addEventListener('click',closeHelp); helpDialog.addEventListener('cancel',event=>{ event.preventDefault(); closeHelp(); });
+
+      window.StandaloneAssets = Object.freeze({ manifest:BUILD_MANIFEST, bundle:assetBundle, list(){ return Object.entries(assetBundle.dependencies || {}).flatMap(([dependencyId,dependency])=>Object.keys(dependency.assets || {}).map(assetKey=>`${dependencyId}/${assetKey}`)); }, async bytesAsync(){ throw new Error('No embedded runtime dependency assets are configured.'); }, async blobUrlAsync(){ throw new Error('No embedded runtime dependency assets are configured.'); } });
+      applyLanguage();
+    })();
+  </script>
+</body>
+</html>
