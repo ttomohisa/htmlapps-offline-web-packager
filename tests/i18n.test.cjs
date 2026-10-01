@@ -7,7 +7,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.template.html'), 'utf8');
 const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.config.json'), 'utf8'));
-assert.equal(config.version, '1.0.0');
+assert.equal(config.version, '1.0.1');
 
 const match = source.match(/const translations = (\{[\s\S]*?\n      \});/);
 assert.ok(match, 'translations object was not found');
