@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.1] - 2026-10-02
+
+### Fixed
+
+- Aligned the canonical SVG favicon with the Browser Kitty brand color `#16624F`; the standalone build now embeds the same corrected icon for both the browser favicon and header icon.
+- Aligned the application header with the current `htmlapps-template` header treatment, including desktop width/alignment, language/help actions, and compact mobile behavior.
+
+### Verified
+
+- Updated release/version regression checks to v1.0.1.
+- Added a regression check that rejects the legacy favicon color `#036a53`.
+
 ## [1.0.0] - 2026-09-25
 
 ### Changed
