@@ -8,7 +8,8 @@ const root = path.join(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'src', 'index.template.html'), 'utf8');
 const config = JSON.parse(fs.readFileSync(path.join(root, 'app.config.json'), 'utf8'));
 
-assert.equal(config.version, '1.0.0');
+assert.match(config.version, /^\d+\.\d+\.\d+$/, 'app config must declare a release version');
+assert.ok(source.includes('`v${APP_CONFIG.version}`'), 'visible version must use the app config');
 assert.match(source, /id="dropzone"[^>]*role="button"[^>]*tabindex="0"/);
 assert.match(source, /id="quickInput"[^>]*accept="\.html,\.htm,\.zip/);
 assert.match(source, /dropzone\.addEventListener\('click',[\s\S]*?quickInput\.click\(\)/);

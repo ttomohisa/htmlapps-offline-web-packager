@@ -602,7 +602,7 @@
       return actual;
     }
 
-    function scanJavaScript(text, path, inlineLine = 0) {
+    function scanJavaScript(text, path, bodyStartLine = 1) {
       const tests = [
         ['block', 'dynamic-import', /\bimport\s*\(/g],
         ['block', 'import-meta-url', /\bimport\.meta(?:\.url)?\b/g],
@@ -618,7 +618,11 @@
       for (const [severity, code, re] of tests) {
         re.lastIndex = 0;
         const match = re.exec(text);
-        if (match) addFinding(severity, code, { path, line: inlineLine || lineNumberFor(text, match.index) });
+        if (match) {
+          // Module patterns include a separator/whitespace prefix; locate the keyword itself.
+          const offset = match.index + (code === 'es-module-syntax' ? match[0].search(/\b(?:import|export)\b/) : 0);
+          addFinding(severity, code, { path, line: bodyStartLine + lineNumberFor(text, offset) - 1 });
+        }
       }
     }
 
@@ -685,7 +689,9 @@
           const actual = handleReference(path, attrs.src, moduleScript ? 'module-script' : 'script', baseHref, { scan: 'javascript' });
           if (moduleScript && actual) queued.push({ path: actual, kind: 'javascript' });
         } else if (tagMatch[2]) {
-          scanJavaScript(tagMatch[2], path, lineNumberFor(text, tagMatch.index));
+          // The opening tag can span lines. Map body offsets back to the original HTML.
+          const bodyStart = tagMatch.index + tagMatch[0].indexOf('>') + 1;
+          scanJavaScript(tagMatch[2], path, lineNumberFor(text, bodyStart));
         }
       }
 

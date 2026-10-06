@@ -23,6 +23,7 @@ GitHub Pages delivers only the initial app HTML. Files you add are read and anal
 - **Add HTML, ZIP, or a folder** — Use the file buttons or drag and drop a saved page set.
 - **Check before creating anything** — Detect missing local files, external resources, filename case mismatches, and unsupported runtime-loading patterns.
 - **Get one of three clear results** — `Can be combined`, `Review needed`, or `Cannot be made into one file as-is`.
+- **Save a check report** — Keep the current result, explanations, counts, and technical locations in a local `.txt` file, even when packaging is blocked. Edit the report filename before saving.
 - **Package supported static pages** — Embed local CSS, classic JavaScript, images, favicon, fonts, and size-limited static audio/video into one HTML file.
 - **Resolve real-world paths** — Handle `../`, root-relative paths, CSS `@import`, CSS `url(...)`, `srcset`, query/fragment suffixes, URL-encoded filenames, and nested CSS references.
 - **Verify the generated result** — Re-analyze the output and block normal saving when unresolved local references or missed dependencies remain.
@@ -56,7 +57,7 @@ The standard Windows build does not require Node.js, Python, or a local web serv
 
 1. Add an HTML file, ZIP archive, or folder. You can also drag and drop it onto the input area.
 2. If multiple HTML files are present, check the detected start HTML and change it when needed.
-3. Review the analysis result.
+3. Review the analysis result. To keep a record, edit the report filename and choose **Save check report**. This is available for all three result states.
 4. When the result is **Can be combined**, select **Create one HTML file**.
 5. The generated HTML is checked again for unresolved local references and missed embedded dependencies.
 6. Select **Save HTML** to save the result to your device.
@@ -70,6 +71,14 @@ The standard Windows build does not require Node.js, Python, or a local web serv
 | **Cannot be made into one file as-is** | A required local file is missing or the page uses a structure that v1 intentionally does not package automatically. |
 
 Technical terms such as ESM, Worker, or CSP are kept under expandable details where possible. The main result text uses plain-language explanations.
+
+### Check reports
+
+Reports use the current Japanese/English language and include every displayed finding with its technical code, relative source path, statement line when available, and reference details. The default name comes from the start HTML; filename edits survive language changes, and the `.txt` extension is enforced.
+
+Reports redact inline `data:`, `javascript:`, and `vbscript:` payloads and do not include source file bodies or binary data, but filenames and reference targets can still contain private information. Review the text before sharing it. No report is uploaded or saved automatically. This is a static-analysis record, not a safety certificate.
+
+Report saving is disabled while processing and after input replacement starts, including when replacement fails or is cancelled. The previous input is retained in those cases; successfully check it again (reselect an entry or reload it) to enable a new report. Clearing input removes report availability. Browsers without the download attribute open the plain-text report in a new tab for manual saving.
 
 ### What v1 can package
 
@@ -165,6 +174,9 @@ node tests/performance.test.cjs
 node tests/cross-browser.test.cjs
 node tests/drop-regression.test.cjs
 node tests/i18n.test.cjs
+# Focused suites (also invoked by analyzer / UX above)
+node tests/diagnostic-locations.test.cjs
+node tests/diagnostic-report.test.cjs
 ```
 
 The Windows standalone build itself does not require Node.js.

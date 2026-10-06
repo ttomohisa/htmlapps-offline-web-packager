@@ -42,3 +42,5 @@ assert.match(source, /function renderWorkflow\(\)/);
 assert.match(source, /function renderMobileAction\(\)/);
 
 console.log('[OK] UX tests passed: workflow, mobile actions, focus/live regions, touch targets, dialog behavior, and refreshed input icons are present.');
+
+require('./diagnostic-report.test.cjs')().catch(error => { console.error(error); process.exitCode = 1; });

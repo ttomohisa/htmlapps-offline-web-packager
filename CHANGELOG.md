@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Local UTF-8 diagnostic reports for all three analysis states, with editable sanitized `.txt` filenames, Japanese/English explanations, counts, and existing technical details.
+- Report availability tied to the current completed analysis; busy, replacement, entry-change, clear, and late-result guards. Source file bodies and inline data/script URL payloads are excluded, and reports carry a static-analysis/privacy notice.
+
+### Fixed
+
+- Inline JavaScript findings now point to the matching statement in the original HTML, including multiline script opening tags, multiple blocks, LF/CRLF, and import/export separator offsets.
+
+### Test maintenance
+
+- Fail fast after each Node test command in the existing validation/Pages regression steps so a later success cannot mask an earlier failure; jobs, triggers, runtimes, and permissions are unchanged.
+
+- Replaced stale v1.0.0 assertions in the cross-browser/drop tests with checks tied to the actual app config and version UI; preserved behavioral assertions.
+- Renamed three committed mojibake fixture paths to `猫.png`, `猫@2x.png`, and `背景.svg`, preserving their exact bytes and restoring the existing Japanese-path analyzer/package/verification coverage.
+- Added focused source-location and report VM tests, included by the existing analyzer and UX suites. Actual browser downloads, direct `file://`, mobile/desktop visual/keyboard behavior, and browser network observation remain manual checks.
+
 ## [1.0.1] - 2026-10-02
 
 ### Fixed

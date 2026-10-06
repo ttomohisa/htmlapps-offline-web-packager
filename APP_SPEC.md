@@ -75,6 +75,22 @@ Examples: missing required file, module script, runtime JSON fetch, Worker, or e
 
 ## 7. Implemented development scopes
 
+### Unreleased — Diagnostic report / source locations
+
+- Offer **Save check report** in Check for convertible, review, and blocked analysis results, independently of HTML creation.
+- Export a local UTF-8 `text/plain` `.txt` file containing the current language's status/explanation, selected entry, block/warning/reference counts, and every displayed finding with its human explanation and existing technical details. Source HTML/JavaScript bodies and binary contents are not included; inline `data:`, `javascript:`, and `vbscript:` payloads in technical target/detail fields are redacted. Filenames and reference targets are included, so users should review the report before sharing.
+- State that the report is static analysis, not a malware scan or a guarantee of safety or runtime behavior.
+- Default the editable report filename to `<entry-basename>-check-report.txt`; enforce `.txt`, remove separators/control/invalid characters and leading/trailing dots, guard reserved device names, and use a valid fallback.
+- Keep filename edits through language changes and reset them when a new source or entry is committed or cleared.
+- Disable report export without a completed current analysis, while processing, or without Blob URL support. Starting a replacement invalidates report availability; failed/cancelled replacement retains existing input but does not revive its report. A subsequent successful check is needed to export again.
+- Ignore late analysis results after entry/source changes or clearing. No saved report state or input contents are persisted.
+- Use the existing local Blob download path and cleanup. The no-`download` fallback opens only the plain-text report in a new tab.
+- Report inline JavaScript findings at the matching statement's actual 1-based HTML line, accounting for multiline opening tags and LF/CRLF. Import/export separators do not count as the statement location.
+- Keep supported packaging scope, refusal behavior, input limits, CSP, and static-only handling unchanged. Saving a report does not advance the HTML Save workflow.
+
+Automated coverage runs via the existing analyzer and UX suites. Browser download behavior, responsive/focus rendering, actual browser network observation, and direct `file://` checks still require the manual lab; a Node DOM harness is not evidence of those browser checks.
+
+
 ### v0.1.0 — Foundation / Input
 
 Implemented in this version:

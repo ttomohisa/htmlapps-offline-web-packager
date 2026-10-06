@@ -28,6 +28,7 @@ function codes(result, severity = '') {
 }
 
 async function main() {
+  await require('./diagnostic-locations.test.cjs')();
   const expected = new Map([
     ['01-basic-inline', 'convertible'],
     ['02-static-assets', 'convertible'],
