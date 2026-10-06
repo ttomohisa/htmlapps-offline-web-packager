@@ -37,16 +37,16 @@ jobs:
       - name: Run Offline Web Packager regression fixtures
         shell: pwsh
         run: |
-          node ./tests/foundation.test.cjs
-          node ./tests/analyzer.test.cjs
-          node ./tests/packager.test.cjs
-          node ./tests/resolver.test.cjs
-          node ./tests/verification.test.cjs
-          node ./tests/ux.test.cjs
-          node ./tests/performance.test.cjs
-          node ./tests/cross-browser.test.cjs
-          node ./tests/drop-regression.test.cjs
-          node ./tests/i18n.test.cjs
+          node ./tests/foundation.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/analyzer.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/packager.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/resolver.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/verification.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/ux.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/performance.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/cross-browser.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/drop-regression.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ./tests/i18n.test.cjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build and verify standalone HTML
         shell: pwsh

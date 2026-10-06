@@ -168,6 +168,10 @@
     .field label { font-size:11px; font-weight:750; color:var(--muted); }
     select { width:100%; min-height:42px; padding:8px 38px 8px 11px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--text); }
     .entry-note { margin:0; max-width:310px; color:var(--muted); font-size:11px; text-align:right; }
+    .report-actions { display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin-top:18px; }
+    .report-actions .field { flex:1 1 240px; min-width:0; }
+    .report-actions input { width:100%; min-height:44px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; color:var(--text); background:var(--surface); }
+    .report-note { margin:8px 0 0; color:var(--muted); font-size:12px; line-height:1.7; }
     .file-section { border-top:1px solid var(--line); }
     .file-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 20px; }
     .file-head h3 { margin:0; font-size:14px; }
@@ -399,6 +403,11 @@
           <div class="analysis-counts" id="analysisCounts"></div>
         </div>
         <div id="analysisResults"></div>
+        <div class="report-actions">
+          <div class="field"><label for="reportFilename" data-i18n="reportFilename">確認レポートのファイル名 (.txt)</label><input id="reportFilename" type="text" maxlength="200" disabled aria-describedby="reportNote" autocomplete="off" spellcheck="false"></div>
+          <button class="button" id="saveReportButton" type="button" disabled data-i18n="saveReport">確認レポートを保存</button>
+        </div>
+        <p class="report-note" id="reportNote" data-i18n="reportNote">変換できない場合も、現在の確認結果をテキストで保存できます。ソース本文は含めません。</p>
       </section>
       <div class="file-section">
         <div class="file-head"><h3 data-i18n="filesTitle">読み込んだファイル</h3><span id="fileListHint"></span></div>
@@ -460,6 +469,7 @@
     <div class="dialog-body">
       <h3 data-i18n="helpBasicsTitle">基本操作</h3>
       <ol><li data-i18n="helpStep1">HTML、ZIP、またはフォルダを追加します。ドラッグ＆ドロップも使えます。</li><li data-i18n="helpStep2">ZIPやフォルダでは、フォルダ構成を保ったままファイルを読み込みます。</li><li data-i18n="helpStep3">複数のHTMLがある場合は、自動検出した開始HTMLを確認して必要なら変更します。</li></ol>
+      <p data-i18n="helpReport">確認結果の下でファイル名を編集し、「確認レポートを保存」で現在の結果を .txt として保存できます。変換できない場合も利用できます。入力や開始HTMLを変えると以前のレポートは保存できません。レポートは静的解析の記録で、安全性を保証しません。</p>
       <h3 data-i18n="helpSafetyTitle">読み込み時の安全設計</h3>
       <ul><li data-i18n="helpSafety1">読み込んだHTMLやJavaScriptを、このアプリが勝手に実行することはありません。</li><li data-i18n="helpSafety2">ZIP内の「../」や絶対パスなど、フォルダの外側を指すファイル名は拒否します。</li><li data-i18n="helpSafety3">このアプリはマルウェアスキャナーではありません。「安全なHTML」と判定する機能ではありません。</li></ul>
       <h3 data-i18n="helpLimitsTitle">大きな入力</h3>
@@ -1077,7 +1087,7 @@
       return actual;
     }
 
-    function scanJavaScript(text, path, inlineLine = 0) {
+    function scanJavaScript(text, path, bodyStartLine = 1) {
       const tests = [
         ['block', 'dynamic-import', /\bimport\s*\(/g],
         ['block', 'import-meta-url', /\bimport\.meta(?:\.url)?\b/g],
@@ -1093,7 +1103,11 @@
       for (const [severity, code, re] of tests) {
         re.lastIndex = 0;
         const match = re.exec(text);
-        if (match) addFinding(severity, code, { path, line: inlineLine || lineNumberFor(text, match.index) });
+        if (match) {
+          // Module patterns include a separator/whitespace prefix; locate the keyword itself.
+          const offset = match.index + (code === 'es-module-syntax' ? match[0].search(/\b(?:import|export)\b/) : 0);
+          addFinding(severity, code, { path, line: bodyStartLine + lineNumberFor(text, offset) - 1 });
+        }
       }
     }
 
@@ -1160,7 +1174,9 @@
           const actual = handleReference(path, attrs.src, moduleScript ? 'module-script' : 'script', baseHref, { scan: 'javascript' });
           if (moduleScript && actual) queued.push({ path: actual, kind: 'javascript' });
         } else if (tagMatch[2]) {
-          scanJavaScript(tagMatch[2], path, lineNumberFor(text, tagMatch.index));
+          // The opening tag can span lines. Map body offsets back to the original HTML.
+          const bodyStart = tagMatch.index + tagMatch[0].indexOf('>') + 1;
+          scanJavaScript(tagMatch[2], path, lineNumberFor(text, bodyStart));
         }
       }
 
@@ -1737,7 +1753,7 @@
     (() => {
       'use strict';
       const APP_CONFIG = {"$schema":"./schemas/app-config.schema.json","name":"Offline Web Packager","nameJa":"Offline Web Packager","slug":"offline-web-packager","version":"1.0.1","description":"Analyze local HTML, ZIP, or web-page folders entirely in the browser and package supported static pages into one HTML file without uploading input data.","descriptionJa":"手元のHTML、ZIP、Webページ一式をブラウザ内だけで解析し、対応範囲の静的ページを1つのHTMLにまとめます。","defaultLanguage":"auto","repository":{"owner":"ttomohisa","name":"htmlapps-offline-web-packager"},"build":{"output":"dist/index.html","blockRuntimeNetwork":true,"selfExtract":{"enabled":true,"output":"dist/index.self-extract.html"},"sizeBudget":{"readableWarningMb":2,"selfExtractWarningMb":1}}};
-      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-09-25T05:07:09.4830103Z","app":{"name":"Offline Web Packager","slug":"offline-web-packager","version":"1.0.1"},"dependencies":[]};
+      const BUILD_MANIFEST = {"schemaVersion":2,"builder":"single-html-app-template/1.3","generatedAtUtc":"2026-10-06T03:04:23.2584639Z","app":{"name":"Offline Web Packager","slug":"offline-web-packager","version":"1.0.1"},"dependencies":[]};
       const assetBundle = {"schemaVersion":2,"dependencies":{}};
       const Core = window.OfflineWebPackagerCore;
       if (!Core) throw new Error('OfflineWebPackagerCore was not initialized.');
@@ -1750,6 +1766,7 @@
           dropAria:"HTMLまたはZIPを選択、またはHTML・ZIP・フォルダをドラッグ＆ドロップ", dropTitle:"ここにドラッグ＆ドロップ", dropBody:"クリックしてHTML / ZIPを選択することもできます", reading:"読み込んでいます…", analyzing:"構成を確認しています…", packaging:"HTMLを作成して確認しています…", cancelOperation:"キャンセル", cancelling:"キャンセルしています…", cancelled:"処理をキャンセルしました", progressZipIndex:"ZIPの内容を確認しています…", progressZipExtract:"ZIPを展開しています…", progressInputIndex:"ファイルを確認しています…", progressAnalyzeIndex:"ファイル一覧を確認しています…", progressAnalyzeScan:"参照関係を確認しています…", progressPackagePrepare:"HTMLを準備しています…", progressPackageEmbed:"ファイルを取り込んでいます…", progressPackageVerify:"作成後の確認をしています…",
           errorTitle:"読み込めませんでした", technicalDetail:"技術的な詳細",
           sourceType:"入力", fileCount:"ファイル", htmlCount:"HTML", totalSize:"合計サイズ", entryHtml:"開始HTML", filesTitle:"読み込んだファイル", clear:"別のファイルに切り替える", createHtml:"1つのHTMLを作成",
+          reportFilename:"確認レポートのファイル名 (.txt)", saveReport:"確認レポートを保存", reportTitle:"確認レポート", reportPayloadOmitted:"埋め込み内容は省略", reportNote:"変換できない場合も、現在の確認結果をテキストで保存できます。ソース本文は含めません。", reportSaved:"確認レポートのダウンロードを開始しました", reportOpened:"確認レポートを新しいタブに開きました。ブラウザの保存機能を使ってください。", reportUnsupported:"このブラウザでは確認レポートを保存できません。", reportLimitation:"静的解析の記録です。マルウェアスキャナーではなく、入力や生成HTMLの安全性、実行時の動作を保証しません。ファイル名や参照先など、表示された技術的な詳細を含むため、共有前に内容を確認してください。", helpReport:"確認結果の下でファイル名を編集し、「確認レポートを保存」で現在の結果を .txt として保存できます。変換できない場合も利用できます。ソース本文は含めませんが、ファイル名や参照先などの詳細は含みます。共有前に確認してください。入力や開始HTMLを変えると以前のレポートは保存できません。静的解析の記録であり、安全性を保証しません。",
           analysisTitle:"確認結果", analysisBody:"開始HTMLからたどれる参照と、v1で自動変換しない構成を静的に確認します。", analysisStageNote:"確認結果に問題がなければ、次は「1つのHTMLを作成」を押します。",
           statusAnalyzingTitle:"解析しています", statusAnalyzingBody:"ファイルの参照関係を静的に確認しています。HTMLやJavaScriptは実行しません。",
           statusConvertibleTitle:"1つのHTMLにまとめられます", statusConvertibleBody:"静的解析で確認できた範囲では、v1の自動変換を妨げる問題は見つかりませんでした。",
@@ -1772,6 +1789,7 @@
           dropAria:"Choose HTML or ZIP, or drag and drop HTML, ZIP, or a folder", dropTitle:"Drag & drop here", dropBody:"Click to choose HTML / ZIP, or drop a folder", reading:"Reading files…", analyzing:"Checking the page structure…", packaging:"Creating and verifying HTML…", cancelOperation:"Cancel", cancelling:"Cancelling…", cancelled:"Processing cancelled", progressZipIndex:"Checking ZIP contents…", progressZipExtract:"Extracting ZIP…", progressInputIndex:"Checking files…", progressAnalyzeIndex:"Checking file list…", progressAnalyzeScan:"Checking references…", progressPackagePrepare:"Preparing HTML…", progressPackageEmbed:"Embedding files…", progressPackageVerify:"Running the post-build check…",
           errorTitle:"Could not process the input", technicalDetail:"Technical details",
           sourceType:"Input", fileCount:"Files", htmlCount:"HTML", totalSize:"Total size", entryHtml:"Start HTML", filesTitle:"Loaded files", clear:"Switch to another file", createHtml:"Create one HTML file",
+          reportFilename:"Check report filename (.txt)", saveReport:"Save check report", reportTitle:"Check report", reportPayloadOmitted:"Embedded payload omitted", reportNote:"Save the current result as text, even when packaging is blocked. Source file contents are not included.", reportSaved:"Check report download started", reportOpened:"The check report was opened in a new tab. Use the browser save command to save it.", reportUnsupported:"This browser cannot save the check report.", reportLimitation:"This is a static-analysis record, not a malware scanner or a guarantee of safety or runtime behavior. It includes displayed technical details such as filenames and reference targets; review it before sharing.", helpReport:"Edit the filename below the check result, then choose Save check report to save the current result as .txt, including blocked results. Source file contents are excluded, but filenames and reference targets are included; review them before sharing. Changing input or the start HTML invalidates the previous report. Static analysis does not guarantee safety.",
           analysisTitle:"Check results", analysisBody:"Statically follows references from the start HTML and detects structures v1 does not convert automatically.", analysisStageNote:"If there are no issues in the check result, the next step is to create one HTML file.",
           statusAnalyzingTitle:"Analyzing", statusAnalyzingBody:"Checking file references statically. Loaded HTML and JavaScript are not executed.",
           statusConvertibleTitle:"Can be combined into one HTML file", statusConvertibleBody:"Within the scope of static analysis, no issue that blocks v1 automatic conversion was found.",
@@ -1923,7 +1941,7 @@
       const analysisCounts = $('#analysisCounts');
       const createHtmlButton = $('#createHtmlButton');
       const outputPanel = $('#outputPanel');
-      const state = { files:new Map(), sourceKind:'', sourceName:'', entryHtml:'', language:readStorage(`${APP_CONFIG.slug}:language`) || detectLanguage(), busy:false, analysis:null, analysisRevision:0, output:null, savedOnce:false, busyMode:'', operationController:null, progress:null, capabilities:null };
+      const state = { files:new Map(), sourceKind:'', sourceName:'', entryHtml:'', language:readStorage(`${APP_CONFIG.slug}:language`) || detectLanguage(), busy:false, analysis:null, analysisRevision:0, reportRevision:-1, reportFilename:'', output:null, savedOnce:false, busyMode:'', operationController:null, progress:null, capabilities:null };
 
       function detectCapabilities() {
         const anchor=document.createElement('a');
@@ -1993,6 +2011,7 @@
         for (const button of [$('#chooseHtmlButton'),$('#chooseZipButton')]) button.disabled=value; $('#chooseFolderButton').disabled=value || !state.capabilities.folderPicker;
         dropzone.setAttribute('aria-disabled',String(value));
         entryHtmlSelect.disabled=value || !(state.files instanceof VirtualFileSystem) || !state.files.htmlPaths().length;
+        renderReport();
       }
       function clearError() { errorPanel.dataset.visible='false'; $('#errorMessage').textContent=''; $('#errorDetail').hidden=true; $('#errorCode').textContent=''; }
       function friendlyErrorMessage(error) {
@@ -2030,6 +2049,74 @@
         if (item.size) parts.push(`size: ${item.size} bytes`);
         if (item.detail) parts.push(`detail: ${item.detail}`);
         return parts.join('\n');
+      }
+
+      function orderedFindings(result) {
+        return [...result.findings].sort((a,b)=>(a.severity==='block'?0:1)-(b.severity==='block'?0:1) || String(a.path||'').localeCompare(String(b.path||''),'en'));
+      }
+
+      function reportFilename(value, fallback='check-report.txt') {
+        let stem=String(value || '').replace(/[\\/\x00-\x1f\x7f-\x9f<>:"|?*\u202a-\u202e\u2066-\u2069]/g,'').trim().replace(/\.txt$/i,'').replace(/^[.\s]+|[.\s]+$/g,'');
+        if (!stem) return fallback;
+        if (/^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(stem)) stem=`_${stem}`;
+        // Bound UTF-8 bytes as well as characters so Japanese names fit common filesystems.
+        let bounded='', bytes=0;
+        for (const char of stem) {
+          const length=new TextEncoder().encode(char).length;
+          if (bytes+length>240) break;
+          bounded+=char; bytes+=length;
+        }
+        return `${bounded.replace(/[.\s]+$/g,'')}.txt`;
+      }
+      function defaultReportFilename() {
+        const basename=state.entryHtml.split('/').pop().replace(/\.html?$/i,'');
+        return reportFilename(basename ? `${basename}-check-report` : '', 'check-report.txt');
+      }
+      function resetReport() { state.reportRevision=-1; state.reportFilename=state.files.size ? defaultReportFilename() : ''; }
+      function canSaveReport() {
+        return !state.busy && state.files.size>0 && !!state.analysis && state.reportRevision===state.analysisRevision && state.capabilities.blobUrl;
+      }
+      function renderReport() {
+        $('#reportFilename').value=state.reportFilename;
+        $('#reportFilename').disabled=!canSaveReport();
+        $('#saveReportButton').disabled=!canSaveReport();
+        $('#saveReportButton').title=state.capabilities.blobUrl ? '' : t('reportUnsupported');
+      }
+      function reportFindingDetail(item) {
+        const detail={...item};
+        // A diagnostic target may itself embed HTML, script, or binary source bytes.
+        // Keep the UI unchanged, but never include those inline payloads in exported text.
+        for (const key of ['target','resolved','detail']) {
+          if (typeof detail[key]!=='string') continue;
+          // Attribute text is kept raw by the analyzer. Decode only for detection, without
+          // parsing it as HTML; browsers normalize character references and URL tabs/newlines.
+          const normalized=detail[key].replace(/&#(x[0-9a-f]+|[0-9]+);?/gi,(_,value)=>{
+            const code=value[0].toLowerCase()==='x' ? parseInt(value.slice(1),16) : parseInt(value,10);
+            return code>0 && code<=0x10ffff ? String.fromCodePoint(code) : '\ufffd';
+          }).replace(/&(colon|Tab|NewLine);/g,(_,name)=>({colon:':',Tab:'\t',NewLine:'\n'})[name]).replace(/[\t\r\n]/g,'');
+          const scheme=normalized.match(/\b(data|javascript|vbscript):/i);
+          if (scheme) detail[key]=`${scheme[1].toLowerCase()}: [${t('reportPayloadOmitted')}]`;
+        }
+        return findingDetail(detail);
+      }
+      function buildCheckReport() {
+        const result=state.analysis;
+        const status=result.status==='convertible' ? 'statusConvertible' : result.status==='review' ? 'statusReview' : 'statusBlocked';
+        const lines=[`${APP_CONFIG.name} — ${t('reportTitle')}`, `v${APP_CONFIG.version}`, '', t(`${status}Title`), t(`${status}Body`), '', `${t('entryHtml')}: ${result.entryHtml || '—'}`, `${t('issueBlock')}: ${result.counts.block}`, `${t('issueWarning')}: ${result.counts.warning}`, `${t('refsChecked')}: ${result.counts.dependencies}`, '', t('reportLimitation')];
+        if (!result.findings.length) lines.push('',t('analysisOk'));
+        for (const [index,item] of orderedFindings(result).entries()) {
+          const copy=findingCopy(item);
+          lines.push('', `${index+1}. [${t(item.severity==='block' ? 'issueBlock' : 'issueWarning')}] ${copy.title}`, copy.body, reportFindingDetail(item));
+        }
+        return `${lines.join('\n')}\n`;
+      }
+      function downloadBlob(blob,filename) {
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.hidden=true;
+        if (state.capabilities.anchorDownload) a.download=filename;
+        else { a.target='_blank'; a.rel='noopener'; }
+        try { document.body.append(a); a.click(); }
+        finally { a.remove(); setTimeout(()=>URL.revokeObjectURL(url),state.capabilities.anchorDownload ? 1500 : 60000); }
       }
 
       function renderAnalysis() {
@@ -2070,7 +2157,7 @@
         }
 
         const list=document.createElement('ul'); list.className='finding-list';
-        const ordered=[...result.findings].sort((a,b)=>(a.severity==='block'?0:1)-(b.severity==='block'?0:1) || String(a.path||'').localeCompare(String(b.path||''),'en'));
+        const ordered=orderedFindings(result);
         for (const item of ordered) {
           const li=document.createElement('li'); li.className='finding-item'; li.dataset.severity=item.severity;
           const iconWrap=document.createElement('span'); iconWrap.className='finding-icon'; iconWrap.innerHTML=item.severity==='block' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v9m0 4h.01"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v8m0 4h.01"/></svg>';
@@ -2136,6 +2223,7 @@
         $('#buildVersion').textContent=APP_CONFIG.version;
         $('#builtAt').textContent=BUILD_MANIFEST.generatedAtUtc || '—';
         renderCapabilities();
+        renderReport();
         renderWorkflow();
         renderMobileAction();
         if (!state.files.size) { resultPanel.hidden=true; outputPanel.hidden=true; return; }
@@ -2175,6 +2263,7 @@
       function createOperation(label,mode,canCancel=false) {
         const controller=new AbortController();
         state.progress=null;
+        if (mode==='reading') state.reportRevision=-1;
         setBusy(true,label,mode,{controller,canCancel});
         return controller;
       }
@@ -2187,6 +2276,7 @@
         const ownController=!controller;
         const activeController=controller || new AbortController();
         state.analysis=null;
+        state.reportRevision=-1;
         state.output=null;
         render();
         setBusy(true,t('analyzing'),'analyzing',{controller:activeController,canCancel:false});
@@ -2198,6 +2288,7 @@
           });
           if (revision!==state.analysisRevision) return;
           state.analysis=result;
+          state.reportRevision=revision;
           clearError();
           render();
           const statusMessage=result.status==='convertible' ? t('statusConvertibleTitle') : result.status==='review' ? t('statusReviewTitle') : t('statusBlockedTitle');
@@ -2223,7 +2314,7 @@
           if ((index+1)%50===0) await Promise.resolve();
         }
         if (!next.size) throw new Core.PackagerInputError('no-files',t('noFiles'));
-        state.files=next; state.sourceKind=sourceKind; state.sourceName=sourceName; state.entryHtml=Core.detectStartHtml(next.htmlPaths()).selected; state.analysis=null; state.output=null; state.savedOnce=false; clearError(); render(); resultPanel.scrollIntoView({behavior:'smooth',block:'start'});
+        state.files=next; state.sourceKind=sourceKind; state.sourceName=sourceName; state.entryHtml=Core.detectStartHtml(next.htmlPaths()).selected; state.analysis=null; state.output=null; state.savedOnce=false; resetReport(); clearError(); render(); resultPanel.scrollIntoView({behavior:'smooth',block:'start'});
         await runAnalysis({focusResult:true,controller:activeController,manageBusy:false});
       }
 
@@ -2373,7 +2464,7 @@
       htmlInput.addEventListener('change',async()=>{ try { if (htmlInput.files?.length===1) await loadHtmlFile(htmlInput.files[0]); else if (htmlInput.files?.length) showError(new Core.PackagerInputError('html-count',t('htmlOne'))); } catch (error) { handleOperationError(error); htmlInput.value=''; } });
       zipInput.addEventListener('change',async()=>{ try { if (zipInput.files?.length===1) await loadZipFile(zipInput.files[0]); else if (zipInput.files?.length) showError(new Core.PackagerInputError('zip-count',t('zipOne'))); } catch (error) { handleOperationError(error); zipInput.value=''; } });
       folderInput.addEventListener('change',async()=>{ try { if (folderInput.files?.length) await loadFolderFiles(filesFromFolderInput(folderInput.files)); } catch (error) { handleOperationError(error); folderInput.value=''; render(); } });
-      entryHtmlSelect.addEventListener('change',()=>{ state.entryHtml=entryHtmlSelect.value; state.savedOnce=false; runAnalysis(); });
+      entryHtmlSelect.addEventListener('change',()=>{ state.entryHtml=entryHtmlSelect.value; state.savedOnce=false; resetReport(); runAnalysis(); });
       createHtmlButton.addEventListener('click',async()=>{
         if (state.busy || !state.analysis || state.analysis.status!=='convertible') return;
         const controller=createOperation(t('packaging'),'packaging',true); clearError(); state.output=null; render();
@@ -2387,16 +2478,22 @@
         } catch (error) { handleOperationError(error); }
         finally { finishOperation(controller); render(); }
       });
+      $('#reportFilename').addEventListener('input',()=>{ state.reportFilename=$('#reportFilename').value; });
+      $('#saveReportButton').addEventListener('click',()=>{
+        if (!canSaveReport()) return;
+        state.reportFilename=reportFilename(state.reportFilename,defaultReportFilename());
+        try {
+          downloadBlob(new Blob([buildCheckReport()],{type:'text/plain;charset=utf-8'}),state.reportFilename);
+          renderReport();
+          const message=state.capabilities.anchorDownload ? t('reportSaved') : t('reportOpened');
+          AppToast.show(message); announce(message);
+        } catch (error) { showError(error); }
+      });
       $('#saveHtmlButton').addEventListener('click',()=>{
         if (!state.output) return;
         if (!state.capabilities.blobUrl) { showError(new Core.PackagerInputError('save-unsupported',t('saveUnsupported'))); return; }
         const blob=new Blob([state.output.html],{type:'text/html;charset=utf-8'});
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a'); a.href=url; a.hidden=true;
-        if (state.capabilities.anchorDownload) a.download=state.output.filename;
-        else { a.target='_blank'; a.rel='noopener'; }
-        document.body.append(a); a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url),state.capabilities.anchorDownload ? 1500 : 60000);
+        downloadBlob(blob,state.output.filename);
         state.savedOnce=true; render();
         const message=state.capabilities.anchorDownload ? t('htmlSaved') : t('htmlOpened');
         AppToast.show(message); announce(message);
@@ -2423,7 +2520,7 @@
         state.analysisRevision+=1; if (state.operationController) state.operationController.abort();
         if (state.output && typeof state.output.html==='string') state.output.html='';
         if (state.files instanceof VirtualFileSystem) state.files.clear();
-        state.files=new VirtualFileSystem(); state.sourceKind=''; state.sourceName=''; state.entryHtml=''; state.analysis=null; state.output=null; state.savedOnce=false;
+        state.files=new VirtualFileSystem(); state.sourceKind=''; state.sourceName=''; state.entryHtml=''; state.analysis=null; state.output=null; state.savedOnce=false; resetReport();
         quickInput.value=''; htmlInput.value=''; zipInput.value=''; folderInput.value=''; clearError(); setBusy(false); render(); AppToast.show(t('cleared'));
       });
       ['dragenter','dragover'].forEach(name=>dropzone.addEventListener(name,event=>{ event.preventDefault(); if (!state.busy) dropzone.dataset.active='true'; }));

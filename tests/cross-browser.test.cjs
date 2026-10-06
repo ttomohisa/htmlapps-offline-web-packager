@@ -10,7 +10,8 @@ const source = fs.readFileSync(path.join(root, 'src', 'index.template.html'), 'u
 const config = JSON.parse(fs.readFileSync(path.join(root, 'app.config.json'), 'utf8'));
 const smoke = fs.readFileSync(path.join(root, 'tests', 'browser-smoke.html'), 'utf8');
 
-assert.equal(config.version, '1.0.0');
+assert.match(config.version, /^\d+\.\d+\.\d+$/, 'app config must declare a release version');
+assert.ok(source.includes('`v${APP_CONFIG.version}`'), 'visible version must use the app config');
 assert.equal(typeof Core.supportsDeflateRaw, 'function');
 assert.equal(Core.supportsDeflateRaw(), true, 'current Node runtime should support deflate-raw for the ZIP regression fixture');
 const originalDecompressionStream = globalThis.DecompressionStream;
@@ -35,7 +36,7 @@ assert.match(source, /folder-relative-path-unsupported/, 'folder relative-path g
 assert.match(source, /id="folderSupportStatus"/);
 assert.match(source, /id="zipSupportStatus"/);
 assert.match(source, /id="saveSupportStatus"/);
-assert.match(source, /helpVersionNote:"v1\.0\.0/);
+assert.ok(source.includes(`helpVersionNote:"v${config.version}`), 'help version must match the app config');
 
 assert.match(smoke, /Offline Web Packager Browser Smoke Lab/);
 assert.match(smoke, /file:\/\//);
