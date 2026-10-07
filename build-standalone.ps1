@@ -467,3 +467,9 @@ Write-Host "[OK] Fetch/XHR/WebSocket-style runtime network access is blocked by 
 if ($selfExtractEnabled) {
   Write-Host "[OK] Self-extracting HTML: $selfExtractOutputPath" -ForegroundColor Green
 }
+
+# The catalog links this root artifact. Variant builds must not replace it.
+$canonicalOutput = [System.IO.Path]::GetFullPath((Join-Path $Root "dist/index.html"))
+if (-not $OutputPathWasSpecified -and -not $SkipSelfExtract -and $selfExtractEnabled -and [System.IO.Path]::GetFullPath($OutputPath) -eq $canonicalOutput) {
+  Copy-Item -LiteralPath $OutputPath -Destination (Join-Path $Root "offline-web-packager.html") -Force
+}

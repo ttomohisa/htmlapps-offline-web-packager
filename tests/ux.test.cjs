@@ -8,7 +8,7 @@ const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.template
 const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.config.json'), 'utf8'));
 const favicon = fs.readFileSync(path.join(__dirname, '..', 'assets', 'favicon.svg'), 'utf8');
 
-assert.equal(config.version, '1.0.1');
+assert.match(config.version, /^\d+\.\d+\.\d+$/);
 assert.match(favicon, /#16624F/);
 assert.doesNotMatch(favicon, /#036a53/i);
 
@@ -35,7 +35,7 @@ assert.match(source, /class="quick-guide"/);
 assert.doesNotMatch(source, /gradient/i);
 assert.match(source, /id="quickInput"[^>]*accept="\.html,\.htm,\.zip/);
 assert.match(source, /\.output-verification > svg \{ width:22px; height:22px;/);
-assert.match(source, /helpVersionNote:"v1\.0\.1/);
+assert.ok(source.includes(`helpVersionNote:"v${config.version}`), 'help version must match the app config');
 assert.match(source, /mobileOutputTitle/);
 assert.match(source, /mobilePackagingTitle/);
 assert.match(source, /function renderWorkflow\(\)/);

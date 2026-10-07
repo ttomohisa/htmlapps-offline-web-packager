@@ -247,6 +247,8 @@ $buildArguments = @{}
 if ($ForceDownload) { $buildArguments.ForceDownload = $true }
 & (Join-Path $Root "build-standalone.ps1") @buildArguments
 
+& (Join-Path $Root "tests\build-output.test.ps1")
+
 Write-Host "[OK] Repository check passed." -ForegroundColor Green
 
 # WebRTC readiness DataChannel regression

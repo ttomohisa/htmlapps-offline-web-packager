@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2] - 2026-10-07
+
+- Standardized the header EN / JA language targets with localized target-language accessible labels and tooltips; preserved the privacy wording and layout.
+- Synchronized the visible `v1.0.2` version and help release copy with the canonical config.
+- The full default build now refreshes the catalog public `offline-web-packager.html`; explicit or configured alternative output and readable-only builds leave it untouched.
+- Added header language/state/version regression tests and public-root build/variant guards.
+
 ## [Unreleased]
 
 ### Added
