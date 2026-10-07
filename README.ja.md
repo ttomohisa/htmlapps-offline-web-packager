@@ -173,6 +173,8 @@ node tests/performance.test.cjs
 node tests/cross-browser.test.cjs
 node tests/drop-regression.test.cjs
 node tests/i18n.test.cjs
+# ヘッダーの検証は i18n テストからも実行されます
+node tests/header.test.cjs
 # 上記の analyzer / UX からも実行される個別テスト
 node tests/diagnostic-locations.test.cjs
 node tests/diagnostic-report.test.cjs
@@ -181,6 +183,8 @@ node tests/diagnostic-report.test.cjs
 Windowsのstandaloneビルド自体にNode.jsは不要です。
 
 `dist/` は生成物です。直接編集せず、`src/index.template.html` または `src/offline-web-packager-core.js` を修正して再ビルドしてください。
+
+通常の完全ビルドでは、検証済みの読みやすいHTMLをカタログ公開用の `offline-web-packager.html` にも同期します。`-OutputPath`、設定で変更した出力先、`-SkipSelfExtract` のビルドは公開ファイルを上書きしません。`tests/build-output.test.ps1` で出力先の回帰検証を実行できます（`scripts/check-repository.ps1` にも含まれます）。
 
 ## Privacy / 実行時通信
 

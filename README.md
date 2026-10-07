@@ -174,10 +174,14 @@ node tests/performance.test.cjs
 node tests/cross-browser.test.cjs
 node tests/drop-regression.test.cjs
 node tests/i18n.test.cjs
+# Header checks are also included in the i18n suite
+node tests/header.test.cjs
 # Focused suites (also invoked by analyzer / UX above)
 node tests/diagnostic-locations.test.cjs
 node tests/diagnostic-report.test.cjs
 ```
+
+A full default build also copies the verified readable HTML to `offline-web-packager.html`, the catalog entry. Explicit `-OutputPath`, alternative configured output, and `-SkipSelfExtract` builds leave that public file unchanged. Run `tests/build-output.test.ps1` for the isolated build-output regression (also included by `scripts/check-repository.ps1`).
 
 The Windows standalone build itself does not require Node.js.
 

@@ -7,7 +7,9 @@
 - **Purpose:** Inspect a local HTML file, ZIP, or web-page folder entirely in the browser, decide whether it can be packaged into one HTML file, explain blocking issues without pretending conversion succeeded, and package supported static pages.
 - **Repository:** `ttomohisa/htmlapps-offline-web-packager`
 - **Privacy model:** The app itself performs fully local processing. Input files are not uploaded. The runtime behavior of generated HTML remains dependent on the original HTML / JavaScript.
-- **Release status:** v1.0.1 maintenance release
+- **Release status:** v1.0.2 maintenance release
+
+- **Header:** Show target language `EN` in Japanese and `JA` in English, with localized target-language accessible labels/tooltips, and `vX.Y.Z` matching `app.config.json`. Preserve `完全ローカル処理` / `Fully local processing`.
 
 ## 2. Product principles
 
