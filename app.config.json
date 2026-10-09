@@ -3,7 +3,7 @@
   "name": "Offline Web Packager",
   "nameJa": "Offline Web Packager",
   "slug": "offline-web-packager",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Analyze local HTML, ZIP, or web-page folders entirely in the browser and package supported static pages into one HTML file without uploading input data.",
   "descriptionJa": "手元のHTML、ZIP、Webページ一式をブラウザ内だけで解析し、対応範囲の静的ページを1つのHTMLにまとめます。",
   "defaultLanguage": "auto",
