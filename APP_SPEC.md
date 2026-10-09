@@ -7,7 +7,7 @@
 - **Purpose:** Inspect a local HTML file, ZIP, or web-page folder entirely in the browser, decide whether it can be packaged into one HTML file, explain blocking issues without pretending conversion succeeded, and package supported static pages.
 - **Repository:** `ttomohisa/htmlapps-offline-web-packager`
 - **Privacy model:** The app itself performs fully local processing. Input files are not uploaded. The runtime behavior of generated HTML remains dependent on the original HTML / JavaScript.
-- **Release status:** v1.0.2 maintenance release
+- **Release status:** v1.0.3 maintenance release
 
 - **Header:** Show target language `EN` in Japanese and `JA` in English, with localized target-language accessible labels/tooltips, and `vX.Y.Z` matching `app.config.json`. Preserve `完全ローカル処理` / `Fully local processing`.
 
@@ -256,3 +256,9 @@ A user should be able to complete:
 **Add files → Check whether they can be combined → Create HTML → Save**
 
 without reading documentation. Unsupported pages must explain why rather than generating a broken result and presenting it as success.
+
+## v1.0.3 icon consistency
+
+- The canonical icon background and matching green details use `#16624f`.
+- Background corner radii are exactly 25% of their corresponding width and height; existing bounds, padding, and foreground artwork are preserved.
+- Header, favicon, and self-extract loader inherit the canonical `assets/favicon.svg`.

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3] - 2026-10-09
+
+### Fixed
+- Normalize the canonical app icon to `#16624f` with exact 25% background corner radii, preserving existing artwork and padding.
+- Keep the app header, favicon, and generated standalone variants synchronized.
+
 ## [1.0.2] - 2026-10-07
 
 - Standardized the header EN / JA language targets with localized target-language accessible labels and tooltips; preserved the privacy wording and layout.
