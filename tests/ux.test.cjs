@@ -9,7 +9,7 @@ const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.config
 const favicon = fs.readFileSync(path.join(__dirname, '..', 'assets', 'favicon.svg'), 'utf8');
 
 assert.match(config.version, /^\d+\.\d+\.\d+$/);
-assert.match(favicon, /#16624F/);
+assert.match(favicon, /#16624f/);
 assert.doesNotMatch(favicon, /#036a53/i);
 
 for (let step = 1; step <= 4; step += 1) {
