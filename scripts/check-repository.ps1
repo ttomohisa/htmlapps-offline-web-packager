@@ -38,6 +38,7 @@ $required = @(
   "tests\resolver.test.cjs",
   "tests\verification.test.cjs",
   "tests\ux.test.cjs",
+  "tests\dialog-layout.test.cjs",
   "tests\performance.test.cjs",
   "tests\cross-browser.test.cjs",
   "tests\drop-regression.test.cjs",
@@ -67,6 +68,9 @@ foreach ($relative in $required) {
 }
 
 & (Join-Path $Root "scripts\check-powershell-syntax.ps1") -RootPath $Root
+
+& node (Join-Path $Root "tests\dialog-layout.test.cjs")
+if ($LASTEXITCODE -ne 0) { throw "Dialog layout regression failed." }
 
 $mobileBottomBarPath = Join-Path $Root "components\mobile-bottom-bar.html"
 $mobileBottomBarText = Get-Content -Raw -Encoding UTF8 $mobileBottomBarPath

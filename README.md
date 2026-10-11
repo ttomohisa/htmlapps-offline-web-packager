@@ -62,6 +62,8 @@ The standard Windows build does not require Node.js, Python, or a local web serv
 5. The generated HTML is checked again for unresolved local references and missed embedded dependencies.
 6. Select **Save HTML** to save the result to your device.
 
+Help and confirmation dialogs keep the background page still. In a short window, scroll inside the confirmation body to reach Cancel and the action button; Close stays at the top. Input replacement, clearing input, and discarding generated HTML use this same layout.
+
 ### Result states
 
 | Result | Meaning |
@@ -170,6 +172,7 @@ node tests/packager.test.cjs
 node tests/resolver.test.cjs
 node tests/verification.test.cjs
 node tests/ux.test.cjs
+node tests/dialog-layout.test.cjs
 node tests/performance.test.cjs
 node tests/cross-browser.test.cjs
 node tests/drop-regression.test.cjs

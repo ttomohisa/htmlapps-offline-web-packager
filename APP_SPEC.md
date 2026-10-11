@@ -7,7 +7,7 @@
 - **Purpose:** Inspect a local HTML file, ZIP, or web-page folder entirely in the browser, decide whether it can be packaged into one HTML file, explain blocking issues without pretending conversion succeeded, and package supported static pages.
 - **Repository:** `ttomohisa/htmlapps-offline-web-packager`
 - **Privacy model:** The app itself performs fully local processing. Input files are not uploaded. The runtime behavior of generated HTML remains dependent on the original HTML / JavaScript.
-- **Release status:** v1.0.3 maintenance release
+- **Release status:** v1.0.4 maintenance release
 
 - **Header:** Show target language `EN` in Japanese and `JA` in English, with localized target-language accessible labels/tooltips, and `vX.Y.Z` matching `app.config.json`. Preserve `完全ローカル処理` / `Fully local processing`.
 
@@ -262,3 +262,12 @@ without reading documentation. Unsupported pages must explain why rather than ge
 - The canonical icon background and matching green details use `#16624f`.
 - Background corner radii are exactly 25% of their corresponding width and height; existing bounds, padding, and foreground artwork are preserved.
 - Header, favicon, and self-extract loader inherit the canonical `assets/favicon.svg`.
+
+## v1.0.4 modal layout maintenance
+
+- While Help or AppConfirm is modal, lock scrolling and overscroll on both the document root and body. Closing the last modal restores normal page scrolling without changing dialog handlers.
+- Preserve the existing Help shell, header, and independently scrollable body.
+- Keep the confirmation header at its natural height; let its flex body shrink and scroll inside the existing viewport-bounded shell. The message, Cancel, and action button remain reachable at 393 × 252 CSS pixels in Japanese and English, including bottom safe-area space.
+- Apply the shared confirmation layout to input replacement, clearing input, and discarding generated output. Preserve Cancel, Close, Escape, focus restoration, and each action's existing data behavior.
+- Retain the existing decorative shield beside the local-processing label. Input parsing, packaging, verification, limits, dependencies, and CSP are unchanged.
+- `tests/dialog-layout.test.cjs` covers source layout contracts and existing JA/EN confirmation/Help actions. It runs from the canonical repository check; actual viewport, wheel, touch, and focus behavior still require browser verification.

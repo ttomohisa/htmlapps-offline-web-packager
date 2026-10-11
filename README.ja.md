@@ -63,6 +63,8 @@ GitHub Pagesから読み込むのは最初のアプリHTMLだけです。追加�
 5. 生成HTMLをもう一度確認し、未解決のローカル参照や取り込み漏れがないか検証します。
 6. **「HTMLを保存」** で端末へ保存します。
 
+ヘルプや確認画面を開いている間、背面のページはスクロールしません。高さの低い画面では確認画面の本文をスクロールして、キャンセルや実行ボタンまで移動できます。閉じるボタンは上部に残ります。入力の置き換え、入力の消去、生成HTMLの破棄に共通の表示です。
+
 ### 判定結果
 
 | 判定 | 意味 |
@@ -169,6 +171,7 @@ node tests/packager.test.cjs
 node tests/resolver.test.cjs
 node tests/verification.test.cjs
 node tests/ux.test.cjs
+node tests/dialog-layout.test.cjs
 node tests/performance.test.cjs
 node tests/cross-browser.test.cjs
 node tests/drop-regression.test.cjs
