@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.4] - 2026-10-11
+
+### Fixed
+- Lock the background document while Help or a confirmation dialog is modal.
+- Keep confirmation Close controls fixed while the message and action buttons scroll within short viewports, with smartphone safe-area padding.
+- Preserve the existing Help layout, local-processing shield, and all clear/discard/cancellation behavior.
+
+### Tests
+- Add dialog layout and Japanese/English action regressions to the canonical repository check.
+
 ## [1.0.3] - 2026-10-09
 
 ### Fixed
