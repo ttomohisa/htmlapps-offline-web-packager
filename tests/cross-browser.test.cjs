@@ -36,7 +36,7 @@ assert.match(source, /folder-relative-path-unsupported/, 'folder relative-path g
 assert.match(source, /id="folderSupportStatus"/);
 assert.match(source, /id="zipSupportStatus"/);
 assert.match(source, /id="saveSupportStatus"/);
-assert.ok(source.includes(`helpVersionNote:"v${config.version}`), 'help version must match the app config');
+assert.doesNotMatch(source, /helpVersionNote:/, 'Help must omit release audit prose');
 
 assert.match(smoke, /Offline Web Packager Browser Smoke Lab/);
 assert.match(smoke, /file:\/\//);

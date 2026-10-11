@@ -35,7 +35,7 @@ assert.match(source, /class="quick-guide"/);
 assert.doesNotMatch(source, /gradient/i);
 assert.match(source, /id="quickInput"[^>]*accept="\.html,\.htm,\.zip/);
 assert.match(source, /\.output-verification > svg \{ width:22px; height:22px;/);
-assert.ok(source.includes(`helpVersionNote:"v${config.version}`), 'help version must match the app config');
+assert.doesNotMatch(source, /helpVersionNote:/, 'Help must omit release audit prose');
 assert.match(source, /mobileOutputTitle/);
 assert.match(source, /mobilePackagingTitle/);
 assert.match(source, /function renderWorkflow\(\)/);
