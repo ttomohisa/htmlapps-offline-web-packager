@@ -1,8 +1,110 @@
 'use strict';
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const loadApp = require('./helpers/app-harness.cjs');
 
+async function checkInvalidZipReplacement() {
+  const validBytes = fs.readFileSync(path.join(__dirname, 'fixture-zips', '01-basic-inline.zip'));
+  const invalidBytes = new TextEncoder().encode('This is not a ZIP archive.');
+  const technicalDetail = 'End of central directory was not found.';
+  for (const language of ['ja', 'en']) {
+    const app = loadApp({sourcePath:process.env.APP_TEST_HTML, language});
+    async function chooseZip(file) {
+      const replacing = app.state.files.size > 0;
+      app.node('#zipInput').files = [file];
+      const pending = app.node('#zipInput').fire('change');
+      if (replacing) {
+        assert.equal(app.node('#appConfirmDialog').open, true);
+        await app.node('#appConfirmOk').click();
+      }
+      await pending;
+      assert.equal(app.node('#zipInput').value, '', 'the picker resets for another selection');
+    }
+
+    await chooseZip(new File([validBytes], 'valid.zip', {type:'application/zip'}));
+    assert.equal(app.state.analysis.status, 'convertible');
+    assert.equal(app.node('#saveReportButton').disabled, false);
+    const files = app.state.files, analysis = app.state.analysis, entryHtml = app.state.entryHtml;
+    await app.node('#createHtmlButton').click();
+    const released = app.state.output;
+    assert.ok(released?.html);
+    const releasePending = app.node('#releaseOutputButton').click();
+    await app.node('#appConfirmOk').click(); await releasePending;
+    assert.equal(released.html, '');
+    assert.equal(app.state.output, null);
+    assert.equal(app.state.files, files, 'release retains the valid ZIP input');
+    await app.node('#createHtmlButton').click();
+    const output = app.state.output, outputHtml = output.html;
+    assert.ok(outputHtml);
+    app.node('#reportFilename').value = 'edited report.txt';
+    await app.node('#reportFilename').fire('input');
+    assert.equal(app.node('#saveReportButton').disabled, false);
+
+    await assert.rejects(app.Core.readZip(invalidBytes), error =>
+      error.code === 'zip-invalid' && error.detail === technicalDetail);
+    await chooseZip(new File([invalidBytes], 'invalid.zip', {type:'application/zip'}));
+    const message = language === 'ja' ? 'ZIPとして読み込めませんでした。' : 'Could not read this file as a ZIP archive.';
+    assert.equal(app.node('#errorMessage').textContent, message, `${language}: invalid ZIP primary message must be localized`);
+    assert.ok(app.i18nElements.some(el => el.dataset.i18n === 'errorTitle' && el.textContent ===
+      (language === 'ja' ? '読み込めませんでした' : 'Could not process the input')));
+    assert.equal(app.node('#errorPanel').dataset.visible, 'true');
+    assert.equal(app.node('#errorDetail').hidden, false);
+    assert.equal(app.node('#errorCode').textContent, ['zip-invalid', technicalDetail,
+      ...(language === 'en' ? ['ZIPとして読み込めませんでした。'] : [])].join('\n'), 'technical code, detail and original error remain available');
+    assert.equal(app.node('#statusAnnouncer').textContent, message);
+    assert.equal(app.state.busy, false);
+    assert.equal(app.state.files, files, 'failed replacement keeps the valid input atomically');
+    assert.equal(app.state.analysis, analysis);
+    assert.equal(app.state.entryHtml, entryHtml);
+    assert.equal(app.state.sourceKind, 'zip');
+    assert.equal(app.state.sourceName, 'valid.zip');
+    assert.equal(app.state.output, output, 'failed replacement keeps the previously created HTML');
+    assert.equal(output.html, outputHtml);
+    assert.equal(app.node('#createHtmlButton').disabled, false);
+    assert.equal(app.node('#saveHtmlButton').disabled, false);
+    assert.equal(app.node('#reportFilename').value, 'edited report.txt');
+    assert.equal(app.node('#reportFilename').disabled, true);
+    assert.equal(app.node('#saveReportButton').disabled, true, 'failed replacement does not revive the old report');
+    assert.equal(app.state.reportRevision, -1);
+    const downloadsBefore = app.downloads.length;
+    await app.node('#saveReportButton').click();
+    assert.equal(app.downloads.length, downloadsBefore, 'disabled report cannot be exported through its handler');
+    await app.node('#saveHtmlButton').click();
+    assert.equal(app.downloads.at(-1).download, output.filename);
+    assert.equal(await app.blobs.at(-1).text(), outputHtml, 'Save HTML still exports the preserved valid output');
+    assert.equal(app.node('#saveReportButton').disabled, true, 'saving HTML does not restore report eligibility');
+    await app.node('#createHtmlButton').click();
+    assert.equal(app.state.files, files);
+    assert.equal(app.state.output.html, outputHtml, 'Create still packages the preserved valid input');
+    assert.equal(app.node('#saveReportButton').disabled, true, 'recreating HTML does not replace a successful analysis');
+
+    await chooseZip(new File([validBytes], 'recovered.zip', {type:'application/zip'}));
+    assert.notEqual(app.state.files, files);
+    assert.equal(app.state.sourceName, 'recovered.zip');
+    assert.equal(app.state.analysis.status, 'convertible');
+    assert.equal(app.state.output, null, 'successful replacement invalidates the previous output');
+    assert.equal(app.node('#outputPanel').hidden, true);
+    const downloadsAfterRecovery = app.downloads.length;
+    await app.node('#saveHtmlButton').click();
+    assert.equal(app.downloads.length, downloadsAfterRecovery, 'old HTML cannot be saved after successful replacement');
+    assert.equal(app.node('#errorPanel').dataset.visible, 'false');
+    assert.equal(app.node('#errorMessage').textContent, '');
+    assert.equal(app.node('#errorCode').textContent, '');
+    assert.equal(app.node('#saveReportButton').disabled, false, 'successful replacement analysis restores report eligibility');
+    assert.equal(app.state.reportRevision, app.state.analysisRevision);
+    assert.equal(app.node('#reportFilename').value, 'index-check-report.txt');
+    await app.node('#saveReportButton').click();
+    assert.equal(app.downloads.at(-1).download, 'index-check-report.txt');
+    assert.match(await app.blobs.at(-1).text(), /index\.html/);
+    await app.node('#createHtmlButton').click();
+    assert.ok(app.state.output?.html, 'Create works after successful recovery');
+    console.log(`[OK] Invalid ZIP replacement (${language}): localized primary error, technical detail, valid input/output retention, report invalidation and successful recovery.`);
+  }
+}
+
 async function checkReports() {
+  await checkInvalidZipReplacement();
   const app = loadApp({sourcePath:process.env.APP_TEST_HTML});
   assert.match(app.source, /label for="reportFilename"/);
   assert.match(app.source, /id="saveReportButton"[^>]*disabled/);

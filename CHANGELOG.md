@@ -6,9 +6,11 @@
 - Lock the background document while Help or a confirmation dialog is modal.
 - Keep confirmation Close controls fixed while the message and action buttons scroll within short viewports, with smartphone safe-area padding.
 - Preserve the existing Help layout, local-processing shield, and all clear/discard/cancellation behavior.
+- Localize the `zip-invalid` primary error in Japanese and English while retaining its technical code/detail and the existing atomic replacement behavior.
 
 ### Tests
 - Add dialog layout and Japanese/English action regressions to the canonical repository check.
+- Extend the existing diagnostic-report/UX regression with valid ZIP → create → discard/recreate → invalid replacement → recovery in both languages, preserving valid input/output and report eligibility rules.
 
 ## [1.0.3] - 2026-10-09
 
