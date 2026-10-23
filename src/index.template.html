@@ -242,7 +242,7 @@
     .app-toast-message { font-size:12px; }
 
     .mobile-action-bar { display:none; }
-    @media (max-width:760px) {
+    @media (max-width:760px) {footer{display:none}
       .main { padding-top:18px; padding-bottom:42px; }
       .page-intro { display:block; }
       .local-badge { margin-top:12px; }
@@ -448,7 +448,7 @@
       <div><strong data-i18n="privacyTitle">このアプリ自身は完全ローカル処理です</strong><p data-i18n="privacyBody">追加したHTML、ZIP、画像、JavaScript等を外部サーバーへ送信しません。読み込んだHTMLやJavaScriptも解析中に実行しません。生成HTMLの実行時動作は、元のHTML / JavaScriptに依存します。</p></div>
     </section>
 
-    <details class="build-info"><summary data-i18n="buildInfo">ビルド情報</summary><div class="build-grid"><div class="build-item"><span data-i18n="appVersion">アプリバージョン</span><strong id="buildVersion">—</strong></div><div class="build-item"><span data-i18n="builtAt">生成日時</span><strong id="builtAt">—</strong></div><div class="build-item"><span data-i18n="runtimeNetwork">アプリの外部通信</span><strong data-i18n="runtimeNetworkValue">なし</strong></div></div></details>
+
   </main>
 
   <footer><span id="footerName">Offline Web Packager</span> · MIT License · <span data-i18n="footer">ブラウザ内でページ一式を確認</span></footer>
@@ -481,6 +481,8 @@
       <ul><li><span data-i18n="helpBrowserFolder">フォルダ選択</span>: <strong id="folderSupportStatus">—</strong></li><li><span data-i18n="helpBrowserZip">圧縮ZIPの展開</span>: <strong id="zipSupportStatus">—</strong></li><li><span data-i18n="helpBrowserSave">HTMLの保存</span>: <strong id="saveSupportStatus">—</strong></li></ul>
       <h3 data-i18n="helpPrivacyTitle">プライバシー</h3>
       <p data-i18n="helpPrivacyBody">このアプリ自身は完全ローカル処理です。入力ファイルをサーバーへ送信しません。ただし、今後生成するHTMLの実行時動作は元のHTML / JavaScriptに依存します。</p>
+
+      <details class="build-info"><summary data-i18n="buildInfo">ビルド情報</summary><div class="build-grid"><div class="build-item"><span data-i18n="appVersion">アプリバージョン</span><strong id="buildVersion">—</strong></div><div class="build-item"><span data-i18n="builtAt">生成日時</span><strong id="builtAt">—</strong></div><div class="build-item"><span data-i18n="runtimeNetwork">アプリの外部通信</span><strong data-i18n="runtimeNetworkValue">なし</strong></div></div></details>
     </div>
   </dialog>
 

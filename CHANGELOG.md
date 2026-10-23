@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Hide only the informational mobile footer and move the existing build-information block intact to the end of Help.
+
 - Clarify Japanese and English help by removing internal layout, implementation, and audit commentary while preserving usage guidance and cautions.
 
 ## [1.0.4] - 2026-10-11

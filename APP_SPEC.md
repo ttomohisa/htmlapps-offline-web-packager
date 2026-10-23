@@ -271,3 +271,9 @@ without reading documentation. Unsupported pages must explain why rather than ge
 - Apply the shared confirmation layout to input replacement, clearing input, and discarding generated output. Preserve Cancel, Close, Escape, focus restoration, and each action's existing data behavior.
 - Retain the existing decorative shield beside the local-processing label. Input parsing, packaging, verification, limits, dependencies, and CSP are unchanged.
 - `tests/dialog-layout.test.cjs` covers source layout contracts and existing JA/EN confirmation/Help actions. It runs from the canonical repository check; actual viewport, wheel, touch, and focus behavior still require browser verification.
+
+## Shared mobile footer and Help metadata
+
+- Hide only the informational page footer at the existing 760px mobile-workflow breakpoint; preserve functional actions and navigation.
+- Keep the entire existing build-information block, IDs, population and privacy text intact as the final Help scroll-body item, available on desktop and mobile.
+- Preserve the existing Help Close/Escape behavior; this change does not add backdrop-click dismissal.
