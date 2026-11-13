@@ -52,7 +52,7 @@
     .brand-mark img { width:100%; height:100%; display:block; }
     .brand-copy { min-width:0; }
     .brand-name { margin:0; font-size:17px; line-height:1.2; letter-spacing:.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .version-badge { display:inline-flex; align-items:center; margin-left:7px; padding:1px 6px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:var(--surface-muted); font-size:10px; font-weight:650; vertical-align:2px; }
+    .version-badge { display:inline-flex; align-items:center; margin-left:7px; padding:1px 6px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:var(--surface-muted); font-size:11px; font-weight:650; vertical-align:2px; }
     .brand-meta { margin:2px 0 0; color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .header-actions { margin-left:auto; display:flex; align-items:center; gap:12px; }
     .language-button { min-width:0; padding:5px 1px; border:0; background:transparent; color:var(--muted); font-size:12px; font-weight:750; letter-spacing:.02em; cursor:pointer; transition:color .16s ease,opacity .16s ease; }
@@ -70,7 +70,7 @@
     .page-intro { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding:0 2px 20px; }
     .page-intro h1 { margin:0; font-size:clamp(25px,4vw,34px); line-height:1.25; letter-spacing:-.035em; }
     .page-intro p { margin:7px 0 0; max-width:760px; color:var(--muted); font-size:14px; }
-    .local-badge { display:inline-flex; align-items:center; gap:7px; flex:0 0 auto; margin-top:3px; padding:7px 10px; border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line)); border-radius:999px; color:var(--accent); background:var(--accent-soft); font-size:12px; font-weight:700; white-space:nowrap; }
+    .local-badge { display:inline-flex; align-items:center; gap:7px; flex:0 0 auto; margin-top:3px; padding:7px 0; border:0; border-radius:0; color:var(--accent); background:transparent; font-size:12px; font-weight:500; white-space:nowrap; }
     .local-badge svg { width:15px; height:15px; }
 
     .workflow { margin:0 0 18px; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow-sm); overflow:hidden; }
@@ -214,15 +214,15 @@
     .build-item { padding:9px; border-radius:9px; background:var(--surface-muted); }
     .build-item span { display:block; color:var(--muted); font-size:9px; }
     .build-item strong { display:block; margin-top:2px; overflow-wrap:anywhere; font-size:11px; }
-    footer { width:min(1180px,100%); margin:0 auto; padding:0 clamp(14px,2.8vw,30px) 32px; color:var(--muted); font-size:11px; }
+    footer { width:min(1180px,100%); margin:0 auto; padding:0 clamp(14px,2.8vw,30px) 32px; color:var(--muted); font-size:12px; }
     html:has(dialog:modal), body:has(dialog:modal) { overflow:hidden; overscroll-behavior:none; }
     dialog { width:min(610px,calc(100vw - 30px)); max-height:min(760px,calc(100dvh - 30px)); padding:0; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow-md); overflow:hidden; }
     dialog[open] { display:flex; flex-direction:column; }
     dialog::backdrop { background:rgba(0,0,0,.34); backdrop-filter:blur(2px); }
     .dialog-header { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 17px; border-bottom:1px solid var(--line); background:var(--surface); }
     .dialog-header h2 { margin:0; font-size:17px; }
-    .dialog-close { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--line); border-radius:9px; background:var(--surface); cursor:pointer; }
-    .dialog-close svg { width:17px; height:17px; }
+    .dialog-close { display:grid; place-items:center; width:34px; height:34px; border:0; border-radius:9px; background:transparent; cursor:pointer; }
+    .dialog-close svg { width:18px; height:18px; }
     .dialog-body { min-height:0; padding:16px 18px 22px; overflow:auto; overscroll-behavior:contain; }
     .dialog-body h3 { margin:18px 0 7px; font-size:13px; }
     .dialog-body h3:first-child { margin-top:0; }
@@ -451,7 +451,7 @@
 
   </main>
 
-  <footer><span id="footerName">Offline Web Packager</span> · MIT License · <span data-i18n="footer">ブラウザ内でページ一式を確認</span></footer>
+  <footer><span id="footerName">Offline Web Packager</span> · MIT License · <span data-i18n="footer">梱包はブラウザー内で完結</span></footer>
 
   <div class="mobile-action-bar" id="mobileActionBar" hidden role="region" data-i18n-aria-label="mobileActionLabel" aria-label="次の操作">
     <div class="mobile-action-copy"><strong id="mobileActionTitle"></strong><span id="mobileActionHint"></span></div>
@@ -463,12 +463,12 @@
   <div class="app-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true" data-visible="false"><span class="app-toast-message" id="appToastMessage"></span></div>
 
   <dialog class="app-confirm-dialog" id="appConfirmDialog" aria-labelledby="appConfirmTitle" aria-describedby="appConfirmMessage">
-    <div class="dialog-header"><h2 id="appConfirmTitle">確認</h2><button class="dialog-close" id="appConfirmClose" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog-header"><h2 id="appConfirmTitle">確認</h2><button class="dialog-close" id="appConfirmClose" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
     <div class="app-confirm-body"><p class="app-confirm-message" id="appConfirmMessage"></p><div class="app-confirm-actions"><button class="app-confirm-button" id="appConfirmCancel" type="button">キャンセル</button><button class="app-confirm-button primary" id="appConfirmOk" type="button">続ける</button></div></div>
   </dialog>
 
   <dialog id="helpDialog" aria-labelledby="helpTitle">
-    <div class="dialog-header"><h2 id="helpTitle" data-i18n="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="closeHelpButton" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog-header"><h2 id="helpTitle" data-i18n="helpTitle">使い方と注意事項</h2><button class="dialog-close" id="closeHelpButton" type="button" data-i18n-aria-label="close" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12"/><path d="M18 6 6 18"/></svg></button></div>
     <div class="dialog-body">
       <h3 data-i18n="helpBasicsTitle">基本操作</h3>
       <ol><li data-i18n="helpStep1">HTML、ZIP、またはフォルダを追加します。ドラッグ＆ドロップも使えます。</li><li data-i18n="helpStep2">ZIPやフォルダでは、フォルダ構成を保ったままファイルを読み込みます。</li><li data-i18n="helpStep3">複数のHTMLがある場合は、自動検出した開始HTMLを確認して必要なら変更します。</li></ol>
@@ -514,7 +514,7 @@ __APP_CORE_JS__
           statusBlockedTitle:"このままでは1ファイルにできません", statusBlockedBody:"v1では自動変換しない構成、または必要ファイルの不足が見つかりました。",
           issueBlock:"変換できない理由", issueWarning:"確認事項", refsChecked:"参照確認", analysisOk:"静的解析でたどれた範囲では、未解決のローカルファイル参照や対応外の構成は見つかりませんでした。",
           privacyTitle:"このアプリ自身は完全ローカル処理です", privacyBody:"追加したHTML、ZIP、画像、JavaScript等を外部サーバーへ送信しません。読み込んだHTMLやJavaScriptも解析中に実行しません。生成HTMLの実行時動作は、元のHTML / JavaScriptに依存します。",
-          buildInfo:"ビルド情報", appVersion:"アプリバージョン", builtAt:"生成日時", runtimeNetwork:"アプリの外部通信", runtimeNetworkValue:"なし", footer:"ブラウザ内で解析して1つのHTMLを作成",
+          buildInfo:"ビルド情報", appVersion:"アプリバージョン", builtAt:"生成日時", runtimeNetwork:"アプリの外部通信", runtimeNetworkValue:"なし", footer:"梱包はブラウザー内で完結",
           helpBasicsTitle:"基本操作", helpStep1:"HTML、ZIP、またはフォルダを追加します。ドロップ領域はHTML / ZIPのクリック選択にも使えます。", helpStep2:"開始HTMLからCSS、通常のJavaScript、画像、フォントなどの参照をたどります。", helpStep3:"「1つのHTMLにまとめられます」と表示されたら「HTMLを作成」→「HTMLを保存」で完了します。",
           helpSafetyTitle:"解析時の安全設計", helpLimitsTitle:"大きな入力", helpBrowserTitle:"このブラウザで使える機能", helpBrowserFolder:"フォルダ選択", helpBrowserZip:"圧縮ZIPの展開", helpBrowserSave:"HTMLの保存", browserAvailable:"利用できます", browserFallback:"代替動作で利用できます", browserUnavailable:"利用できません", helpLimit1:"1ファイルは50 MBまでです。", helpLimit2:"入力全体は100 MB、ファイル数は2,000件までです。", helpLimit3:"ZIPは展開前にファイル数・展開後サイズ・極端な圧縮率を確認します。", helpSafety1:"読み込んだHTMLやJavaScriptを、このアプリが勝手に実行することはありません。", helpSafety2:"ZIP内の「../」や絶対パスなど、フォルダの外側を指すファイル名は拒否します。", helpSafety3:"このアプリはマルウェアスキャナーではありません。「安全なHTML」と判定する機能ではありません。",
           helpPrivacyTitle:"プライバシー", helpPrivacyBody:"このアプリ自身は完全ローカル処理です。入力ファイルをサーバーへ送信しません。生成HTMLの実行時動作は元のHTML / JavaScriptに依存します。",
@@ -537,7 +537,7 @@ __APP_CORE_JS__
           statusBlockedTitle:"Cannot be made into one file as-is", statusBlockedBody:"A structure v1 does not automatically convert, or a required missing file, was found.",
           issueBlock:"Blocking reasons", issueWarning:"Review items", refsChecked:"References checked", analysisOk:"Within the references reached by static analysis, no unresolved local file reference or unsupported structure was found.",
           privacyTitle:"This app itself is fully local", privacyBody:"HTML, ZIP, images, JavaScript, and other inputs are not sent to an external server. Loaded HTML and JavaScript are not executed during analysis. Runtime behavior of generated HTML depends on the original HTML / JavaScript.",
-          buildInfo:"Build information", appVersion:"App version", builtAt:"Built at", runtimeNetwork:"App network access", runtimeNetworkValue:"None", footer:"Analyze and create one HTML file in the browser",
+          buildInfo:"Build information", appVersion:"App version", builtAt:"Built at", runtimeNetwork:"App network access", runtimeNetworkValue:"None", footer:"Packaging stays in the browser",
           helpBasicsTitle:"Basics", helpStep1:"Add an HTML file, ZIP, or folder. You can also click the drop area to choose an HTML file or ZIP.", helpStep2:"The app follows references from the start HTML to CSS, classic JavaScript, images, fonts, and other files.", helpStep3:"When the result says the page can be combined, choose Create HTML and then Save HTML.",
           helpSafetyTitle:"Safe analysis", helpLimitsTitle:"Large inputs", helpBrowserTitle:"Available in this browser", helpBrowserFolder:"Folder selection", helpBrowserZip:"Compressed ZIP extraction", helpBrowserSave:"Save HTML", browserAvailable:"Available", browserFallback:"Available with fallback", browserUnavailable:"Unavailable", helpLimit1:"Each file is limited to 50 MB.", helpLimit2:"Total input is limited to 100 MB and 2,000 files.", helpLimit3:"ZIP files are checked for file count, expanded size, and extreme compression ratios before extraction.", helpSafety1:"This app does not execute loaded HTML or JavaScript during analysis.", helpSafety2:"ZIP paths such as ../ or absolute paths that point outside the archive root are rejected.", helpSafety3:"This app is not a malware scanner and does not label an HTML file as safe.",
           helpPrivacyTitle:"Privacy", helpPrivacyBody:"This app itself is fully local and does not upload input files. Runtime behavior of generated HTML depends on the original HTML / JavaScript.",
